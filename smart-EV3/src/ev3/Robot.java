@@ -1,0 +1,128 @@
+package ev3;
+
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
+import lejos.hardware.port.MotorPort;
+import lejos.utility.Delay;
+import lejos.hardware.BrickFinder;
+import lejos.hardware.Button;
+import lejos.hardware.Sound;
+import lejos.hardware.lcd.GraphicsLCD;
+
+public class Robot {
+	
+	private EV3MediumRegulatedMotor leftMotor;
+    private EV3MediumRegulatedMotor rightMotor;
+    private EV3MediumRegulatedMotor pincher;
+    static boolean pincherOpen;
+
+    public Robot() {
+        leftMotor = new EV3MediumRegulatedMotor(MotorPort.C);
+        rightMotor = new EV3MediumRegulatedMotor(MotorPort.B);
+        pincher = new EV3MediumRegulatedMotor(MotorPort.D);
+        pincherOpen = false;
+
+        // set speed default
+        leftMotor.setSpeed(300);
+        rightMotor.setSpeed(300);
+        pincher.setSpeed(200);
+    }
+
+    // ───────────────────────────────────────────────
+    //  BASIC MOVEMENTS
+    // ───────────────────────────────────────────────
+
+    public void forward() {
+        leftMotor.forward();
+        rightMotor.forward();
+    }
+
+    public void backward() {
+        leftMotor.backward();
+        rightMotor.backward();
+    }
+
+    public void stop() {
+        leftMotor.stop(true);
+        rightMotor.stop(true);
+    }
+
+    public void turnLeft() {
+        leftMotor.backward();
+        rightMotor.forward();
+    }
+
+    public void turnRight() {
+        leftMotor.forward();
+        rightMotor.backward();
+    }
+
+    // ───────────────────────────────────────────────
+    //  PINCHER CONTROL
+    // ───────────────────────────────────────────────
+
+    public void unPinch(int degrees) {
+        pincher.rotate(degrees, true);
+    }
+
+    public void pinch(int degrees) {
+        pincher.rotate(-degrees, true);
+    }
+
+    public void stopAux() {
+        pincher.stop();
+    }
+
+    public void close() {
+        stop();
+        stopAux();
+        leftMotor.close();
+        rightMotor.close();
+        pincher.close();
+        GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
+		g.drawString( "Motors Closed", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
+                 
+        Delay.msDelay(200);
+		g.clear();
+        Sound.beep();
+    }
+    
+   
+
+	public static void main(String[] args) {
+		Robot r = new Robot();
+		
+		r.pinch(1200);
+	
+		
+		
+		while(Button.ESCAPE.isUp()) {
+			GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
+			
+			if(Button.ENTER.isDown() && pincherOpen) {
+				g.drawString( "Pincher closing", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);  
+		        Delay.msDelay(200);
+
+				r.pinch(500);
+				pincherOpen = false;
+				g.clear();
+			}
+			
+			if(Button.ENTER.isDown() && !(pincherOpen)) {
+				g.drawString( "Pincher opening", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);  
+		        Delay.msDelay(200);
+
+				r.unPinch(500);
+				pincherOpen = true;
+				g.clear();
+
+			}
+		}
+		
+		
+		
+		r.close();
+		
+
+	}
+
+}
