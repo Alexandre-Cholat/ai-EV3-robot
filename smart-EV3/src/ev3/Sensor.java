@@ -6,6 +6,7 @@ import lejos.hardware.lcd.GraphicsLCD;
 import java.util.Arrays;
 
 import lejos.hardware.*;
+import lejos.hardware.Button;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
@@ -18,7 +19,7 @@ import lejos.utility.Delay;
 public class Sensor {
 	
 	// UltrasonicSensor
-	private EV3UltrasonicSensor ultrasonic;
+	private static EV3UltrasonicSensor ultrasonic;
 
 	// TouchSensor
 	private EV3TouchSensor touch;
@@ -45,40 +46,31 @@ public class Sensor {
 	
 	public static void testTouch() {
 		Sensor s = new Sensor();
-		
-		
 		int i = 0;
-		
 		while(i<4) {
 			if(s.isPressed() ){
 				i++;
-				
 				GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
 				g.drawString( "Touched "+ i+" times", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
 				Delay.msDelay(3000);
-				g.clear();
-				
-				
+				g.clear();		
 			}
-			
 		}
 		
 		GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
 		g.drawString( "Touched 4 times", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
 		Delay.msDelay(2000);
 		g.clear();
-		
 		g.drawString("Bye...", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
 		Delay.msDelay(3000);
 	}
 	
 	public static void ultrasonicTest() {
-		// 1. Setup sensor on port S1 (change if needed)
-        EV3UltrasonicSensor us = new EV3UltrasonicSensor(SensorPort.S1);
-        us.enable();
+		// Setup sensor
+        ultrasonic.enable();
         
-        // 2. Get the distance mode
-        SampleProvider distance = us.getDistanceMode();
+        // Get distance mode
+        SampleProvider distance = ultrasonic.getDistanceMode();
         float[] sample = new float[distance.sampleSize()];
         
         // 3. Loop forever (or until some condition) to read and display
@@ -90,21 +82,26 @@ public class Sensor {
             
             GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
     		g.drawString( "\"Distance:"+distCm, 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
+                     
+            Delay.msDelay(200);
+    		g.clear();
             
-            System.out.printf("Distance: %.2f m (%.1f cm)%n", distMeters, distCm);
-            
-            // Delay so sensor isn’t flooded with requests
-            Delay.msDelay(200);   // e.g., reading every 200 ms
+    		if (Button.ENTER.isDown()) {
+    	        ultrasonic.disable();
+        		g.drawString( "Sensor disabled", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
+        		Delay.msDelay(3000);
+    	        ultrasonic.close();
+    	        break;
+    	    }
+    	
             
         }
-		
-		
 	}
 	
 
 	
 	public static void main(String[] args) {
-		//affichage 'is touched'
+		ultrasonic = new EV3UltrasonicSensor(SensorPort.S4);
 		ultrasonicTest();
 		
 		
