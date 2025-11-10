@@ -1,0 +1,32 @@
+Strategy:
+
+Instead of navigating grid with unreliable and inaccurate color sensor, the robot will simply find the center of the envirnoment.
+
+From the center, the 2.5 m ultrasound vision radius should be largely sufficent for detecting objects in the environment.
+
+In such case, the only required position data is that of 
+1) Knowing if the current position is close to center or not
+2) Knowing which directing home base is for depositing objects
+
+This strategy's main advantage is that it doesn't rely on the inaccurate and variable quality of the sensors on the robot.
+Being perfectly dead center is not important, knowing exactly where the agent is doesn't matter either. All that is neccessary
+is to find objects (quickly) and return them to base.
+
+Proposed methods
+
+Actions:
+
+	boolean isPuck() - returns true if object in front is a puck (turns left and right to check contrast)
+	
+
+	void getPuck() - approaches puck and grabs it
+	void goHome() - rotates to 180 angle and drops puck at home base
+	void goToCenter() - finds center
+		perpendicullarWall() - faces wall perpendicularly
+		
+	
+	
+	
+	
+
+

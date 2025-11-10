@@ -26,7 +26,17 @@ public class Robot {
         rightMotor.setSpeed(300);
         pincher.setSpeed(200);
     }
+    // ───────────────────────────────────────────────
+    //  SOUND & DISPLAY
+    // ───────────────────────────────────────────────
 
+    public void display(String s) {
+    	GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
+    	g.drawString( s, 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
+	    Delay.msDelay(2000);
+		g.clear();
+
+    }
     // ───────────────────────────────────────────────
     //  BASIC MOVEMENTS
     // ───────────────────────────────────────────────
@@ -62,10 +72,14 @@ public class Robot {
 
     public void unPinch(int degrees) {
         pincher.rotate(degrees, true);
+        pincher.waitComplete(); // Wait for rotation to finish
+
     }
 
     public void pinch(int degrees) {
         pincher.rotate(-degrees, true);
+        pincher.waitComplete(); // Wait for rotation to finish
+
     }
 
     public void stopAux() {
@@ -86,39 +100,56 @@ public class Robot {
         Sound.beep();
     }
     
+    public boolean pincherOpen() {
+		GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
+    	
+		if (pincherOpen) {
+			g.drawString( "Pincher already open", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
+	        Delay.msDelay(2000);
+	        
+			return false;
+		}else {
+			g.drawString( "Pincher opening", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);  
+	        Delay.msDelay(2000);
+
+			unPinch(1000);
+			pincherOpen = true;
+			
+			g.clear();
+			
+		}
+		return true;
+    }
+    
+    public boolean pincherClose() {
+		GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
+
+		if (pincherOpen) {
+			g.drawString( "Pincher closing", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);  
+	        Delay.msDelay(2000);
+
+			pinch(1000);
+			pincherOpen = false;
+			g.clear();
+		}else {
+			g.drawString( "Pincher already closed", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
+	        Delay.msDelay(2000);
+
+			return false;
+		}
+		
+		return true;
+    }
+    
    
 
 	public static void main(String[] args) {
-		Robot r = new Robot();
+		Robot r = new Robot();	
 		
-		r.pinch(1200);
-	
-		
-		
-		while(Button.ESCAPE.isUp()) {
-			GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
-			
-			if(Button.ENTER.isDown() && pincherOpen) {
-				g.drawString( "Pincher closing", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);  
-		        Delay.msDelay(200);
-
-				r.pinch(500);
-				pincherOpen = false;
-				g.clear();
-			}
-			
-			if(Button.ENTER.isDown() && !(pincherOpen)) {
-				g.drawString( "Pincher opening", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);  
-		        Delay.msDelay(200);
-
-				r.unPinch(500);
-				pincherOpen = true;
-				g.clear();
-
-			}
-		}
-		
-		
+		r.pincherOpen();
+		r.display("ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+		Robot.pincherOpen= true;
+		r.pincherClose();
 		
 		r.close();
 		
