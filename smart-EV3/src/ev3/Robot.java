@@ -11,10 +11,25 @@ import lejos.hardware.lcd.GraphicsLCD;
 // robot movement and output controller
 public class Robot{
 	
+	//initialiser Position comme propriete de Robot?
+	//    private Position p;
+
+	
 	private EV3MediumRegulatedMotor leftMotor;
     private EV3MediumRegulatedMotor rightMotor;
     private EV3MediumRegulatedMotor pincher;
     static boolean pincherOpen;
+    
+    // constants
+    private static final float WHEEL_DIAMETER_CM = 5.6f; // Standard EV3 wheel diameter
+    private static final float WHEEL_CIRCUMFERENCE_CM = (float)(WHEEL_DIAMETER_CM * Math.PI);
+    private static final float TRACK_WIDTH_CM = 12.0f; // Distance between wheels
+    private static final int DEGREES_PER_CM = (int)(360 / WHEEL_CIRCUMFERENCE_CM);
+    
+    // Default speeds
+    private int defaultSpeed = 300;
+    private int defaultTurnSpeed = 200;
+    private int defaultPincherSpeed = 300;
 
 
     public Robot() {
@@ -22,11 +37,13 @@ public class Robot{
         rightMotor = new EV3MediumRegulatedMotor(MotorPort.B);
         pincher = new EV3MediumRegulatedMotor(MotorPort.D);
         pincherOpen = false;
-
-        // set speed default
-        leftMotor.setSpeed(300);
-        rightMotor.setSpeed(300);
-        pincher.setSpeed(200);
+        
+        setSpeed(defaultSpeed);
+        setTurnSpeed(defaultTurnSpeed);
+        pincher.setSpeed(defaultPincherSpeed);
+        
+        
+        
     }
     // ───────────────────────────────────────────────
     //  SOUND & DISPLAY
@@ -49,6 +66,11 @@ public class Robot{
 		g.clear();
 
     }
+    
+    public void beep() {
+		Sound.beep();
+    }
+    
     // ───────────────────────────────────────────────
     //  BASIC MOVEMENTS
     // ───────────────────────────────────────────────
@@ -77,6 +99,141 @@ public class Robot{
         leftMotor.forward();
         rightMotor.backward();
     }
+    
+   
+
+    // ───────────────────────────────────────────────
+    //  SPEED CONTROL METHODS
+    // ───────────────────────────────────────────────
+
+    public void setSpeed(int speed) {
+        leftMotor.setSpeed(speed);
+        rightMotor.setSpeed(speed);
+        //defaultSpeed = speed;
+    }
+
+    public void setTurnSpeed(int speed) {
+        defaultTurnSpeed = speed;
+    }
+
+    public void setPincherSpeed(int speed) {
+        pincher.setSpeed(speed);
+        //defaultPincherSpeed = speed;
+    }
+
+    public int getLeftMotorSpeed() {
+        return leftMotor.getSpeed();
+    }
+
+    public int getRightMotorSpeed() {
+        return rightMotor.getSpeed();
+    }
+    
+ // ───────────────────────────────────────────────
+    //  PRECISE MOVEMENT METHODS
+    // ───────────────────────────────────────────────
+
+
+    public void forward(float distanceCm) {
+        forward(distanceCm, defaultSpeed);
+    }
+
+    public void forward(float distanceCm, int speed) {
+        int degrees = (int)(distanceCm * DEGREES_PER_CM);
+        setSpeed(speed);
+       
+        leftMotor.rotate(degrees, true);
+        rightMotor.rotate(degrees, true);
+       
+        leftMotor.waitComplete();
+        rightMotor.waitComplete();
+
+    }
+
+    public void backward(float distanceCm) {
+        backward(distanceCm, defaultSpeed);
+    }
+
+    public void backward(float distanceCm, int speed) {
+        int degrees = (int)(distanceCm * DEGREES_PER_CM);
+        setSpeed(speed);
+        
+        leftMotor.rotate(-degrees, true);
+        rightMotor.rotate(-degrees, true);
+        
+        leftMotor.waitComplete();
+        rightMotor.waitComplete();
+    }
+
+    
+    public void turn(int degrees) {
+        turn(degrees, defaultTurnSpeed);
+    }
+
+    public void turn(int degrees, int speed) {
+        // Calculate wheel rotation needed for the turn
+        float wheelDistance = (float)(Math.PI * TRACK_WIDTH_CM * degrees / 360.0);
+        int wheelDegrees = (int)(wheelDistance * DEGREES_PER_CM);
+        
+        setTurnSpeed(speed);
+        leftMotor.setSpeed(speed);
+        rightMotor.setSpeed(speed);
+        
+        leftMotor.rotate(-wheelDegrees, true);
+        rightMotor.rotate(wheelDegrees, true);
+        
+        leftMotor.waitComplete();
+        rightMotor.waitComplete();
+    }
+    
+ // ───────────────────────────────────────────────
+    //  TIMED MOVEMENTS
+    // ───────────────────────────────────────────────
+
+    public void forwardTimed(int durationMs) {
+        forwardTimed(durationMs, defaultSpeed);
+    }
+
+    public void forwardTimed(int durationMs, int speed) {
+        setSpeed(speed);
+        forward();
+        Delay.msDelay(durationMs);
+        stop();
+    }
+
+    public void backwardTimed(int durationMs) {
+        backwardTimed(durationMs, defaultSpeed);
+    }
+
+    public void backwardTimed(int durationMs, int speed) {
+        setSpeed(speed);
+        backward();
+        Delay.msDelay(durationMs);
+        stop();
+    }
+
+    public void turnLeftTimed(int durationMs) {
+        turnLeftTimed(durationMs, defaultTurnSpeed);
+    }
+
+    public void turnLeftTimed(int durationMs, int speed) {
+        setTurnSpeed(speed);
+        turnLeft();
+        Delay.msDelay(durationMs);
+        stop();
+    }
+
+    public void turnRightTimed(int durationMs) {
+        turnRightTimed(durationMs, defaultTurnSpeed);
+    }
+
+    public void turnRightTimed(int durationMs, int speed) {
+        setTurnSpeed(speed);
+        turnRight();
+        Delay.msDelay(durationMs);
+        stop();
+    }
+    
 
     // ───────────────────────────────────────────────
     //  PINCHER CONTROL
