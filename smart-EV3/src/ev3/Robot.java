@@ -8,18 +8,25 @@ import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.GraphicsLCD;
 
-public class Robot {
+public class Robot{
 	
 	private EV3MediumRegulatedMotor leftMotor;
     private EV3MediumRegulatedMotor rightMotor;
     private EV3MediumRegulatedMotor pincher;
     static boolean pincherOpen;
+    
+    public Position position;
+    public Sensor sensor;  // Composition - Robot HAS-A Sensor
+
 
     public Robot() {
         leftMotor = new EV3MediumRegulatedMotor(MotorPort.C);
         rightMotor = new EV3MediumRegulatedMotor(MotorPort.B);
         pincher = new EV3MediumRegulatedMotor(MotorPort.D);
         pincherOpen = false;
+        
+        //create psoition instance
+        this.position = new Position();
 
         // set speed default
         leftMotor.setSpeed(300);
@@ -34,6 +41,16 @@ public class Robot {
     	GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
     	g.drawString( s, 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
 	    Delay.msDelay(2000);
+		g.clear();
+
+    }
+    
+    
+    
+    public void display(String s, int ms_time) {
+    	GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
+    	g.drawString( s, 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
+	    Delay.msDelay(ms_time);
 		g.clear();
 
     }
@@ -92,11 +109,8 @@ public class Robot {
         leftMotor.close();
         rightMotor.close();
         pincher.close();
-        GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
-		g.drawString( "Motors Closed", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
-                 
-        Delay.msDelay(200);
-		g.clear();
+
+		display("Motors Closed");
         Sound.beep();
     }
     
@@ -141,17 +155,21 @@ public class Robot {
 		return true;
     }
     
+    
    
 
 	public static void main(String[] args) {
+		/*
 		Robot r = new Robot();	
 		
 		r.pincherOpen();
-		r.display("ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+		int [] tab = r.position.getPosition();
+		r.display("Angle: " + tab[0], 5000);
 		Robot.pincherOpen= true;
 		r.pincherClose();
 		
 		r.close();
+		*/
 		
 
 	}

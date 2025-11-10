@@ -16,17 +16,17 @@ import lejos.hardware.Sound;
 import lejos.utility.Delay;
 
 
-public class Sensor {
+public class Sensor{
 	
 	// UltrasonicSensor
-	private static EV3UltrasonicSensor ultrasonic;
+	private EV3UltrasonicSensor ultrasonic;
 
 	// TouchSensor
-	private static EV3TouchSensor touch;
+	private EV3TouchSensor touch;
 	
 	// ColorSensor
-	private static EV3ColorSensor colorSensor;
-	private static SampleProvider colorProvider;
+	private EV3ColorSensor colorSensor;
+	private SampleProvider colorProvider;
 	
 
 
@@ -35,6 +35,7 @@ public class Sensor {
 		touch = new EV3TouchSensor (SensorPort.S2);
 		ultrasonic = new EV3UltrasonicSensor(SensorPort.S4);
 		colorSensor = new EV3ColorSensor(SensorPort.S3);
+		colorProvider = colorSensor.getRGBMode();
 	}
 	
 	
@@ -45,7 +46,7 @@ public class Sensor {
 		return sample[0] != 0;
 	}
 	
-	public static void displayColor() {
+	public void displayColor() {
         GraphicsLCD g = BrickFinder.getDefault().getGraphicsLCD();
         float[] colorSample = new float[colorProvider.sampleSize()];
 
@@ -70,12 +71,8 @@ public class Sensor {
 	public String getColor() {
 		colorProvider =  colorSensor.getRGBMode();
 		float[] colorSample = new float[colorProvider.sampleSize()];
-		while (Button.ESCAPE.isUp()){
-			colorProvider.fetchSample(colorSample,0);
-			String couleur = convertColor(colorSample);
-			return couleur;
-		}
-		return "rien";
+		colorProvider.fetchSample(colorSample, 0);
+        return convertColor(colorSample);
 	}
 	
 	public static String convertColor(float [] tabColor) {
@@ -107,7 +104,7 @@ public class Sensor {
 	}
 	
 	
-	public static void testTouch() {
+	public void testTouch() {
 		Sensor s = new Sensor();
 		int i = 0;
 		while(i<4) {
@@ -129,7 +126,15 @@ public class Sensor {
 		Delay.msDelay(3000);
 	}
 	
-	public static void ultrasonicTest() {
+	public float getDistance() {
+        ultrasonic.enable();
+        SampleProvider distance = ultrasonic.getDistanceMode();
+        float[] sample = new float[distance.sampleSize()];
+        distance.fetchSample(sample, 0);
+        return sample[0] * 100.0f;  // Convert to cm
+    }
+	
+	public void ultrasonicTest() {
 		// Setup sensor
         ultrasonic.enable();
         
@@ -163,18 +168,11 @@ public class Sensor {
         }
 	}
 	
-
-	
-	public static void main(String[] args) {
-		//ultrasonic = new EV3UltrasonicSensor(SensorPort.S4);
-		//ultrasonicTest();
-		colorSensor = new EV3ColorSensor(SensorPort.S3);
-	    colorProvider = colorSensor.getRGBMode();
-
-		displayColor();
-		
-		
-
-	}
+	// Cleanup method
+    public void close() {
+        ultrasonic.close();
+        touch.close();
+        colorSensor.close();
+    }
 
 }
