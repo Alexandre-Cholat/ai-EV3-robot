@@ -2,10 +2,6 @@ package ev3;
 
 import lejos.hardware.BrickFinder;
 import lejos.hardware.lcd.GraphicsLCD;
-
-import java.util.Arrays;
-
-import lejos.hardware.*;
 import lejos.hardware.Button;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
@@ -16,6 +12,7 @@ import lejos.hardware.Sound;
 import lejos.utility.Delay;
 
 
+// sensor controller
 public class Sensor{
 	
 	// UltrasonicSensor

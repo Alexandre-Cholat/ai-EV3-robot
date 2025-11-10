@@ -8,15 +8,13 @@ import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.GraphicsLCD;
 
+// robot movement and output controller
 public class Robot{
 	
 	private EV3MediumRegulatedMotor leftMotor;
     private EV3MediumRegulatedMotor rightMotor;
     private EV3MediumRegulatedMotor pincher;
     static boolean pincherOpen;
-    
-    public Position position;
-    public Sensor sensor;  // Composition - Robot HAS-A Sensor
 
 
     public Robot() {
@@ -24,9 +22,6 @@ public class Robot{
         rightMotor = new EV3MediumRegulatedMotor(MotorPort.B);
         pincher = new EV3MediumRegulatedMotor(MotorPort.D);
         pincherOpen = false;
-        
-        //create psoition instance
-        this.position = new Position();
 
         // set speed default
         leftMotor.setSpeed(300);
@@ -154,24 +149,5 @@ public class Robot{
 		
 		return true;
     }
-    
-    
-   
-
-	public static void main(String[] args) {
-		/*
-		Robot r = new Robot();	
-		
-		r.pincherOpen();
-		int [] tab = r.position.getPosition();
-		r.display("Angle: " + tab[0], 5000);
-		Robot.pincherOpen= true;
-		r.pincherClose();
-		
-		r.close();
-		*/
-		
-
-	}
 
 }
