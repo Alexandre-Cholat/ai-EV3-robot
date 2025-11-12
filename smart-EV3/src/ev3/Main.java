@@ -12,6 +12,10 @@ public class Main {
 			
 			monRobot.wander2();
 			
+			
+
+			
+			
 		}
 		
 		
