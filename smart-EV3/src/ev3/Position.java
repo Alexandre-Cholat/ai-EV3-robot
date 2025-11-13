@@ -1,11 +1,8 @@
 package ev3;
 
 public class Position {
-	// 0 pour camp adversaire, 180 pour zone d'equipe
+	// 180 pour camp adversaire, 0 pour zone d'equipe
 	public int angle;
-	//distance estimee du centre
-	public int dist_x;
-	public int dist_y;
 	
 	public boolean perdu;
 	
