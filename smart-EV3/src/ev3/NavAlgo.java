@@ -110,24 +110,22 @@ public class NavAlgo {
 		p.setAngle(startPos);
 	}
 
-	public void rotate_until_disc_detected() {
-		//tourne jusqu'a detecter une discontinuité
+	public boolean rotate_until_disc_detected() {
+		//tourne jusqu'a detecter une discontinuité, renvoie vrai s'il en trouve, false sinon
 		float previousDist=s.getDistance();
 		for(int angle=0;angle<=360;angle+=5) {
 			r.turn(5);
 			Delay.msDelay(100);
 			float currentDist=s.getDistance();
 			if(Math.abs(previousDist-currentDist)>10){//a voir s'il faut valeur plus grande ou plus petite
-				return;
+				return true;
 			}
 			previousDist=currentDist;
 		}
+		return false;
 
 	}
-	public void new_research(int angle) {
-		//si le premier tour n'a rien donner, 
-	}
-
+	
 
 	public boolean obj_detected() {
 		float d =  s.getDistance();
