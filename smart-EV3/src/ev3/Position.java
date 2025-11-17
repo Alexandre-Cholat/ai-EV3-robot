@@ -21,19 +21,14 @@ public class Position {
 		perdu = b;
 	}
 	
-	public int[] getPosition() {
-		return new int[] {angle, dist_x, dist_y};
+	public int getPosition() {
+		return angle;
 	}
 	
 	public void setAngle(int i) {
 		this.angle = i;
 	}
 	
-	public void setDist(int x , int y) {
-		setPerdu(false);
-		dist_x = x;
-		dist_y = y;
-	}
 	
 
 }
