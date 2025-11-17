@@ -1,6 +1,9 @@
 package ev3;
 
+import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
+import lejos.hardware.lcd.GraphicsLCD;
 import lejos.utility.Delay;
 
 public class NavAlgo {
@@ -183,7 +186,9 @@ public class NavAlgo {
 
 		r.beep();
 		r.stop();
-
+	
+	
+		
 	}
 
 }

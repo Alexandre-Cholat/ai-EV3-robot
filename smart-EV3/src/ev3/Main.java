@@ -12,7 +12,7 @@ public class Main {
 		while (Button.ENTER.isUp()) {
 			//monRobot.grab();
 			
-			monRobot.forwardsTest();
+			monRobot.goToCenter();
 			
 			//monRobot.goToCenter();
 			
