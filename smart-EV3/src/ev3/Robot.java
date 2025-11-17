@@ -150,6 +150,8 @@ public class Robot{
 
     }
 
+    // is same as forward(-negative cm)	??
+    
     public void backward(float distanceCm) {
         backward(distanceCm, defaultSpeed);
     }

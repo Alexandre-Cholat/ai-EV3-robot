@@ -10,8 +10,8 @@ public class NavAlgo {
 	private Position p;
 
 	//enviornment dimensions
-	static int table_length = 250;
-	static int table_width = 230;
+	static int table_length = 300;
+	static int table_width = 200;
 
 	public NavAlgo() {
 		this.r = new Robot();
@@ -32,11 +32,12 @@ public class NavAlgo {
 
 	public void goToYcenter() {
 
-		// rotate to face adversary camp
+		// rotates to face adversary camp and updates position
 		rotateTo(180);
+		
 
 		//align perfectly
-		align();
+		align(180);
 
 		// if not centered
 		while(s.getDistance() != table_length/2) {
@@ -53,7 +54,7 @@ public class NavAlgo {
 		rotateTo(90);
 
 		//align perfectly
-		align();
+		align(90);
 
 		// if not centered
 		while(s.getDistance() != table_width/2) {
@@ -66,18 +67,47 @@ public class NavAlgo {
 
 	// rotates to absolute orientation heading from any position angle
 	public void rotateTo(int orientation){
-		int current_a = p.getPosition()[0];
+		int current_a = p.getPosition();
 		int calc_turn = orientation - current_a;
 		r.turn(calc_turn);
+		
+		//update heading
+		p.setAngle(orientation);
 	}
 
-	public void align(){
+	public void align(int startPos){
 		int dist1 = (int) s.getDistance();
+		int min = 1000;
+		int minAngle = startPos;
 		// minimise distance between wall
-		while(true) {
-			turn(10);
-
+		
+		int i = 0;
+		
+		while(i<10) {
+			
+			// rotate to random angle
+			int randAngle = (int) Math.random() * 7;
+			r.turn(randAngle);
+			dist1 = (int) s.getDistance();
+			
+			//new best candidate
+			if(dist1 < min) {
+				min = dist1;
+				minAngle = p.getPosition();
+				
+				r.display("New min angle: " + minAngle);
+			}
+			
+			//return to starting position center
+			rotateTo(startPos);
 		}
+		
+		
+		//rotate to smallest distance to wall
+		rotateTo(minAngle);
+		
+		//set minAngle as intended start angle
+		p.setAngle(startPos);
 	}
 
 	public void rotate_until_obj_detected() {
@@ -122,15 +152,24 @@ public class NavAlgo {
 
 	}
 
-	public void wander() {
-
-		while (s.getDistance()> 10) {
-			r.forward();
+	public void testing() {
+		
+		float distCm = s.getDistance();
+		r.display("D: "+ distCm, 200);
+		
+		while(true) {
+			distCm = s.getDistance();
+			r.display("D: "+ distCm, 200);
+			
+			if(s.isPressed() ) {
+				r.beep();
+			}
 		}
-		r.turnLeft();
-		long rand = (long)( Math.random()* 10000);
-		Delay.msDelay(rand);
 
+	}
+	
+	public void forwardsTest() {
+		r.forward(-50);
 	}
 
 	public void wander2() {
@@ -144,9 +183,6 @@ public class NavAlgo {
 
 		r.beep();
 		r.stop();
-
-
-
 
 	}
 
