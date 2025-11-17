@@ -5,6 +5,10 @@ import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.GraphicsLCD;
 import lejos.utility.Delay;
+import lejos.robotics.navigation.MovePilot;
+import lejos.robotics.chassis.Chassis;
+import lejos.robotics.chassis.Wheel;
+import lejos.robotics.chassis.WheeledChassis;
 
 public class NavAlgo {
 

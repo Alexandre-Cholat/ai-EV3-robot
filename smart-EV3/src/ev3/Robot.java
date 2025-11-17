@@ -142,7 +142,6 @@ public class Robot{
        
         leftMotor.waitComplete();
         rightMotor.waitComplete();
-
     }
 
     
@@ -166,7 +165,7 @@ public class Robot{
         rightMotor.waitComplete();
     }
     
- // ───────────────────────────────────────────────
+    // ───────────────────────────────────────────────
     //  TIMED MOVEMENTS
     // ───────────────────────────────────────────────
 

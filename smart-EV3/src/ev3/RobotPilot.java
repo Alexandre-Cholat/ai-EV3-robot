@@ -18,13 +18,13 @@ public class RobotPilot {
 
 	private Wheel wheel1;
 	private Wheel wheel2;
-	private Chassis chassis; 
-	private MovePilot pilot;
+	public Chassis chassis; 
+	public MovePilot pilot;
 	
     private EV3MediumRegulatedMotor pincher;
 
     private int defaultPincherSpeed = 300;
-	boolean pincherOpen;
+	private boolean pincherOpen;
 	
 	
 	
@@ -32,19 +32,20 @@ public class RobotPilot {
 	double chassis_offset = 55; //millimeters from center to wheel
 	
 	
+	
+	
 	public RobotPilot(){
-		//MovePilot for main motors
-		Wheel wheel1 = WheeledChassis.modelWheel(Motor.C, wheel_size).offset(-chassis_offset);
-		Wheel wheel2 = WheeledChassis.modelWheel(Motor.B, wheel_size).offset(chassis_offset);
-		Chassis chassis = new WheeledChassis(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL); 
-		MovePilot pilot = new MovePilot(chassis);
-		
-		//Pincher
-		pincher = new EV3MediumRegulatedMotor(MotorPort.D);
-        pincher.setSpeed(defaultPincherSpeed);
-        pincherOpen = false;
-      
-    }
+	    // MovePilot for main motors
+	    this.wheel1 = WheeledChassis.modelWheel(Motor.C, wheel_size).offset(-chassis_offset);
+	    this.wheel2 = WheeledChassis.modelWheel(Motor.B, wheel_size).offset(chassis_offset);
+	    this.chassis = new WheeledChassis(new Wheel[] { this.wheel1, this.wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL); 
+	    this.pilot = new MovePilot(this.chassis);
+	    
+	    // Pincher
+	    pincher = new EV3MediumRegulatedMotor(MotorPort.D);
+	    pincher.setSpeed(defaultPincherSpeed);
+	    pincherOpen = false;
+	}
 	
 	// ───────────────────────────────────────────────
     //  SOUND & DISPLAY
@@ -79,6 +80,24 @@ public class RobotPilot {
     
 	public void forward() {
 	    pilot.forward();
+	}
+	
+	public void forward(float distanceCm) {
+	    pilot.travel(distanceCm * 10); // cm to mm
+	}
+
+	public void forward(float distanceCm, int speed) {
+	    setSpeed(speed);
+	    pilot.travel(distanceCm * 10);
+	}
+
+	public void turn(int degrees) {
+	    pilot.rotate(degrees);
+	}
+
+	public void turn(int degrees, int speed) {
+	    setTurnSpeed(speed);
+	    pilot.rotate(degrees);
 	}
 	
 	public void stop() {
@@ -161,5 +180,6 @@ public class RobotPilot {
     public void stopPinch() {
         pincher.stop();
     }
+
 	
 }
