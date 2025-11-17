@@ -1,6 +1,9 @@
 package ev3;
 
+import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
+import lejos.hardware.lcd.GraphicsLCD;
 import lejos.utility.Delay;
 
 public class NavAlgo {
@@ -76,8 +79,23 @@ public class NavAlgo {
 		p.setAngle(startPos);
 	}
 
-	public void rotate_until_obj_detected() {
-		// empty for now
+
+	public void rotate_until_disc_detected() {
+		//tourne jusqu'a detecter une discontinuité
+		float previousDist=s.getDistance();
+		for(int angle=0;angle<=360;angle+=5) {
+			r.turn(5);
+			Delay.msDelay(100);
+			float currentDist=s.getDistance();
+			if(Math.abs(previousDist-currentDist)>10){//a voir s'il faut valeur plus grande ou plus petite
+				return;
+			}
+			previousDist=currentDist;
+		}
+
+	}
+	public void new_research(int angle) {
+		//si le premier tour n'a rien donner, 
 	}
 
 	public boolean obj_detected() {
@@ -165,6 +183,8 @@ public class NavAlgo {
 
 		r.beep();
 		r.stop();
+
+
 	}
 
 }
