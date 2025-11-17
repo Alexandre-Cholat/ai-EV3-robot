@@ -8,7 +8,7 @@ import lejos.utility.Delay;
 
 public class NavAlgo {
 
-	private Robot r;
+	private RobotPilot r;
 	private Sensor s;
 	private Position p;
 
@@ -17,7 +17,7 @@ public class NavAlgo {
 	static int table_width = 200;
 
 	public NavAlgo() {
-		this.r = new Robot();
+		this.r = new RobotPilot();
 		this.s = new Sensor();
 		this.p = new Position();
 	}
