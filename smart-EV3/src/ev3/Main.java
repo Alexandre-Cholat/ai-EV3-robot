@@ -12,6 +12,8 @@ public class Main {
 		while (Button.ENTER.isUp()) {
 			//monRobot.grab();
 			
+			monRobot.forward();
+			
 			monRobot.goToCenter();
 			
 			//monRobot.goToCenter();
@@ -22,6 +24,8 @@ public class Main {
 			
 		}
 		
+		
+	
 	}
 
 }

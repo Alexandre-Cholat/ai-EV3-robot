@@ -170,9 +170,11 @@ public class NavAlgo {
 		while (s.getDistance() > 10) {
 			r.forward();
 		}
-		r.turnLeft();
+		r.turn(1000000);	//infinite turn
 		long rand = (long) (Math.random() * 10000);
 		Delay.msDelay(rand);
+		//stop
+		r.stop();
 	}
 
 	public void wander2() {
