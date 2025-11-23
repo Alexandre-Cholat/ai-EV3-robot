@@ -3,6 +3,7 @@ package ev3;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.port.MotorPort;
+import lejos.hardware.port.Port;
 import lejos.utility.Delay;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
@@ -42,9 +43,16 @@ public class RobotPilot {
 	    this.pilot = new MovePilot(this.chassis);
 	    
 	    // Pincher
-	    pincher = new EV3MediumRegulatedMotor(MotorPort.D);
-	    pincher.setSpeed(defaultPincherSpeed);
-	    pincherOpen = false;
+	    try {
+		    pincher = new EV3MediumRegulatedMotor(MotorPort.D);
+		    pincher.setSpeed(defaultPincherSpeed);
+		    pincherOpen = false;
+	    }catch (Exception e){
+	    	System.err.println("Error initializing pincher: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	    
+	    
 	}
 	
 	// ───────────────────────────────────────────────

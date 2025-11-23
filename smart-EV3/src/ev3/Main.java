@@ -7,18 +7,22 @@ public class Main {
 	
 	//automate a etats
 	public static void main(String[] args) {
-		NavAlgo monRobot = new NavAlgo();	
+		NavAlgo monRobot = new NavAlgo();
 		
-		while (Button.ENTER.isUp()) {
+
+
+		while (Button.ESCAPE.isUp()) {
+			
+			//monRobot.obj_detected();
+			
 			//monRobot.grab();
-			
-			monRobot.forward();
-			
-			monRobot.goToCenter();
+						
+			//monRobot.calibrateTurn(720);
 			
 			//monRobot.goToCenter();
-			
-			
+			monRobot.batteryStatus();
+			monRobot.calibrateTurn(720);
+
 
 			
 			

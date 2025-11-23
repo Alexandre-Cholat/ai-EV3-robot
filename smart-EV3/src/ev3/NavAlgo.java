@@ -9,6 +9,7 @@ import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
+import lejos.hardware.Battery;
 
 public class NavAlgo {
 
@@ -143,27 +144,15 @@ public class NavAlgo {
 			r.display("Pavé attrapé", 5000);
 		}
 	}
-
-	public void testing() {
-		float distCm = s.getDistance();
-		r.display("D: " + distCm, 200);
-
-		while (true) {
-			distCm = s.getDistance();
-			r.display("D: " + distCm, 200);
-
-			if (s.isPressed()) {
-				r.beep();
-			}
-		}
+	
+	public void batteryStatus() {
+		r.display("Battery Status: " + Battery.getVoltage() + " v");
 	}
 
-	public void forwardsTest() {
-		r.forward(-50);
-	}
+	
 
 	// ────────────────
-	// WANDER FUNCTIONS
+	// TESTING FUNCTIONS
 	// ────────────────
 
 	public void wander() {
@@ -191,6 +180,29 @@ public class NavAlgo {
 		r.stop();
 
 
+	}
+	
+	public void testing() {
+		float distCm = s.getDistance();
+		r.display("D: " + distCm, 200);
+
+		while (true) {
+			distCm = s.getDistance();
+			r.display("D: " + distCm, 200);
+
+			if (s.isPressed()) {
+				r.beep();
+			}
+		}
+	}
+
+	public void forwardsTest() {
+		r.forward(-50);
+	}
+	
+	public void calibrateTurn(int x) {
+		r.turn(x, 150);
+		
 	}
 
 }
