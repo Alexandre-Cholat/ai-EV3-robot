@@ -84,9 +84,7 @@ public class RobotPilot {
 	    
 	}
 	
-	public boolean isMoving() {
-		return pilot.isMoving();
-	}
+
 	// ───────────────────────────────────────────────
     //  SOUND & DISPLAY
     // ───────────────────────────────────────────────
@@ -133,12 +131,12 @@ public class RobotPilot {
 	}
 
 	public void turn(int degrees) {
-	    pilot.rotate(degrees);
+	    pilot.rotate(degrees, true);
 	}
 
 	public void turn(int degrees, int speed) {
 	    setTurnSpeed(speed);
-	    pilot.rotate(degrees);
+	    pilot.rotate(degrees, true);
 	}
 	
 	public void stop() {
@@ -148,7 +146,7 @@ public class RobotPilot {
 	 public boolean isMoving() {
 		 //sert à savoir si le robot est en mouvement
 	    	return pilot.isMoving();
-	    }
+	 }
 	
 	// ───────────────────────────────────────────────
 	//  SPEED CONTROL METHODS

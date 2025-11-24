@@ -9,6 +9,9 @@ import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
+
+import java.util.ArrayList;
+
 import lejos.hardware.Battery;
 
 public class NavAlgo {
@@ -136,26 +139,24 @@ public class NavAlgo {
 		p.setAngle(startPos);
 	}
 	
-	public float[] spin(int rotationDegrees) {
-	    float[] tabDistances;
-	    tabDistances = s.look();
+	public ArrayList<Float> spin(int rotationDegrees) {
+	    
+	    ArrayList<Float> tabDistances= new ArrayList<Float>();
 
 	    // Start rotation
 	    r.turn(rotationDegrees);
-	    while(r.isMoving());{
-	    	tabDistances = s.look(tabDistances);
+	    while(r.isMoving()){
+	    	float distCm = s.getDistance();
+			r.display("D: " + distCm, 200);
+	    	tabDistances.add(distCm);
 	    	
-	    	//affiche derniere mesure
-	    	r.display(""+ tabDistances[tabDistances.length - 1]);
 	    }
-	    
-	    r.display(tabDistances.length + "");
-	    
+	    	    
 	    return tabDistances;
 	}
 	
 	public void align2() {
-		float[] vals = spin(360);
+		ArrayList<Float> vals = spin(360);
 		
 		float minIdx;
 		
