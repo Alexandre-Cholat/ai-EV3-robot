@@ -39,6 +39,11 @@ public class RobotPilot {
 	double wheel_size = 56;
 	double chassis_offset = 62; //55 millimeters from center to wheel actual measurement: 61 not enough, 63 is too much, 62 slightly too much
 	
+	double default_linear_speed = 100;
+	double default_angular_Speed = 50;
+	double defualt_linear_accel = 100;
+	double defualt_angular_accel = 100;
+
 	
 	
 	
@@ -66,8 +71,14 @@ public class RobotPilot {
 	    this.wheel1 = WheeledChassis.modelWheel(motorA, wheel_size).offset(-chassis_offset);
 	    this.wheel2 = WheeledChassis.modelWheel(motorC, wheel_size).offset(chassis_offset);
 	    this.chassis = new WheeledChassis(new Wheel[] { this.wheel1, this.wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL); 
+	    
 	    this.pilot = new MovePilot(this.chassis);
 	    
+	    this.pilot.setLinearSpeed(default_linear_speed);
+	    this.pilot.setAngularSpeed(default_angular_Speed);
+	    this.pilot.setAngularAcceleration(defualt_angular_accel);
+	    this.pilot.setLinearAcceleration(defualt_linear_accel);
+
 	    
 	    
 	    

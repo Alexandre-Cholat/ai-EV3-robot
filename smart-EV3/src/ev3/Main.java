@@ -9,36 +9,23 @@ public class Main {
 	public static void main(String[] args) {
 		NavAlgo monRobot = new NavAlgo();
 		
-
+		monRobot.calibrateMove();
+		//monRobot.calibrateTurn(720);
 
 		while (Button.ESCAPE.isUp()) {
 			
 			//monRobot.obj_detected();
-			
 			//monRobot.grab();
-						
 			//monRobot.calibrateTurn(720);
 			
 			//monRobot.goToCenter();
-			monRobot.goToCenter();
-			monRobot.rotate_until_disc_detected();
-			if (monRobot.getObjDetecter()) {
-				monRobot.moveToGrab();
-				monRobot.pickUpGrab();
-				//ensuite retourner a la base et lacher le palet
-				monRobot.goToBase();
-			}
-			else {
-				//s'il trouve rien c'est que tout les palets on été récupéré normalement
-			}
-			
-			
 			monRobot.batteryStatus();
-			monRobot.errorCalc();
 
 			//monRobot.calibrateTurn(720);
 
-		
+
+			
+			
 		}
 		
 		

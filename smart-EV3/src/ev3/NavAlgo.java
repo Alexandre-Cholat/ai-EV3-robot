@@ -73,7 +73,7 @@ public class NavAlgo {
 	}
 
 	public void align(int startPos) {
-		int dist1;
+		int dist1 = 0;
 		int min = 1000;
 		int minAngle = startPos;
 		// minimise distance between wall
@@ -85,9 +85,9 @@ public class NavAlgo {
 			// rotate to random angle
 			int randAngle = (int) Math.random() * 7;
 		rotateTo(startPos);
-
-		for (int i = 0; i < 10; i++) {
-			int randAngle = (int) (Math.random() * 7);
+		
+		for (int j = 0; j < 10; i++) {
+			randAngle = (int) (Math.random() * 7);
 			r.turn(randAngle);
 
 			dist1 = (int) s.getDistance();
@@ -196,25 +196,6 @@ public class NavAlgo {
 		r.display("Pavé déposer",5000);
 	}
 
-	public void testing() {
-
-		float distCm = s.getDistance();
-		r.display("D: "+ distCm, 200);
-
-		while(true) {
-			distCm = s.getDistance();
-			r.display("D: "+ distCm, 200);
-
-			if(s.isPressed() ) {
-				r.beep();
-			}
-		}
-
-	}
-
-	public void forwardsTest() {
-		r.forward(-50);
-	}
 	
 	public void batteryStatus() {
 		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
@@ -274,14 +255,30 @@ public class NavAlgo {
 	public void calibrateTurn(int x) {
 		r.turn(x, 150);
 		
+		
+	}
+	public void calibrateMove() {
+		r.forward(10);
+		Delay.msDelay(500);
+		r.turn(20, 150);
+		Delay.msDelay(500);
+		r.turn(-10, 150);
+		Delay.msDelay(500);
+		r.turn(-20, 150);
+		Delay.msDelay(500);
+		r.turn(10, 150);
+		r.forward(-10);
+
+
 	}
 	
 	public void errorCalc() {
 		
 		// 5 loops
-		for(int i=0;i<10;i++) {
+		for(int i=0;i<2;i++) {
 			r.forward(100);
-			r.turn(180);
+			Delay.msDelay(500);
+			r.turn(180, 150);
 		}
 		
 		

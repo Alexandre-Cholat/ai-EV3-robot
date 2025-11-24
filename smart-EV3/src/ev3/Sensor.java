@@ -30,9 +30,9 @@ public class Sensor{
 
 	// constructor
 	public Sensor() {
-		Port port2 = BrickFinder.getDefault().getPort("2");
-		Port port4 = BrickFinder.getDefault().getPort("4");
-		Port port3 = BrickFinder.getDefault().getPort("3");
+		Port port2 = BrickFinder.getDefault().getPort("S2");
+		Port port4 = BrickFinder.getDefault().getPort("S4");
+		Port port3 = BrickFinder.getDefault().getPort("S3");
 				
 		ultrasonic = new EV3UltrasonicSensor(port4);
 		touch = new EV3TouchSensor(port2);
