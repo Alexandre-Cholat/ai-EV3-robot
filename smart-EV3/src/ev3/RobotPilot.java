@@ -39,7 +39,7 @@ public class RobotPilot {
 	double wheel_size = 56;
 	double chassis_offset = 62; //55 millimeters from center to wheel actual measurement: 61 not enough, 63 is too much, 62 slightly too much
 	
-	double default_linear_speed = 100;
+	double default_linear_speed = 200;
 	double default_angular_Speed = 50;
 	double defualt_linear_accel = 100;
 	double defualt_angular_accel = 100;
@@ -84,6 +84,7 @@ public class RobotPilot {
 	    
 	}
 	
+
 	// ───────────────────────────────────────────────
     //  SOUND & DISPLAY
     // ───────────────────────────────────────────────
@@ -130,12 +131,12 @@ public class RobotPilot {
 	}
 
 	public void turn(int degrees) {
-	    pilot.rotate(degrees);
+	    pilot.rotate(degrees, true);
 	}
 
 	public void turn(int degrees, int speed) {
 	    setTurnSpeed(speed);
-	    pilot.rotate(degrees);
+	    pilot.rotate(degrees, true);
 	}
 	
 	public void stop() {
@@ -145,7 +146,7 @@ public class RobotPilot {
 	 public boolean isMoving() {
 		 //sert à savoir si le robot est en mouvement
 	    	return pilot.isMoving();
-	    }
+	 }
 	
 	// ───────────────────────────────────────────────
 	//  SPEED CONTROL METHODS

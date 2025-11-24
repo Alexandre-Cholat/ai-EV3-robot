@@ -9,6 +9,9 @@ import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
+
+import java.util.ArrayList;
+
 import lejos.hardware.Battery;
 
 public class NavAlgo {
@@ -54,7 +57,6 @@ public class NavAlgo {
 	public void goToYcenter() {
 		rotateTo(180);
 
-
 		//align perfectly>>>>>>> 82b597528f6f865f9137de4dc273bc8f6f09f11e
 		align(180);
 
@@ -92,27 +94,29 @@ public class NavAlgo {
 		// minimise distance between wall
 
 		int i = 0;
+		
+		
 
 		while(i<10) {
 
 			// rotate to random angle
 			int randAngle = (int) Math.random() * 7;
-		rotateTo(startPos);
+			rotateTo(startPos);
 		
-		for (int j = 0; j < 10; i++) {
-			randAngle = (int) (Math.random() * 7);
-			r.turn(randAngle);
-
-			dist1 = (int) s.getDistance();
-
-			//new best candidate
-			if(dist1 < min) {
-				min = dist1;
-				minAngle = p.getPosition();
-
-				r.display("New min angle: " + minAngle);
-			}
-
+			for (int j = 0; j < 10; i++) {
+				randAngle = (int) (Math.random() * 7);
+				r.turn(randAngle);
+	
+				dist1 = (int) s.getDistance();
+	
+				//new best candidate
+				if(dist1 < min) {
+					min = dist1;
+					minAngle = p.getPosition();
+	
+					r.display("New min angle: " + minAngle);
+				}
+	
 			//return to starting position center
 			rotateTo(startPos);
 		}
@@ -134,6 +138,31 @@ public class NavAlgo {
 		rotateTo(minAngle);
 		p.setAngle(startPos);
 	}
+	
+	public ArrayList<Float> spin(int rotationDegrees) {
+	    
+	    ArrayList<Float> tabDistances= new ArrayList<Float>();
+
+	    // Start rotation
+	    r.turn(rotationDegrees);
+	    while(r.isMoving()){
+	    	float distCm = s.getDistance();
+			r.display("D: " + distCm, 200);
+	    	tabDistances.add(distCm);
+	    	
+	    }
+	    	    
+	    return tabDistances;
+	}
+	
+	public void align2() {
+		ArrayList<Float> vals = spin(360);
+		
+		float minIdx;
+		
+	}
+	
+	
 
 
 	public void rotate_until_disc_detected() {
@@ -276,16 +305,16 @@ public class NavAlgo {
 		
 	}
 	public void calibrateMove() {
-		r.forward(10);
+		r.forward(200);
 		Delay.msDelay(500);
-		r.turn(20, 150);
+		r.turn(20);
 		Delay.msDelay(500);
-		r.turn(-10, 150);
+		r.turn(-10);
 		Delay.msDelay(500);
-		r.turn(-20, 150);
+		r.turn(-20);
 		Delay.msDelay(500);
-		r.turn(10, 150);
-		r.forward(-10);
+		r.turn(10);
+		r.forward(-200);
 
 
 	}
