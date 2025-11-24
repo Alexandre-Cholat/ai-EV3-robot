@@ -14,9 +14,7 @@ public class Main {
 		while (Button.ESCAPE.isUp()) {
 			
 			//monRobot.obj_detected();
-			
 			//monRobot.grab();
-						
 			//monRobot.calibrateTurn(720);
 			
 			//monRobot.goToCenter();
