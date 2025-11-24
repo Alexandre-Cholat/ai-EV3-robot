@@ -83,11 +83,6 @@ public class Robot{
         rightMotor.forward();
     }
 
-    public void backward() {
-        leftMotor.backward();
-        rightMotor.backward();
-    }
-
     public void stop() {
         leftMotor.stop(true);
         rightMotor.stop(true);
@@ -150,24 +145,6 @@ public class Robot{
        
         leftMotor.waitComplete();
         rightMotor.waitComplete();
-
-    }
-
-    // is same as forward(-negative cm)	??
-    
-    public void backward(float distanceCm) {
-        backward(distanceCm, defaultSpeed);
-    }
-
-    public void backward(float distanceCm, int speed) {
-        int degrees = (int)(distanceCm * DEGREES_PER_CM);
-        setSpeed(speed);
-        
-        leftMotor.rotate(-degrees, true);
-        rightMotor.rotate(-degrees, true);
-        
-        leftMotor.waitComplete();
-        rightMotor.waitComplete();
     }
 
     
@@ -191,7 +168,7 @@ public class Robot{
         rightMotor.waitComplete();
     }
     
- // ───────────────────────────────────────────────
+    // ───────────────────────────────────────────────
     //  TIMED MOVEMENTS
     // ───────────────────────────────────────────────
 
@@ -206,16 +183,6 @@ public class Robot{
         stop();
     }
 
-    public void backwardTimed(int durationMs) {
-        backwardTimed(durationMs, defaultSpeed);
-    }
-
-    public void backwardTimed(int durationMs, int speed) {
-        setSpeed(speed);
-        backward();
-        Delay.msDelay(durationMs);
-        stop();
-    }
 
     public void turnLeftTimed(int durationMs) {
         turnLeftTimed(durationMs, defaultTurnSpeed);
