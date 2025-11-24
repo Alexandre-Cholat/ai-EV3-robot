@@ -8,11 +8,18 @@ import lejos.utility.Delay;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.GraphicsLCD;
 import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
+import lejos.hardware.motor.BaseRegulatedMotor;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.robotics.RegulatedMotor;
+
+import lejos.hardware.motor.MotorRegulator;
+import lejos.internal.ev3.EV3MotorPort;
 
 // Movement with the MovePilot Class: lejos.robotics.navigation.MovePilot
 public class RobotPilot {
@@ -30,27 +37,38 @@ public class RobotPilot {
 	
 	
 	double wheel_size = 56;
-	double chassis_offset = 62; //55 millimeters from center to wheel actual measurement: 60 not enough, 65 is too much, 62 slightly too much
+	double chassis_offset = 62; //55 millimeters from center to wheel actual measurement: 61 not enough, 63 is too much, 62 slightly too much
 	
 	
 	
 	
 	public RobotPilot(){
-	    // MovePilot for main motors
-	    this.wheel1 = WheeledChassis.modelWheel(Motor.C, wheel_size).offset(-chassis_offset);
-	    this.wheel2 = WheeledChassis.modelWheel(Motor.B, wheel_size).offset(chassis_offset);
-	    this.chassis = new WheeledChassis(new Wheel[] { this.wheel1, this.wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL); 
-	    this.pilot = new MovePilot(this.chassis);
-	    
-	    // Pincher
-	    try {
-		    pincher = new EV3MediumRegulatedMotor(MotorPort.D);
+		// Pincher
+		
+		Port portD = BrickFinder.getDefault().getPort("D");
+		Port portC = BrickFinder.getDefault().getPort("C");
+		Port portA = BrickFinder.getDefault().getPort("A");
+		
+		RegulatedMotor motorC = new EV3LargeRegulatedMotor(portC);
+		RegulatedMotor motorA = new EV3LargeRegulatedMotor(portA);
+
+		
+		try{
+		    pincher = new EV3MediumRegulatedMotor(portD);
 		    pincher.setSpeed(defaultPincherSpeed);
 		    pincherOpen = false;
 	    }catch (Exception e){
 	    	System.err.println("Error initializing pincher! ");
 	        e.printStackTrace();
 	    }
+		
+		// MovePilot for main motors
+	    this.wheel1 = WheeledChassis.modelWheel(motorA, wheel_size).offset(-chassis_offset);
+	    this.wheel2 = WheeledChassis.modelWheel(motorC, wheel_size).offset(chassis_offset);
+	    this.chassis = new WheeledChassis(new Wheel[] { this.wheel1, this.wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL); 
+	    this.pilot = new MovePilot(this.chassis);
+	    
+	    
 	    
 	    
 	}

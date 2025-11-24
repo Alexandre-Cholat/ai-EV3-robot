@@ -146,7 +146,7 @@ public class NavAlgo {
 	}
 	
 	public void batteryStatus() {
-		r.display("Battery Status: " + Battery.getVoltage() + " v");
+		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
 	}
 
 	
@@ -202,6 +202,18 @@ public class NavAlgo {
 	
 	public void calibrateTurn(int x) {
 		r.turn(x, 150);
+		
+	}
+	
+	public void errorCalc() {
+		
+		// 5 loops
+		for(int i=0;i<10;i++) {
+			r.forward(100);
+			r.turn(180);
+		}
+		
+		
 		
 	}
 

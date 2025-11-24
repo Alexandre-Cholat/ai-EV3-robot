@@ -18,8 +18,10 @@ public class Main {
 			//monRobot.calibrateTurn(720);
 			
 			//monRobot.goToCenter();
-			//monRobot.batteryStatus();
-			monRobot.calibrateTurn(720);
+			monRobot.batteryStatus();
+			monRobot.errorCalc();
+
+			//monRobot.calibrateTurn(720);
 
 
 			
