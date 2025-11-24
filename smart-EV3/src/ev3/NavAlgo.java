@@ -8,6 +8,7 @@ public class NavAlgo {
 	private Robot r;
 	private Sensor s;
 	private Position p;
+	private boolean objDetecter=false;
 
 	//enviornment dimensions
 	static int table_length = 300;
@@ -17,6 +18,10 @@ public class NavAlgo {
 		this.r = new Robot();
 		this.s = new Sensor();
 		this.p = new Position();
+	}
+	
+	public boolean getObjDetecter() {
+		return objDetecter;
 	}
 
 	// navigates to center from any position in the environment
@@ -34,7 +39,7 @@ public class NavAlgo {
 
 		// rotates to face adversary camp and updates position
 		rotateTo(180);
-		
+
 
 		//align perfectly
 		align(180);
@@ -64,13 +69,19 @@ public class NavAlgo {
 
 
 	}
+	public void goToBase() {
+		rotateTo(0);
+		while(s.getDistance() != 10) {
+			r.forward(s.getDistance()-10);
+		}
+	}
 
 	// rotates to absolute orientation heading from any position angle
 	public void rotateTo(int orientation){
 		int current_a = p.getPosition();
 		int calc_turn = orientation - current_a;
 		r.turn(calc_turn);
-		
+
 		//update heading
 		p.setAngle(orientation);
 	}
@@ -80,37 +91,37 @@ public class NavAlgo {
 		int min = 1000;
 		int minAngle = startPos;
 		// minimise distance between wall
-		
+
 		int i = 0;
-		
+
 		while(i<10) {
-			
+
 			// rotate to random angle
 			int randAngle = (int) Math.random() * 7;
 			r.turn(randAngle);
 			dist1 = (int) s.getDistance();
-			
+
 			//new best candidate
 			if(dist1 < min) {
 				min = dist1;
 				minAngle = p.getPosition();
-				
+
 				r.display("New min angle: " + minAngle);
 			}
-			
+
 			//return to starting position center
 			rotateTo(startPos);
 		}
-		
-		
+
+
 		//rotate to smallest distance to wall
 		rotateTo(minAngle);
-		
+
 		//set minAngle as intended start angle
 		p.setAngle(startPos);
 	}
 
-	public boolean rotate_until_disc_detected() {
+	public void rotate_until_disc_detected() {
 		//tourne jusqu'a detecter une discontinuité, renvoie vrai s'il en trouve, false sinon
 		float previousDist=s.getDistance();
 		for(int angle=0;angle<=360;angle+=5) {
@@ -118,14 +129,14 @@ public class NavAlgo {
 			Delay.msDelay(100);
 			float currentDist=s.getDistance();
 			if(Math.abs(previousDist-currentDist)>10){//a voir s'il faut valeur plus grande ou plus petite
-				return true;
+				objDetecter=true;
 			}
 			previousDist=currentDist;
 		}
-		return false;
+		objDetecter=false;
 
 	}
-	
+
 
 	public boolean obj_detected() {
 		float d =  s.getDistance();
@@ -165,21 +176,21 @@ public class NavAlgo {
 	}
 
 	public void testing() {
-		
+
 		float distCm = s.getDistance();
 		r.display("D: "+ distCm, 200);
-		
+
 		while(true) {
 			distCm = s.getDistance();
 			r.display("D: "+ distCm, 200);
-			
+
 			if(s.isPressed() ) {
 				r.beep();
 			}
 		}
 
 	}
-	
+
 	public void forwardsTest() {
 		r.forward(-50);
 	}

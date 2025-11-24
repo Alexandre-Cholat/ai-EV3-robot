@@ -15,6 +15,17 @@ public class Main {
 			monRobot.forwardsTest();
 			
 			//monRobot.goToCenter();
+			monRobot.goToCenter();
+			monRobot.rotate_until_disc_detected();
+			if (monRobot.getObjDetecter()) {
+				monRobot.moveToGrab();
+				monRobot.pickUpGrab();
+				//ensuite retourner a la base et lacher le palet
+				monRobot.goToBase();
+			}
+			else {
+				//s'il trouve rien c'est que tout les palets on été récupéré normalement
+			}
 			
 			
 
