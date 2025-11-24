@@ -58,10 +58,10 @@ public class NavAlgo {
 			r.forward(s.getDistance() - table_width / 2);
 		}
 	}
-	public void goToBase() {
-		rotateTo(0);
-		while(s.getDistance() != 10) {
-			r.forward(s.getDistance()-10);
+	public void goToBaseAdverse() {
+		rotateTo(180);
+		while(s.getDistance() != 20) {
+			r.forward(s.getDistance()-20);
 		}
 	}
 
