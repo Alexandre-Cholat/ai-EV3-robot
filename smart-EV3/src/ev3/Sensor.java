@@ -1,5 +1,7 @@
 package ev3;
 
+import java.util.Arrays;
+
 import lejos.hardware.BrickFinder;
 import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.Button;
@@ -136,40 +138,30 @@ public class Sensor{
         return sample[0] * 100.0f;  // Convert to cm
     }
 	
-	public void ultrasonicTest() {
-		// Setup sensor
-        ultrasonic.enable();
-        
-        // Get distance mode
-        SampleProvider distance = ultrasonic.getDistanceMode();
-        float[] sample = new float[distance.sampleSize()];
-        
-        // 3. Loop forever (or until some condition) to read and display
-        while (true) {
-            distance.fetchSample(sample, 0);
-            float distMeters = sample[0];   // distance in metres
-            // Convert to more convenient unit if you like:
-            float distCm = distMeters * 100.0f;
-            
-            GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
-    		g.drawString( "\"Distance:"+distCm, 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
-                     
-            Delay.msDelay(200);
-    		g.clear();
-            
-    		if (Button.ENTER.isDown()) {
-    			Sound.beep();
-    	        ultrasonic.disable();
-        		g.drawString( "Sensor disabled", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
-        		Delay.msDelay(3000);
-    	        ultrasonic.close();
-    	        break;
-    	    }
-    	
-            
-        }
+	/**
+	 * Permet de regarder une valeur devant le robot et de la ranger dans le tableau
+	 * fourni en paramètres en l'aggrandissant d'une case.
+	 * @param tab le tableau ayant déjà (ou pas) des données.
+	 * @return un tableau de float ayant tous les éléments du tableau d'origine 
+	 * avec la distance lue devant le robot en dernier élément.
+	 */
+	public float[] look(float[] tab) {
+		float[] newTab = Arrays.copyOf(tab, tab.length+1);
+		ultrasonic.fetchSample(newTab, newTab.length-1);
+		Delay.msDelay(20);
+		return newTab;
 	}
 	
+	// cas ou pas de tableau initee
+	public float[] look() {
+		float[] tab = new float[0];
+		float[] newTab = Arrays.copyOf(tab, tab.length+1);
+		ultrasonic.fetchSample(newTab, newTab.length-1);
+		Delay.msDelay(20);
+		return newTab;
+	}
+	
+		
 	// Cleanup method
     public void close() {
         ultrasonic.close();
