@@ -88,55 +88,30 @@ public class NavAlgo {
 	}
 
 	public void align(int startPos) {
-		int dist1 = 0;
-		int min = 1000;
-		int minAngle = startPos;
-		// minimise distance between wall
-
-		int i = 0;
+		
+		//rotation 360
+		ArrayList<Float> tabDistances = spin(360);
 		
 		
-
-		while(i<10) {
-
-			// rotate to random angle
-			int randAngle = (int) Math.random() * 7;
-			rotateTo(startPos);
+		/*	sweep
+		ArrayList<Float> tabDistances = spin(30);
+		ArrayList<Float> tabDistances2 = spin(-60);
+		tabDistances.addAll(tabDistances2);
+		*/
 		
-			for (int j = 0; j < 10; i++) {
-				randAngle = (int) (Math.random() * 7);
-				r.turn(randAngle);
-	
-				dist1 = (int) s.getDistance();
-	
-				//new best candidate
-				if(dist1 < min) {
-					min = dist1;
-					minAngle = p.getPosition();
-	
-					r.display("New min angle: " + minAngle);
-				}
-	
-			//return to starting position center
-			rotateTo(startPos);
-		}
-
-
+		//Calcul de indexe de la valeur la plus proche du mur
+		int minIdx = findCenterByDerivative(tabDistances);
+		
+		// Calcul angle de minIdx
+		int minAngle = (360/ tabDistances.size()) * minIdx;
+		
+		
 		//rotate to smallest distance to wall
 		rotateTo(minAngle);
+		p.setAngle(minAngle);
 
-		//set minAngle as intended start angle
-			if (dist1 < min) {
-				min = dist1;
-				minAngle = p.getPosition();
-				r.display("New min angle: " + minAngle);
-			}
+		r.display("New min angle: " + minAngle);
 
-			rotateTo(startPos);
-		}
-
-		rotateTo(minAngle);
-		p.setAngle(startPos);
 	}
 	
 	public ArrayList<Float> spin(int rotationDegrees) {
@@ -148,19 +123,41 @@ public class NavAlgo {
 	    while(r.isMoving()){
 	    	float distCm = s.getDistance();
 			r.display("D: " + distCm, 200);
-	    	tabDistances.add(distCm);
-	    	
-	    }
-	    	    
+	    	tabDistances.add(distCm);	
+	    }	    	    
 	    return tabDistances;
 	}
 	
-	public void align2() {
-		ArrayList<Float> vals = spin(360);
-		
-		float minIdx;
-		
-	}
+	
+	private int findCenterByDerivative(ArrayList<Float> distances) {
+        if (distances.size() < 3) return 0;
+        
+        ArrayList<Float> derivatives = new ArrayList<>();
+        
+        // Calculate simple derivatives
+        for (int i = 1; i < distances.size(); i++) {
+            derivatives.add(distances.get(i) - distances.get(i - 1));
+        }
+        
+        // Find where derivative changes from negative to positive (valley bottom)
+        for (int i = 1; i < derivatives.size(); i++) {
+            if (derivatives.get(i - 1) < 0 && derivatives.get(i) >= 0) {
+                return i; // Return index in original array
+            }
+        }
+        
+        // Fallback: find minimum derivative (steepest descent)
+        int minDerivIndex = 0;
+        float minDeriv = derivatives.get(0);
+        for (int i = 1; i < derivatives.size(); i++) {
+            if (derivatives.get(i) < minDeriv) {
+                minDeriv = derivatives.get(i);
+                minDerivIndex = i;
+            }
+        }
+        return minDerivIndex;
+    }
+
 	
 	
 
@@ -181,6 +178,7 @@ public class NavAlgo {
 		objDetecter=false;
 
 	}
+	
 	public float[] tabDisc() {
 		float[] tab = new float[];
 		r.turn(360);

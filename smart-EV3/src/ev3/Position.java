@@ -8,7 +8,7 @@ public class Position {
 	
 	//supposons le robot commence face au camp adversaire, n'importe ou.
 	public Position() {
-		angle = 0;
+		angle = 180;
 		perdu = true;
 	}
 	
