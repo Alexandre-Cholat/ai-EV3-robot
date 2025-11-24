@@ -138,13 +138,7 @@ public class Sensor{
         return sample[0] * 100.0f;  // Convert to cm
     }
 	
-	/**
-	 * Permet de regarder une valeur devant le robot et de la ranger dans le tableau
-	 * fourni en paramètres en l'aggrandissant d'une case.
-	 * @param tab le tableau ayant déjà (ou pas) des données.
-	 * @return un tableau de float ayant tous les éléments du tableau d'origine 
-	 * avec la distance lue devant le robot en dernier élément.
-	 */
+	
 	public float[] look(float[] tab) {
 		float[] newTab = Arrays.copyOf(tab, tab.length+1);
 		ultrasonic.fetchSample(newTab, newTab.length-1);
