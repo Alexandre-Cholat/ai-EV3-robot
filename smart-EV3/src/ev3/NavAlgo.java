@@ -27,10 +27,23 @@ public class NavAlgo {
 		this.s = new Sensor();
 		this.p = new Position();
 	}
+
+	public NavAlgo(RobotPilot r, Sensor s, Position p) {
+		this.r = r;
+		this.s = s;
+		this.p = p;
+	}
+	/*public NavAlgo(RobotPilot r , Sensor s , Position p) {
+		this.r = r;
+		this.s = s;
+		this.p = p;
+	}*/
+
 	
 	public boolean getObjDetecter() {
 		return objDetecter;
 	}
+
 
 	// navigates to center from any position
 	public void goToCenter() {
@@ -157,27 +170,28 @@ public class NavAlgo {
 	}
 
 
-	public void moveToGrab() {
-		if (obj_detected()) {
-			float previousDistance = s.getDistance();
-			float currentDistance = previousDistance;
+	public boolean moveToGrab() {
+		float previousDistance = s.getDistance();
+		float currentDistance = previousDistance;
 
-			while (currentDistance >= 10) {
-				r.forward(3);
+		while (currentDistance >= 10 && !s.isPressed()) {
+			r.forward(3);
 
-				previousDistance = currentDistance;
-				currentDistance = s.getDistance();
+			previousDistance = currentDistance;
+			currentDistance = s.getDistance();
 
-				if (currentDistance >= previousDistance) {
-					r.stop();
-					r.display("Mauvaise trajectoire",3000);
-					return;
-				}
+			if (currentDistance >= previousDistance) {
+				r.stop();
+				r.display("Mauvaise trajectoire",3000);
+				return false ;
 			}
-			r.stop();
-			r.display("Distance assez proche du pavé",5000);
 		}
+		r.stop();
+		r.display("Distance assez proche du pavé",5000);
+		return true ;
+
 	}
+
 
 
 	public void pickUpGrab() {
@@ -194,6 +208,7 @@ public class NavAlgo {
 		r.pincherClose();*/
 
 	}
+
 	
 	public void setDowngrab() {
 		//méthode qui va deposer le palet et reculer et fermer les pinces
@@ -204,11 +219,12 @@ public class NavAlgo {
 	}
 
 	
+
 	public void batteryStatus() {
 		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
 	}
 
-	
+
 
 	// ────────────────
 	// TESTING FUNCTIONS
@@ -240,7 +256,7 @@ public class NavAlgo {
 
 
 	}
-	
+
 	public void testing() {
 		float distCm = s.getDistance();
 		r.display("D: " + distCm, 200);
@@ -258,9 +274,10 @@ public class NavAlgo {
 	public void forwardsTest() {
 		r.forward(-50);
 	}
-	
+
 	public void calibrateTurn(int x) {
 		r.turn(x, 150);
+
 		
 		
 	}
@@ -289,7 +306,7 @@ public class NavAlgo {
 		}
 		
 		
-		
+
 	}
 
 }
