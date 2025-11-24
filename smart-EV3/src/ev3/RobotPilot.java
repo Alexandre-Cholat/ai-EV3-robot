@@ -145,6 +145,11 @@ public class RobotPilot {
 	    pilot.stop();
 	}
 	
+	 public boolean isMoving() {
+		 //sert à savoir si le robot est en mouvement
+	    	return pilot.isMoving();
+	    }
+	
 	// ───────────────────────────────────────────────
 	//  SPEED CONTROL METHODS
 	// ───────────────────────────────────────────────
