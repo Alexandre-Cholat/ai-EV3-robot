@@ -9,7 +9,8 @@ public class Main {
 	public static void main(String[] args) {
 		NavAlgo monRobot = new NavAlgo();
 		
-
+		monRobot.calibrateMove();
+		//monRobot.calibrateTurn(720);
 
 		while (Button.ESCAPE.isUp()) {
 			
@@ -18,8 +19,9 @@ public class Main {
 			//monRobot.calibrateTurn(720);
 			
 			//monRobot.goToCenter();
-			//monRobot.batteryStatus();
-			monRobot.calibrateTurn(720);
+			monRobot.batteryStatus();
+
+			//monRobot.calibrateTurn(720);
 
 
 			
