@@ -132,6 +132,7 @@ public class NavAlgo {
 			float currentDist=s.getDistance();
 			if(Math.abs(previousDist-currentDist)>10){//a voir s'il faut valeur plus grande ou plus petite
 				objDetecter=true;
+				r.display("Grab detected",5000);
 			}
 			previousDist=currentDist;
 		}
@@ -185,6 +186,14 @@ public class NavAlgo {
 		Robot.pincherOpen= true;
 		r.pincherClose();*/
 
+	}
+	
+	public void setDowngrab() {
+		//méthode qui va deposer le palet et reculer et fermer les pinces
+		r.pincherOpen();
+		r.forward(-10);
+		r.pincherClose();
+		r.display("Pavé déposer",5000);
 	}
 
 	public void testing() {
