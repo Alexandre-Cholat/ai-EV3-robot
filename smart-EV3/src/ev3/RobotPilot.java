@@ -30,7 +30,7 @@ public class RobotPilot {
 	
 	
 	double wheel_size = 56;
-	double chassis_offset = 55; //millimeters from center to wheel
+	double chassis_offset = 62; //55 millimeters from center to wheel actual measurement: 60 not enough, 65 is too much, 62 slightly too much
 	
 	
 	
@@ -48,7 +48,7 @@ public class RobotPilot {
 		    pincher.setSpeed(defaultPincherSpeed);
 		    pincherOpen = false;
 	    }catch (Exception e){
-	    	System.err.println("Error initializing pincher: " + e.getMessage());
+	    	System.err.println("Error initializing pincher! ");
 	        e.printStackTrace();
 	    }
 	    
@@ -71,6 +71,7 @@ public class RobotPilot {
     
     public void display(String s, int ms_time) {
     	GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
+		g.clear();
     	g.drawString( s, 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
 	    Delay.msDelay(ms_time);
 		g.clear();
