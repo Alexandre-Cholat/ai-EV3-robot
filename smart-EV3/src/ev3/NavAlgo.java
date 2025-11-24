@@ -178,6 +178,7 @@ public class NavAlgo {
 		objDetecter=false;
 
 	}
+<<<<<<< HEAD
 	
 	public float[] tabDisc() {
 		float[] tab = new float[];
@@ -186,6 +187,9 @@ public class NavAlgo {
 			
 		}
 	}
+=======
+
+>>>>>>> d1e9f31ca8359760541f789a4180d1a2a9656cbc
 
 	public boolean obj_detected() {
 		float d = s.getDistance();
