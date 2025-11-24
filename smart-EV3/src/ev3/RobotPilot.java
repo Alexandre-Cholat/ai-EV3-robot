@@ -124,29 +124,31 @@ public class RobotPilot {
 	public void forward(float distanceCm) {
 	    pilot.travel(distanceCm * 10); // cm to mm
 	}
-
-	public void forward(float distanceCm, int speed) {
+	
+	// @param b true for synchronous execution
+	public void forward(float distanceCm, int speed, boolean b) {
 	    setSpeed(speed);
-	    pilot.travel(distanceCm * 10);
+	    pilot.travel(distanceCm * 10, b);
 	}
 
 	public void turn(int degrees) {
-	    pilot.rotate(degrees, true);
+	    pilot.rotate(degrees);
 	}
-
-	public void turn(int degrees, int speed) {
+	
+	// @param b true for synchronous execution
+	public void turn(int degrees, int speed, boolean b) {
 	    setTurnSpeed(speed);
-	    pilot.rotate(degrees, true);
+	    pilot.rotate(degrees, b);
 	}
 	
 	public void stop() {
 	    pilot.stop();
 	}
 	
-	 public boolean isMoving() {
-		 //sert à savoir si le robot est en mouvement
-	    	return pilot.isMoving();
-	 }
+	//sert à savoir si le robot est en mouvement
+	public boolean isMoving() {
+	    return pilot.isMoving();
+	}
 	
 	// ───────────────────────────────────────────────
 	//  SPEED CONTROL METHODS
