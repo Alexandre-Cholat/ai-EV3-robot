@@ -11,6 +11,7 @@ import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import lejos.hardware.Battery;
 
@@ -101,6 +102,7 @@ public class NavAlgo {
 		
 		//Calcul de indexe de la valeur la plus proche du mur
 		try {
+			
 			int minIdx = findCenterByDerivative(tabDistances);
 			
 			r.display("Best: "+minIdx + " of "+ tabDistances.size(), 4000);
@@ -122,14 +124,17 @@ public class NavAlgo {
 			r.display("no derivative found", 4000);
 		}
 		
+		System.out.print(tabDistances+"");
+		
 
 	}
 	
 	public ArrayList<Float> spin(int rotationDegrees) {
 	    
 	    ArrayList<Float> tabDistances= new ArrayList<Float>();
-
-	    r.turn(rotationDegrees, true);
+	    
+	    int speed = 25;
+	    r.turn(rotationDegrees, speed, true);
 	    while(r.isMoving()){
 	    	float distCm = s.getDistance();
 			r.display("D: " + distCm, 100);
@@ -149,22 +154,46 @@ public class NavAlgo {
             derivatives.add(distances.get(i) - distances.get(i - 1));
         }
         
+        //find local minima
+        
         // Find where derivative changes from negative to positive (valley bottom)
         for (int i = 1; i < derivatives.size(); i++) {
             if (derivatives.get(i - 1) < 0 && derivatives.get(i) >= 0) {
             	if (derivatives.get(i - 2) < 0 && derivatives.get(i+1) >= 0) {
             		if (derivatives.get(i - 2) < 0 && derivatives.get(i+2) >= 0) {
-            			
+            			return i; // Return index in original array
             		}
             		
             	}
-                return i; // Return index in original array
+                
             }
         }
         
         throw new Exception("no derivative found");
 
     }
+	
+	//unused function
+	public HashMap<Float, Integer> findLocalMinima(ArrayList<Float> data) {
+	    HashMap<Float, Integer> minima = new HashMap<>();
+	    
+	    if (data == null || data.size() < 3) {
+	        return minima; // Return empty map if not enough data
+	    }
+	    
+	    for (int i = 1; i < data.size() - 1; i++) {
+	        float prev = data.get(i - 1);
+	        float current = data.get(i);
+	        float next = data.get(i + 1);
+	        
+	        // Check if current point is lower than both neighbors
+	        if (current < prev && current < next) {
+	            minima.put(current, i);
+	        }
+	    }
+	    
+	    return minima;
+	}
 
 	
 	
@@ -186,8 +215,7 @@ public class NavAlgo {
 		objDetecter=false;
 
 	}
-<<<<<<< HEAD
-	
+	/*
 	public float[] tabDisc() {
 		float[] tab = new float[];
 		r.turn(360);
@@ -195,9 +223,7 @@ public class NavAlgo {
 			
 		}
 	}
-=======
-
->>>>>>> d1e9f31ca8359760541f789a4180d1a2a9656cbc
+	*/
 
 	public boolean obj_detected() {
 		float d = s.getDistance();
