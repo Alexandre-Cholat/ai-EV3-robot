@@ -139,6 +139,13 @@ public class NavAlgo {
 		objDetecter=false;
 
 	}
+	public float[] tabDisc() {
+		float[] tab = new float[];
+		r.turn(360);
+		while(r.isMoving()) {
+			
+		}
+	}
 
 	public boolean obj_detected() {
 		float d = s.getDistance();
