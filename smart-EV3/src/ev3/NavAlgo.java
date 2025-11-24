@@ -103,14 +103,14 @@ public class NavAlgo {
 		int minIdx = findCenterByDerivative(tabDistances);
 		
 		// Calcul angle de minIdx
-		int minAngle = (360/ tabDistances.size()) * minIdx;
+		int minAngle = (tabDistances.size()/360) * minIdx;
 		
 		
 		//rotate to smallest distance to wall
 		rotateTo(minAngle);
 		p.setAngle(minAngle);
 
-		r.display("New min angle: " + minAngle);
+		r.display("New min angle: " + minAngle, 10000);
 
 	}
 	
