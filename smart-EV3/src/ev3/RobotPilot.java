@@ -34,10 +34,10 @@ public class RobotPilot {
     private int defaultPincherSpeed = 300;
 	private boolean pincherOpen;
 	
-	
-	
+	//for adelie robot chassis_offset, 62 almost perfect, 55 millimeters from center to wheel actual measurement: 61 not enough, 63 is too much
+	// for alexandre robot chassis_offset use 65 
 	double wheel_size = 56;
-	double chassis_offset = 62; //55 millimeters from center to wheel actual measurement: 61 not enough, 63 is too much, 62 slightly too much
+	double chassis_offset = 65; 
 	
 	double default_linear_speed = 200;
 	double default_angular_Speed = 50;
@@ -121,6 +121,10 @@ public class RobotPilot {
 	    pilot.forward();
 	}
 	
+	public void forward(boolean b) {
+	    pilot.forward();
+	}
+	
 	public void forward(float distanceCm) {
 	    pilot.travel(distanceCm * 10); // cm to mm
 	}
@@ -133,6 +137,11 @@ public class RobotPilot {
 
 	public void turn(int degrees) {
 	    pilot.rotate(degrees);
+	}
+	
+	// @param b true for synchronous execution
+	public void turn(int degrees, boolean b) {
+	    pilot.rotate(degrees, b);
 	}
 	
 	// @param b true for synchronous execution
