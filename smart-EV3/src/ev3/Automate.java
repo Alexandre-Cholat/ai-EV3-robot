@@ -64,10 +64,8 @@ public class Automate extends NavAlgo {
 			// ETAPE 4 : RETOUR AU CAMP ADVERSE
 			else if (attrape) {
 				r.display("Returning to base");
-				//!!!!!!METHODE A FAIRE !!!!!!!
-				//retourner_camp_adversaire();
-				//deposer();
-
+				play.setDowngrab();
+				play.goToBaseAdverse();
 				grab++;
 
 				// C'EST REPARTI POUR UN TOUR 
