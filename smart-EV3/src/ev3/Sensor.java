@@ -5,6 +5,7 @@ import java.util.Arrays;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.Button;
+import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
@@ -31,9 +32,13 @@ public class Sensor{
 
 	// constructor
 	public Sensor() {
-		touch = new EV3TouchSensor (SensorPort.S2);
-		ultrasonic = new EV3UltrasonicSensor(SensorPort.S4);
-		colorSensor = new EV3ColorSensor(SensorPort.S3);
+		Port port2 = BrickFinder.getDefault().getPort("S2");
+		Port port4 = BrickFinder.getDefault().getPort("S4");
+		Port port3 = BrickFinder.getDefault().getPort("S3");
+				
+		ultrasonic = new EV3UltrasonicSensor(port4);
+		touch = new EV3TouchSensor(port2);
+		colorSensor = new EV3ColorSensor(port3);
 		colorProvider = colorSensor.getRGBMode();
 	}
 	
