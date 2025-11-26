@@ -118,11 +118,12 @@ public class NavAlgo {
 			//rotate to smallest distance to wall
 			rotateTo(wallAngle);
 			p.setAngle(wallAngle);
-			r.display("New Position: " + wallAngle, 10000);
+			r.display("New Position: " + wallAngle, 8000);
 
 
 		}catch(Exception e) {
-			r.display("no derivative found", 4000);
+			r.display("no derivative found", 2500);
+			r.display("tab length =  " + tabDistances.size(), 2000);
 			//try again
 			align( startAng);
 		}
@@ -139,9 +140,12 @@ public class NavAlgo {
 	    r.turn(rotationDegrees, speed, true);
 	    while(r.isMoving()){
 	    	float distCm = s.getDistance();
-			r.display("D: " + distCm, 100);
+			//100 delay time works decent
+	    	r.display("D: " + distCm, 100);
 	    	tabDistances.add(distCm);	
-	    }	    	    
+	    }
+	    
+	    // length = 3000 if no delays
 	    return tabDistances;
 	}
 	
