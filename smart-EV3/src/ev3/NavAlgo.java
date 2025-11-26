@@ -81,24 +81,26 @@ public class NavAlgo {
 		}
 	}
 
-	public void rotateTo(int orientation) {
-		int current_a = p.getPosition();
-		int calc_turn = orientation - current_a;
+	public void rotateTo(float orientation) {
+		float current_a = p.getPosition();
+		float calc_turn = orientation - current_a;
 		r.turn(calc_turn); //set to synchronous?
 		p.setAngle(orientation);
 	}
 
-	public void align(int startAng) {
+	public boolean align(int startAng) {
 		
 		//rotation 360
-		ArrayList<Float> tabDistances = spin(360);
+		//ArrayList<Float> tabDistances = spin(360);
+	
 		
+		//	sweep ( already facing wall )
+		float sweepAngle = 45;
+		r.turn(-(sweepAngle/2), 30, false);
+		r.display("Starting Spin", 800);
+		ArrayList<Float> tabDistances = spin(sweepAngle);
+		r.turn(-(sweepAngle/2), 30, false);		
 		
-		/*	sweep
-		ArrayList<Float> tabDistances = spin(30);
-		ArrayList<Float> tabDistances2 = spin(-60);
-		tabDistances.addAll(tabDistances2);
-		*/
 		
 		//Calcul de indexe de la valeur la plus proche du mur
 		try {
@@ -108,32 +110,32 @@ public class NavAlgo {
 			r.display("Best: "+minIdx + " of "+ tabDistances.size(), 4000);
 			
 			// Calcul angle relative de minIdx
-			int minAngle = ((360/tabDistances.size()) * minIdx);
-			int wallAngle = minAngle + startAng;
+			float minAngle = ((sweepAngle/tabDistances.size()) * minIdx) - (sweepAngle/2);
 			r.display("Best rel angle: " + minAngle, 2000);
 
-			
+			float wallAngle =  startAng + minAngle;
 			
 			//rotate to smallest distance to wall
 			rotateTo(wallAngle);
 			p.setAngle(wallAngle);
-			r.display("Abs angle: " + wallAngle, 10000);
+			r.display("New Position: " + wallAngle, 10000);
 
 
 		}catch(Exception e) {
 			r.display("no derivative found", 4000);
+			//try again
+			align( startAng);
 		}
 		
-		System.out.print(tabDistances+"");
 		
-
+		return true;
 	}
 	
-	public ArrayList<Float> spin(int rotationDegrees) {
+	public ArrayList<Float> spin(float rotationDegrees) {
 	    
 	    ArrayList<Float> tabDistances= new ArrayList<Float>();
 	    
-	    int speed = 25;
+	    int speed = 15;
 	    r.turn(rotationDegrees, speed, true);
 	    while(r.isMoving()){
 	    	float distCm = s.getDistance();

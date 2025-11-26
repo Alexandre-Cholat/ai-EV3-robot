@@ -135,7 +135,7 @@ public class RobotPilot {
 	    pilot.travel(distanceCm * 10, b);
 	}
 
-	public void turn(int degrees) {
+	public void turn(float degrees) {
 	    pilot.rotate(degrees);
 	}
 	
@@ -145,7 +145,7 @@ public class RobotPilot {
 	}
 	
 	// @param b true for synchronous execution
-	public void turn(int degrees, int speed, boolean b) {
+	public void turn(float degrees, int speed, boolean b) {
 	    setTurnSpeed(speed);
 	    pilot.rotate(degrees, b);
 	}
