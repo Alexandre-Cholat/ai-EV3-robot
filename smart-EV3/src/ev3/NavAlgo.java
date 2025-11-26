@@ -59,7 +59,7 @@ public class NavAlgo {
 		rotateTo(180);
 
 		//align perfectly>>>>>>> 82b597528f6f865f9137de4dc273bc8f6f09f11e
-		align(180);
+		align(180,45);
 
 		while (s.getDistance() != table_length / 2) {
 			r.forward(s.getDistance() - table_length / 2);
@@ -68,7 +68,7 @@ public class NavAlgo {
 
 	public void goToXcenter() {
 		rotateTo(90);
-		align(90);
+		align(90,45);
 
 		while (s.getDistance() != table_width / 2) {
 			r.forward(s.getDistance() - table_width / 2);
@@ -87,30 +87,52 @@ public class NavAlgo {
 		r.turn(calc_turn); //set to synchronous?
 		p.setAngle(orientation);
 	}
+	
+	public boolean smartAlign() {
+		float startAng = p.getPosition();
+		float sweepAngle = 45;
+		
+		while(sweepAngle>10) {
+			startAng = p.getPosition();
+			align(startAng, sweepAngle);
+			sweepAngle = sweepAngle - 15;
+		}
+		
+		
+		return true;
+	}
 
-	public boolean align(int startAng) {
+	public boolean align(float startAng, float sweepAngle) {
 		
 		//rotation 360
 		//ArrayList<Float> tabDistances = spin(360);
 	
-		
+		int turnSpeed = 30;
 		//	sweep ( already facing wall )
-		float sweepAngle = 45;
-		r.turn(-(sweepAngle/2), 30, false);
-		r.display("Starting Spin", 800);
+		r.turn(-(sweepAngle/2), turnSpeed, false);
+		r.display("Spinning", 500);
 		ArrayList<Float> tabDistances = spin(sweepAngle);
-		r.turn(-(sweepAngle/2), 30, false);		
+		r.turn(-(sweepAngle/2), turnSpeed, false);	
 		
+		r.display("sample nb= " + tabDistances.size());
+
+		
+		//filter and reduce number of distance measurements
+		ArrayList<Float> filteredDistances= downsampleToHalfDegree(tabDistances, sweepAngle);
+		r.display("reduced nb = " + filteredDistances.size());
+
 		
 		//Calcul de indexe de la valeur la plus proche du mur
 		try {
 			
-			int minIdx = findCenterByDerivative(tabDistances);
+			//int minIdx = findCenterByDerivative(filteredDistances);
+			int minIdx = findMinimum(filteredDistances);
 			
-			r.display("Best: "+minIdx + " of "+ tabDistances.size(), 4000);
+			r.display("Best: "+minIdx + " of "+ filteredDistances.size(), 4000);
 			
 			// Calcul angle relative de minIdx
-			float minAngle = ((sweepAngle/tabDistances.size()) * minIdx) - (sweepAngle/2);
+			//float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) - (sweepAngle/2);
+			float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) - (sweepAngle/4);
 			r.display("Best rel angle: " + minAngle, 2000);
 
 			float wallAngle =  startAng + minAngle;
@@ -123,9 +145,9 @@ public class NavAlgo {
 
 		}catch(Exception e) {
 			r.display("no derivative found", 2500);
-			r.display("tab length =  " + tabDistances.size(), 2000);
+			r.display("tab length =  " + filteredDistances.size(), 2000);
 			//try again
-			align( startAng);
+			align( startAng, sweepAngle);
 		}
 		
 		
@@ -141,7 +163,7 @@ public class NavAlgo {
 	    while(r.isMoving()){
 	    	float distCm = s.getDistance();
 			//100 delay time works decent
-	    	r.display("D: " + distCm, 100);
+	    	//r.display("D: " + distCm, 100);
 	    	tabDistances.add(distCm);	
 	    }
 	    
@@ -179,26 +201,60 @@ public class NavAlgo {
 
     }
 	
-	//unused function
-	public HashMap<Float, Integer> findLocalMinima(ArrayList<Float> data) {
-	    HashMap<Float, Integer> minima = new HashMap<>();
+	private int findMinimum(ArrayList<Float> distances) {
+	    if (distances.isEmpty()) return 0;
 	    
-	    if (data == null || data.size() < 3) {
-	        return minima; // Return empty map if not enough data
-	    }
+	   
+	    int minIdx = 0;
+	    float minVal = distances.get(0);
 	    
-	    for (int i = 1; i < data.size() - 1; i++) {
-	        float prev = data.get(i - 1);
-	        float current = data.get(i);
-	        float next = data.get(i + 1);
-	        
-	        // Check if current point is lower than both neighbors
-	        if (current < prev && current < next) {
-	            minima.put(current, i);
+	    for (int i = 1; i < distances.size(); i++) {
+	        if (distances.get(i) < minVal) {
+	            minVal = distances.get(i);
+	            minIdx = i;
 	        }
 	    }
 	    
-	    return minima;
+	    return minIdx;
+	}
+	
+	// for continous sampling (very large distance.size() array), filters distance measurements
+	private ArrayList<Float> downsampleToHalfDegree(ArrayList<Float> distances, float sweepAngle) {
+	    if (distances == null || distances.isEmpty()) {
+	        return new ArrayList<>();
+	    }
+	    
+	    // Calculate target number of measurements (one per 0.5 degrees)
+	    int targetSize = (int)(sweepAngle * 2); // *2 because 1/0.5 = 2
+	    
+	    // If we already have fewer measurements than target, return original
+	    if (distances.size() <= targetSize) {
+	    	r.display("downsampleToHalfDegree: 2 small");
+	        return new ArrayList<>(distances);
+	    }
+	    
+	    // Calculate window size for averaging
+	    int windowSize = Math.max(1, distances.size() / targetSize);
+	    
+	    ArrayList<Float> downsampled = new ArrayList<>();
+	    
+	    // Apply moving average with calculated window size
+	    for (int i = 0; i < distances.size(); i += windowSize) {
+	        float sum = 0;
+	        int count = 0;
+	        
+	        // Average over the window
+	        for (int j = i; j < Math.min(i + windowSize, distances.size()); j++) {
+	            sum += distances.get(j);
+	            count++;
+	        }
+	        
+	        if (count > 0) {
+	            downsampled.add(sum / count);
+	        }
+	    }
+	    
+	    return downsampled;
 	}
 
 	
