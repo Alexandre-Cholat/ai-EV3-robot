@@ -90,12 +90,12 @@ public class NavAlgo {
 	
 	public boolean smartAlign() {
 		float startAng = p.getPosition();
-		float sweepAngle = 45;
+		float sweepAngle = 35;
 		
-		while(sweepAngle>10) {
+		while(sweepAngle>8) {
 			startAng = p.getPosition();
 			align(startAng, sweepAngle);
-			sweepAngle = sweepAngle - 15;
+			sweepAngle = sweepAngle - 10;
 		}
 		
 		
@@ -113,9 +113,7 @@ public class NavAlgo {
 		r.display("Spinning", 500);
 		ArrayList<Float> tabDistances = spin(sweepAngle);
 		r.turn(-(sweepAngle/2), turnSpeed, false);	
-		
-		r.display("sample nb= " + tabDistances.size());
-
+	
 		
 		//filter and reduce number of distance measurements
 		ArrayList<Float> filteredDistances= downsampleToHalfDegree(tabDistances, sweepAngle);
@@ -138,9 +136,14 @@ public class NavAlgo {
 			float wallAngle =  startAng + minAngle;
 			
 			//rotate to smallest distance to wall
-			rotateTo(wallAngle);
-			p.setAngle(wallAngle);
-			r.display("New Position: " + wallAngle, 8000);
+			if(wallAngle != startAng) {
+				rotateTo(wallAngle);
+				p.setAngle(wallAngle);
+				r.display("New Position: " + wallAngle, 8000);
+			}else {
+				r.display("Already centered!" + wallAngle, 8000);
+			}
+			
 
 
 		}catch(Exception e) {
