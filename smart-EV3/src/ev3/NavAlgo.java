@@ -42,7 +42,7 @@ public class NavAlgo {
 		this.p = p;
 	}*/
 
-	
+
 	public boolean getObjDetecter() {
 		return objDetecter;
 	}
@@ -94,38 +94,38 @@ public class NavAlgo {
 		// minimise distance between wall
 
 		int i = 0;
-		
-		
+
+
 
 		while(i<10) {
 
 			// rotate to random angle
 			int randAngle = (int) Math.random() * 7;
 			rotateTo(startPos);
-		
+
 			for (int j = 0; j < 10; i++) {
 				randAngle = (int) (Math.random() * 7);
 				r.turn(randAngle);
-	
+
 				dist1 = (int) s.getDistance();
-	
+
 				//new best candidate
 				if(dist1 < min) {
 					min = dist1;
 					minAngle = p.getPosition();
-	
+
 					r.display("New min angle: " + minAngle);
 				}
-	
-			//return to starting position center
-			rotateTo(startPos);
-		}
+
+				//return to starting position center
+				rotateTo(startPos);
+			}
 
 
-		//rotate to smallest distance to wall
-		rotateTo(minAngle);
+			//rotate to smallest distance to wall
+			rotateTo(minAngle);
 
-		//set minAngle as intended start angle
+			//set minAngle as intended start angle
 			if (dist1 < min) {
 				min = dist1;
 				minAngle = p.getPosition();
@@ -138,31 +138,31 @@ public class NavAlgo {
 		rotateTo(minAngle);
 		p.setAngle(startPos);
 	}
-	
-	public ArrayList<Float> spin(int rotationDegrees) {
-	    
-	    ArrayList<Float> tabDistances= new ArrayList<Float>();
 
-	    // Start rotation
-	    r.turn(rotationDegrees);
-	    while(r.isMoving()){
-	    	float distCm = s.getDistance();
+	public ArrayList<Float> spin(int rotationDegrees) {
+
+		ArrayList<Float> tabDistances= new ArrayList<Float>();
+
+		// Start rotation
+		r.turn(rotationDegrees);
+		while(r.isMoving()){
+			float distCm = s.getDistance();
 			r.display("D: " + distCm, 200);
-	    	tabDistances.add(distCm);
-	    	
-	    }
-	    	    
-	    return tabDistances;
+			tabDistances.add(distCm);
+
+		}
+
+		return tabDistances;
 	}
-	
+
 	public void align2() {
 		ArrayList<Float> vals = spin(360);
-		
+
 		float minIdx;
-		
+
 	}
-	
-	
+
+
 
 
 	public void rotate_until_disc_detected() {
@@ -232,7 +232,7 @@ public class NavAlgo {
 
 	}
 
-	
+
 	public void setDowngrab() {
 		//méthode qui va deposer le palet et reculer et fermer les pinces
 		r.pincherOpen();
@@ -241,14 +241,43 @@ public class NavAlgo {
 		r.display("Pavé déposer",5000);
 	}
 
-	
+
 
 	public void batteryStatus() {
 		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
 	}
 
+	public boolean signe (float f) {
+		if(f<0) {
+			return false;
+		}
+		return true;
+	}
 
-
+	/*public int [] angles_grab (ArrayList <Float> t) {
+		int i=0 ;
+		while(i<t.length-1) {
+			float val1 = t[i];
+			float val2= t[i+1];
+			float dist = val2-val1 ;
+if(signe(dist)&& dist >= 15) {
+	r.display("Première discontinuité");
+	
+	int j=i+1 ;
+	while(j<t.length-1 ) {
+		float num1 = t[j];
+		float num2= t[j+1];
+		if (num2-num1<5) {
+			j++ ;
+		}else {
+			r.display("Deuxième discontinuité");
+			
+		}
+	}
+	
+}
+		}*/
+	//}
 	// ────────────────
 	// TESTING FUNCTIONS
 	// ────────────────
@@ -301,8 +330,8 @@ public class NavAlgo {
 	public void calibrateTurn(int x) {
 		r.turn(x, 150);
 
-		
-		
+
+
 	}
 	public void calibrateMove() {
 		r.forward(200);
@@ -318,17 +347,17 @@ public class NavAlgo {
 
 
 	}
-	
+
 	public void errorCalc() {
-		
+
 		// 5 loops
 		for(int i=0;i<2;i++) {
 			r.forward(100);
 			Delay.msDelay(500);
 			r.turn(180, 150);
 		}
-		
-		
+
+
 
 	}
 
