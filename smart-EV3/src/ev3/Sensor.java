@@ -138,7 +138,7 @@ public class Sensor{
         return sample[0] * 100.0f;  // Convert to cm
     }
 	
-	
+	/*
 	public float[] look(float[] tab) {
 		float[] newTab = Arrays.copyOf(tab, tab.length+1);
 		ultrasonic.fetchSample(newTab, newTab.length-1);
@@ -154,7 +154,7 @@ public class Sensor{
 		Delay.msDelay(20);
 		return newTab;
 	}
-	
+	*/
 		
 	// Cleanup method
     public void close() {

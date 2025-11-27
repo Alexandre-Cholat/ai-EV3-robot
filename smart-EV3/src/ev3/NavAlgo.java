@@ -11,6 +11,7 @@ import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import lejos.hardware.Battery;
 
@@ -57,8 +58,8 @@ public class NavAlgo {
 	public void goToYcenter() {
 		rotateTo(180);
 
-		//align perfectly>>>>>>> 82b597528f6f865f9137de4dc273bc8f6f09f11e
-		align(180);
+
+		align(180,45);
 
 		while (s.getDistance() != table_length / 2) {
 			r.forward(s.getDistance() - table_length / 2);
@@ -67,7 +68,7 @@ public class NavAlgo {
 
 	public void goToXcenter() {
 		rotateTo(90);
-		align(90);
+		align(90,45);
 
 		while (s.getDistance() != table_width / 2) {
 			r.forward(s.getDistance() - table_width / 2);
@@ -80,12 +81,13 @@ public class NavAlgo {
 		}
 	}
 
-	public void rotateTo(int orientation) {
-		int current_a = p.getPosition();
-		int calc_turn = orientation - current_a;
-		r.turn(calc_turn);
+	public void rotateTo(float orientation) {
+		float current_a = p.getPosition();
+		float calc_turn = orientation - current_a;
+		r.turn(calc_turn); //set to synchronous?
 		p.setAngle(orientation);
 	}
+
 
 	public void align(int startPos) {
 		int dist1 = 0;
@@ -134,10 +136,75 @@ public class NavAlgo {
 
 			rotateTo(startPos);
 		}
-
-		rotateTo(minAngle);
-		p.setAngle(startPos);
 	}
+
+	public boolean smartAlign() {
+		float startAng = p.getPosition();
+		float sweepAngle = 45;
+
+		while(sweepAngle>10) {
+			startAng = p.getPosition();
+			align(startAng, sweepAngle);
+			sweepAngle = sweepAngle - 15;
+		}
+
+
+		return true;
+	}
+
+	public boolean align(float startAng, float sweepAngle) {
+
+		//rotation 360
+		//ArrayList<Float> tabDistances = spin(360);
+
+		int turnSpeed = 30;
+		//	sweep ( already facing wall )
+		r.turn(-(sweepAngle/2), turnSpeed, false);
+		r.display("Spinning", 500);
+		ArrayList<Float> tabDistances = spin(sweepAngle);
+		r.turn(-(sweepAngle/2), turnSpeed, false);	
+
+		r.display("sample nb= " + tabDistances.size());
+
+
+		//filter and reduce number of distance measurements
+		ArrayList<Float> filteredDistances= downsampleToHalfDegree(tabDistances, sweepAngle);
+		r.display("reduced nb = " + filteredDistances.size());
+
+
+		//Calcul de indexe de la valeur la plus proche du mur
+		try {
+
+			//int minIdx = findCenterByDerivative(filteredDistances);
+			int minIdx = findMinimum(filteredDistances);
+
+			r.display("Best: "+minIdx + " of "+ filteredDistances.size(), 4000);
+
+			// Calcul angle relative de minIdx
+			//float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) - (sweepAngle/2);
+			float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) - (sweepAngle/4);
+			r.display("Best rel angle: " + minAngle, 2000);
+
+			float wallAngle =  startAng + minAngle;
+
+			//rotate to smallest distance to wall
+			rotateTo(wallAngle);
+			p.setAngle(wallAngle);
+			r.display("New Position: " + wallAngle, 8000);
+
+
+		}catch(Exception e) {
+			r.display("no derivative found", 2500);
+			r.display("tab length =  " + filteredDistances.size(), 2000);
+			//try again
+			align( startAng, sweepAngle);
+
+		}
+
+
+		return true;
+	}
+
 
 	public ArrayList<Float> spin(int rotationDegrees) {
 
@@ -165,6 +232,113 @@ public class NavAlgo {
 
 
 
+	public ArrayList<Float> spin(float rotationDegrees) {
+
+		ArrayList<Float> tabDistances= new ArrayList<Float>();
+
+		int speed = 15;
+		r.turn(rotationDegrees, speed, true);
+		while(r.isMoving()){
+			float distCm = s.getDistance();
+			//100 delay time works decent
+			//r.display("D: " + distCm, 100);
+			tabDistances.add(distCm);	
+		}
+
+		// length = 3000 if no delays
+		return tabDistances;
+	}
+
+
+	private int findCenterByDerivative(ArrayList<Float> distances) throws Exception {
+		if (distances.size() < 3) return 0;
+
+		ArrayList<Float> derivatives = new ArrayList<>();
+
+		// Calculate simple derivatives
+		for (int i = 1; i < distances.size(); i++) {
+			derivatives.add(distances.get(i) - distances.get(i - 1));
+		}
+
+		//find local minima
+
+		// Find where derivative changes from negative to positive (valley bottom)
+		for (int i = 1; i < derivatives.size(); i++) {
+			if (derivatives.get(i - 1) < 0 && derivatives.get(i) >= 0) {
+				if (derivatives.get(i - 2) < 0 && derivatives.get(i+1) >= 0) {
+					if (derivatives.get(i - 2) < 0 && derivatives.get(i+2) >= 0) {
+						return i; // Return index in original array
+					}
+
+				}
+
+			}
+		}
+
+		throw new Exception("no derivative found");
+
+	}
+
+	private int findMinimum(ArrayList<Float> distances) {
+		if (distances.isEmpty()) return 0;
+
+
+		int minIdx = 0;
+		float minVal = distances.get(0);
+
+		for (int i = 1; i < distances.size(); i++) {
+			if (distances.get(i) < minVal) {
+				minVal = distances.get(i);
+				minIdx = i;
+			}
+		}
+
+		return minIdx;
+	}
+
+	// for continous sampling (very large distance.size() array), filters distance measurements
+	private ArrayList<Float> downsampleToHalfDegree(ArrayList<Float> distances, float sweepAngle) {
+		if (distances == null || distances.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		// Calculate target number of measurements (one per 0.5 degrees)
+		int targetSize = (int)(sweepAngle * 2); // *2 because 1/0.5 = 2
+
+		// If we already have fewer measurements than target, return original
+		if (distances.size() <= targetSize) {
+			r.display("downsampleToHalfDegree: 2 small");
+			return new ArrayList<>(distances);
+		}
+
+		// Calculate window size for averaging
+		int windowSize = Math.max(1, distances.size() / targetSize);
+
+		ArrayList<Float> downsampled = new ArrayList<>();
+
+		// Apply moving average with calculated window size
+		for (int i = 0; i < distances.size(); i += windowSize) {
+			float sum = 0;
+			int count = 0;
+
+			// Average over the window
+			for (int j = i; j < Math.min(i + windowSize, distances.size()); j++) {
+				sum += distances.get(j);
+				count++;
+			}
+
+			if (count > 0) {
+				downsampled.add(sum / count);
+			}
+		}
+
+		return downsampled;
+	}
+
+
+
+
+
 	public void rotate_until_disc_detected() {
 		//tourne jusqu'a detecter une discontinuité, renvoie vrai s'il en trouve, false sinon
 		float previousDist=s.getDistance();
@@ -181,7 +355,15 @@ public class NavAlgo {
 		objDetecter=false;
 
 	}
+	/*
+	public float[] tabDisc() {
+		float[] tab = new float[];
+		r.turn(360);
+		while(r.isMoving()) {
 
+		}
+	}
+	 */
 
 	public boolean obj_detected() {
 		float d = s.getDistance();
@@ -262,7 +444,7 @@ public class NavAlgo {
 			float dist = val2-val1 ;
 if(signe(dist)&& dist >= 15) {
 	r.display("Première discontinuité");
-	
+
 	int j=i+1 ;
 	while(j<t.length-1 ) {
 		float num1 = t[j];
@@ -271,10 +453,10 @@ if(signe(dist)&& dist >= 15) {
 			j++ ;
 		}else {
 			r.display("Deuxième discontinuité");
-			
+
 		}
 	}
-	
+
 }
 		}*/
 	//}
@@ -293,7 +475,7 @@ if(signe(dist)&& dist >= 15) {
 		r.stop();
 	}
 
-	public void wander2() {
+	public void dist_greater_than_20() {
 		float distCm = s.getDistance();
 		r.display("D: " + distCm, 200);
 
@@ -319,6 +501,7 @@ if(signe(dist)&& dist >= 15) {
 
 			if (s.isPressed()) {
 				r.beep();
+				return;
 			}
 		}
 	}
@@ -328,7 +511,7 @@ if(signe(dist)&& dist >= 15) {
 	}
 
 	public void calibrateTurn(int x) {
-		r.turn(x, 150);
+		r.turn(x);
 
 
 
@@ -354,7 +537,7 @@ if(signe(dist)&& dist >= 15) {
 		for(int i=0;i<2;i++) {
 			r.forward(100);
 			Delay.msDelay(500);
-			r.turn(180, 150);
+			r.turn(180, 150, true);
 		}
 
 

@@ -2,13 +2,13 @@ package ev3;
 
 public class Position {
 	// 180 pour camp adversaire, 0 pour zone d'equipe
-	public int angle;
+	public float angle;
 	
 	public boolean perdu;
 	
 	//supposons le robot commence face au camp adversaire, n'importe ou.
 	public Position() {
-		angle = 0;
+		angle = 180;
 		perdu = true;
 	}
 	
@@ -21,11 +21,11 @@ public class Position {
 		perdu = b;
 	}
 	
-	public int getPosition() {
+	public float getPosition() {
 		return angle;
 	}
 	
-	public void setAngle(int i) {
+	public void setAngle(float i) {
 		this.angle = i;
 	}
 	
