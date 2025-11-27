@@ -24,7 +24,7 @@ public class Automate extends NavAlgo {
 
 				// OBJET TROUVÉ AVANT LE CENTRE
 				if (obj_detected()) {
-					objDetected = true;   //ON PASSE A L ETAPE 3
+					objDetected = true;   //ON PASSE A L'ETAPE 3
 				}
 				center = true;
 			}
@@ -41,18 +41,9 @@ public class Automate extends NavAlgo {
 			}
 			// ETAPE 3:OBJET TROUVE
 			if (objDetected && !picking) {
-
 				r.display("Approaching object");
-
-				boolean reached = play.moveToGrab();
-
-				// OBJET PERDU : RETOUR A LA RECHERCHE
-				if (!obj_detected()) {
-					objDetected = false;
-				}
-				if (reached) {
-					picking = true;
-				}
+				play.moveToGrab();
+				picking = true;
 			}
 			// ATTRAPER LE PALET
 			if (picking && !attrape) {
@@ -74,7 +65,7 @@ public class Automate extends NavAlgo {
 				attrape = false;
 			}
 		}
-		r.display("Mission accomplie !");
+		r.display("Mission done !");
 	}
 
 	public static void main(String[] args) {

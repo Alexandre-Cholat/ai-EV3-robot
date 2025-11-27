@@ -391,7 +391,7 @@ public class NavAlgo {
 		return true ;*/
 	}
 
-	public boolean moveToGrab() {
+	public void moveToGrab() {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
 
@@ -416,7 +416,6 @@ public class NavAlgo {
 		}
 		r.stop();
 		r.display("Distance assez proche du pavé",5000);
-		return true ;
 	}
 
 
@@ -458,29 +457,87 @@ public class NavAlgo {
 		return true;
 	}
 
-	/*public int [] angles_grab (ArrayList <Float> t) {
-		int i=0 ;
-		while(i<t.length-1) {
-			float val1 = t[i];
-			float val2= t[i+1];
+	public int [] angles_grab (ArrayList <Float> t) {
+
+		int [] angles_grab = new int [9];
+		for(int grab =0 ; grab< 9 ; grab++) {
+
+			int i=0 ;
+			float val1 = t.get(i);
+			float val2= t.get(i+1);
 			float dist = val2-val1 ;
-if(signe(dist)&& dist >= 15) {
-	r.display("Première discontinuité");
 
-	int j=i+1 ;
-	while(j<t.length-1 ) {
-		float num1 = t[j];
-		float num2= t[j+1];
-		if (num2-num1<5) {
-			j++ ;
-		}else {
-			r.display("Deuxième discontinuité");
+			while(i<t.size()-1 && Math.abs(dist)<5) {
+				i++;
+				float newVal1= val2;
+				float newVal2= t.get(i+1);
+				dist = newVal2-newVal1 ;
+			}
+			if(!signe(dist)&& dist >= 15) {
+				r.display("Première discontinuité");
+			}
+			//Recherche de la deuxième discontinuité
+			int j=i ;
+			float num1 = t.get(j);
+			float num2= t.get(j+1);
+			float mes = num2-num1;
 
+			while(j<t.size()-1 && Math.abs(mes)<5) {
+				j++;
+				float newNum1= num2;
+				float newNum2= t.get(j+1);
+				mes = newNum2-newNum1 ;
+			}
+			if(!signe(dist)&& dist >= 15) {
+				r.display("Deuxième discontinuité");
+			}
+
+			angles_grab[grab]= (i+j)/2;
 		}
+		return angles_grab ;
 	}
 
-}
-		}*/
+	public int[] detectPaletAngles(ArrayList<Float> t) {
+
+		//List<Integer> angles = new ArrayList<>();
+		int [] angles = new int [9];
+
+		int number=0 ;    
+		int i = 0;
+
+		while (i < t.size()-2) {
+
+			float d1 = t.get(i);
+			float d2 = t.get(i+1);
+			float diff = d2 - d1;
+
+			// Première discontinuité 
+			if (diff <= -10) {
+				r.display("Première discontinuité");
+				int start = i;
+
+				// Deuxième discontinuité
+				int j = i+1;
+				while (j < t.size() - 1 && Math.abs(t.get(j+1) - t.get(j)) < 5) {
+					j++;
+				}
+				int end = j;
+				int angle = (start + end) / 2;
+				angles[number]= angle ;
+				number++;
+
+				// On cherche le prochain palet
+				i = end + 1;
+			}
+			else {
+				i++;
+			}
+		}
+
+		return angles;
+	}
+
+
 	//}
 	// ────────────────
 	// TESTING FUNCTIONS
