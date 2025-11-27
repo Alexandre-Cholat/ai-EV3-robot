@@ -20,7 +20,7 @@ public class NavAlgo {
 	private RobotPilot r;
 	private Sensor s;
 	private Position p;
-	private boolean objDetecter=false;
+	private boolean objDetected=false;
 
 	// environment dimensions
 	static int table_length = 300;
@@ -44,8 +44,8 @@ public class NavAlgo {
 	}*/
 
 
-	public boolean getObjDetecter() {
-		return objDetecter;
+	public boolean obj_detected() {
+		return objDetected;
 	}
 
 
@@ -92,7 +92,7 @@ public class NavAlgo {
 	public void align(int startPos) {
 		int dist1 = 0;
 		int min = 1000;
-		int minAngle = startPos;
+		float minAngle = startPos;
 		// minimise distance between wall
 
 		int i = 0;
@@ -347,12 +347,12 @@ public class NavAlgo {
 			Delay.msDelay(100);
 			float currentDist=s.getDistance();
 			if(Math.abs(previousDist-currentDist)>10){//a voir s'il faut valeur plus grande ou plus petite
-				objDetecter=true;
+				objDetected=true;
 				r.display("Grab detected",5000);
 			}
 			previousDist=currentDist;
 		}
-		objDetecter=false;
+		objDetected=false;
 
 	}
 	/*
@@ -365,47 +365,69 @@ public class NavAlgo {
 	}
 	 */
 
-	public boolean obj_detected() {
-		float d = s.getDistance();
-		if (d < 50) {
-			r.display("Grab detected");
-			return true;
-		}
-		return false;
-	}
 
+	public boolean trajectory(float f) {
+		//Dans la mesure où j'ai vraiment besoin de faire un balayage
+		// pour retrouver le palet
+		int[] angles = { -7, 2, 2, 2, 2, 2 };
+		for(int an:angles ) {
+			r.turn(an); 
+			Delay.msDelay(100);
+
+			if(s.getDistance()<f) {
+				return true ;
+			}
+		}
+		return false ;
+
+		//Dans le cas contraire je tourne juste de juste 
+		//auquel le robot a l'habitude de se décaler 
+
+		/*r.turn(-5);
+		if(s.getDistance()<f) {
+			return true ;
+		}
+		r.turn(10);
+		return true ;*/
+	}
 
 	public boolean moveToGrab() {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
 
-		while (currentDistance >= 10 && !s.isPressed()) {
-			r.forward(3);
+		r.pincherOpen();
+		r.forward();
+		while (!s.isPressed()) {
+			// On avance durant environ 200ms 
+			Delay.msDelay(200);
+			// La distance entre le robot et le palet après avoir avancé pendant 200ms
+			currentDistance= s.getDistance();
 
-			previousDistance = currentDistance;
-			currentDistance = s.getDistance();
-
-			if (currentDistance >= previousDistance) {
+			//Si currentDistance > Distance à laquelle le robot était il y'a 200 ms 
+			if (currentDistance >= previousDistance+2) {
 				r.stop();
 				r.display("Mauvaise trajectoire",3000);
-				return false ;
+				trajectory(previousDistance);
+				previousDistance= s.getDistance();
+			}else{
+				//Mise à jour de la distance avant les prochaines 200ms
+				previousDistance = currentDistance;
 			}
 		}
 		r.stop();
 		r.display("Distance assez proche du pavé",5000);
 		return true ;
-
 	}
 
 
 
 	public void pickUpGrab() {
-		if (s.getDistance() <= 10) {
-			r.pincherOpen();
-			r.forward(5);
-			r.pincherClose();
-			r.display("Pavé attrapé", 5000);
-		}
+		//if (s.getDistance() <= 10) {
+		//r.forward(5);
+		r.pincherClose();
+		r.display("Pavé attrapé", 5000);
+		//}
+
 		/*r.pincherOpen();
 		int [] tab = p.getPosition();
 		r.display("Angle: " + tab[0], 5000);
