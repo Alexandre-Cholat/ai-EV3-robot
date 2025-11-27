@@ -29,7 +29,7 @@ public class Automate extends NavAlgo {
 				center = true;
 			}
 			// ETAPE 2 :CHERCHER OBJET
-			else if (!objDetected && !picking) {
+			if (!objDetected && !picking) {
 
 				r.display("Searching object");
 
@@ -40,7 +40,7 @@ public class Automate extends NavAlgo {
 				}
 			}
 			// ETAPE 3:OBJET TROUVE
-			else if (objDetected && !picking) {
+			if (objDetected && !picking) {
 
 				r.display("Approaching object");
 
@@ -50,19 +50,18 @@ public class Automate extends NavAlgo {
 				if (!obj_detected()) {
 					objDetected = false;
 				}
-				else if (reached) {
+				if (reached) {
 					picking = true;
 				}
 			}
 			// ATTRAPER LE PALET
-			else if (picking && !attrape) {
-
+			if (picking && !attrape) {
 				r.display("Grabbing object");
 				pickUpGrab();
 				attrape = true;
 			}
 			// ETAPE 4 : RETOUR AU CAMP ADVERSE
-			else if (attrape) {
+			if (attrape) {
 				r.display("Returning to base");
 				play.setDowngrab();
 				play.goToBaseAdverse();
