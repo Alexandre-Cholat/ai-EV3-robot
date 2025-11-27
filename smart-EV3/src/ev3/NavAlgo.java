@@ -364,58 +364,34 @@ public class NavAlgo {
 		}
 	}
 	 */
-
-
-	public boolean trajectory(float f) {
-		//Dans la mesure où j'ai vraiment besoin de faire un balayage
-		// pour retrouver le palet
-		int[] angles = { -7, 2, 2, 2, 2, 2 };
-		for(int an:angles ) {
-			r.turn(an); 
-			Delay.msDelay(100);
-
-			if(s.getDistance()<f) {
-				return true ;
-			}
-		}
-		return false ;
-
-		//Dans le cas contraire je tourne juste de juste 
-		//auquel le robot a l'habitude de se décaler 
-
-		/*r.turn(-5);
-		if(s.getDistance()<f) {
-			return true ;
-		}
-		r.turn(10);
-		return true ;*/
-	}
-
-	public void moveToGrab() {
+	public boolean moveToGrab() {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
-
+		int error = 0;
 		r.pincherOpen();
 		r.forward();
 		while (!s.isPressed()) {
-			// On avance durant environ 200ms 
+			//Moving forward for approximately 200ms 
 			Delay.msDelay(200);
-			// La distance entre le robot et le palet après avoir avancé pendant 200ms
+			//Distance between robot and grab after moving during 200ms
 			currentDistance= s.getDistance();
 
-			//Si currentDistance > Distance à laquelle le robot était il y'a 200 ms 
+			//If currentDistance > distance to which the robot was 200ms 
 			if (currentDistance >= previousDistance+2) {
+				error ++ ;
+			}
+			if(error>=3) {
 				r.stop();
 				r.display("Mauvaise trajectoire",3000);
-				trajectory(previousDistance);
-				previousDistance= s.getDistance();
-			}else{
-				//Mise à jour de la distance avant les prochaines 200ms
-				previousDistance = currentDistance;
+				return false ;
 			}
+			//Update of the distance before the following 200ms
+			previousDistance = currentDistance;
 		}
+
 		r.stop();
 		r.display("Distance assez proche du pavé",5000);
+		return true ;
 	}
 
 
@@ -450,83 +426,33 @@ public class NavAlgo {
 		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
 	}
 
-	public boolean signe (float f) {
-		if(f<0) {
-			return false;
-		}
-		return true;
-	}
-
-	public int [] angles_grab (ArrayList <Float> t) {
-
-		int [] angles_grab = new int [9];
-		for(int grab =0 ; grab< 9 ; grab++) {
-
-			int i=0 ;
-			float val1 = t.get(i);
-			float val2= t.get(i+1);
-			float dist = val2-val1 ;
-
-			while(i<t.size()-1 && Math.abs(dist)<5) {
-				i++;
-				float newVal1= val2;
-				float newVal2= t.get(i+1);
-				dist = newVal2-newVal1 ;
-			}
-			if(!signe(dist)&& dist >= 15) {
-				r.display("Première discontinuité");
-			}
-			//Recherche de la deuxième discontinuité
-			int j=i ;
-			float num1 = t.get(j);
-			float num2= t.get(j+1);
-			float mes = num2-num1;
-
-			while(j<t.size()-1 && Math.abs(mes)<5) {
-				j++;
-				float newNum1= num2;
-				float newNum2= t.get(j+1);
-				mes = newNum2-newNum1 ;
-			}
-			if(!signe(dist)&& dist >= 15) {
-				r.display("Deuxième discontinuité");
-			}
-
-			angles_grab[grab]= (i+j)/2;
-		}
-		return angles_grab ;
-	}
-
-	public int[] detectPaletAngles(ArrayList<Float> t) {
-
-		//List<Integer> angles = new ArrayList<>();
-		int [] angles = new int [9];
-
+	public double[] angles_grab(ArrayList<Float> t) {
+		double [] angles = new double [9];
 		int number=0 ;    
 		int i = 0;
 
 		while (i < t.size()-2) {
-
 			float d1 = t.get(i);
 			float d2 = t.get(i+1);
 			float diff = d2 - d1;
 
-			// Première discontinuité 
+			//First discontinuity
 			if (diff <= -10) {
 				r.display("Première discontinuité");
 				int start = i;
 
-				// Deuxième discontinuité
+				//Second discontinuity
 				int j = i+1;
 				while (j < t.size() - 1 && Math.abs(t.get(j+1) - t.get(j)) < 5) {
 					j++;
 				}
+				r.display("Deuxième discontinuité");
 				int end = j;
-				int angle = (start + end) / 2;
+				double angle =((start + end)/2)*0.5;
 				angles[number]= angle ;
 				number++;
 
-				// On cherche le prochain palet
+				//Looking for a new grab
 				i = end + 1;
 			}
 			else {
