@@ -88,7 +88,7 @@ public class NavAlgo {
 		p.setAngle(orientation);
 	}
 	
-	public boolean smartAlign() {
+	public void smartAlign() {
 		float startAng = p.getPosition();
 		float sweepAngle = 35;
 		
@@ -98,8 +98,6 @@ public class NavAlgo {
 			sweepAngle = sweepAngle - 10;
 		}
 		
-		
-		return true;
 	}
 
 	public boolean align(float startAng, float sweepAngle) {
