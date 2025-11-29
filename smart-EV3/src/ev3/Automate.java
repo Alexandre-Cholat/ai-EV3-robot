@@ -17,19 +17,19 @@ public class Automate extends NavAlgo {
 
 		while (grab < 9) {
 
-			// ETAPE 1 : ALLER AU CENTRE
+			// STAP 1 : go to center
 			if (!center) {
 				r.display("Going to center");
 				goToCenter();
 
-				// OBJET TROUVÉ AVANT LE CENTRE
+				// grab detected before reaching the center
 				if (obj_detected()) {
-					objDetected = true;   //ON PASSE A L ETAPE 3
+					objDetected = true;   //Go to STAP 3
 				}
 				center = true;
 			}
-			// ETAPE 2 :CHERCHER OBJET
-			else if (!objDetected && !picking) {
+			// STAP 2 :Search for object
+			if (!objDetected && !picking) {
 
 				r.display("Searching object");
 
@@ -39,43 +39,42 @@ public class Automate extends NavAlgo {
 					objDetected = true;
 				}
 			}
-			// ETAPE 3:OBJET TROUVE
-			else if (objDetected && !picking) {
+			// STAP 3:Object detected
+			if (objDetected && !picking) {
 
 				r.display("Approaching object");
 
 				boolean reached = play.moveToGrab();
 
-				// OBJET PERDU : RETOUR A LA RECHERCHE
+				// Lost object : Back to search
 				if (!obj_detected()) {
 					objDetected = false;
 				}
-				else if (reached) {
+				if (reached) {
 					picking = true;
 				}
 			}
-			// ATTRAPER LE PALET
-			else if (picking && !attrape) {
-
+			// Catch the object
+			if (picking && !attrape) {
 				r.display("Grabbing object");
 				pickUpGrab();
 				attrape = true;
 			}
-			// ETAPE 4 : RETOUR AU CAMP ADVERSE
-			else if (attrape) {
+			// STAP 4 : Return to the opposing camp
+			if (attrape) {
 				r.display("Returning to base");
 				play.setDowngrab();
 				play.goToBaseAdverse();
 				grab++;
 
-				// C'EST REPARTI POUR UN TOUR 
+				// HERE WE GO AGAIN FOR ANOTHER ROUND
 				center = false;
 				objDetected = false;
 				picking = false;
 				attrape = false;
 			}
 		}
-		r.display("Mission accomplie !");
+		r.display("Mission done!");
 	}
 
 	public static void main(String[] args) {
