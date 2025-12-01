@@ -152,6 +152,16 @@ public class NavAlgo {
 			r.display("Obstacle evite", 500);
 		}
 	}
+	public void decalageDroite() {
+		r.turn(-90);
+		r.forward(15);
+		r.turn(90);
+	}
+	public void decalageGauche() {
+		r.turn(-90);
+		r.forward(15);
+		r.turn(90);
+	}
 
 	public void rotateTo(float orientation) {
 		float current_a = p.getPosition();
