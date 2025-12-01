@@ -64,7 +64,7 @@ public class NavAlgo {
 			r.forward(s.getDistance() - table_length / 2);
 		}
 	}
-	public void goToYcenter2() {
+	public boolean goToYcenter2() {
 		//cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(180);
 		align(180);
@@ -76,8 +76,10 @@ public class NavAlgo {
 			r.turn(180);
 			while (s.getDistance() != table_length / 2) {
 				r.forward(s.getDistance() - table_length / 2);
+				return true;
 			}
 		}
+		return false;
 	}
 
 
@@ -89,7 +91,7 @@ public class NavAlgo {
 			r.forward(s.getDistance() - table_width / 2);
 		}
 	}
-	public void goToXcenter2() {
+	public boolean goToXcenter2() {
 		//cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(90);
 		align(90);
@@ -101,8 +103,10 @@ public class NavAlgo {
 			r.turn(180);
 			while (s.getDistance() != table_width / 2) {
 				r.forward(s.getDistance() - table_width / 2);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	public void goToBaseAdverse() {
