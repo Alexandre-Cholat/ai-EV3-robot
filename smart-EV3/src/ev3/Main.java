@@ -8,6 +8,9 @@ public class Main {
 	//automate a etats
 	public static void main(String[] args) {
 		NavAlgo monRobot = new NavAlgo();
+		
+		monRobot.goToCenter();
+		
 		Etat etat=Etat.CHERCHE_MILIEU;
 
 

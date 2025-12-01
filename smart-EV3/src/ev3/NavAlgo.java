@@ -59,9 +59,22 @@ public class NavAlgo {
 	public void goToYcenter() {
 		// must add aprox values: it will never reach perfect mesurement
 		rotateTo(180);
+		
+		float sample = s.getDistance();
 
-		while (Math.abs(s.getDistance() - table_length / 2) > 5) {
-			r.forward(s.getDistance() - table_length / 2);
+		while (Math.abs(sample - table_length / 2) > 5) {
+			r.display("D : " + sample, 50);
+			sample = s.getDistance();
+			r.forward(true);
+		}
+	}
+	
+	public void goToXcenter() {
+		rotateTo(90);
+		smartAlign();
+
+		while (Math.abs(s.getDistance() - table_width / 2) > 5) {
+			r.forward(s.getDistance() - table_width / 2);
 		}
 	}
 
@@ -83,14 +96,7 @@ public class NavAlgo {
 		return false;
 	}
 
-	public void goToXcenter() {
-		rotateTo(90);
-		smartAlign();
-
-		while (Math.abs(s.getDistance() - table_width / 2) > 5) {
-			r.forward(s.getDistance() - table_width / 2);
-		}
-	}
+	
 
 	public boolean goToXcenter2() {
 		// cette methode verifie qu'il detecte bien un mur et pas un objet

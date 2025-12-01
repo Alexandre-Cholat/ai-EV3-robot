@@ -134,6 +134,10 @@ public class RobotPilot {
 	    setSpeed(speed);
 	    pilot.travel(distanceCm * 10, b);
 	}
+	
+	public void forward(float distanceCm, boolean b) {
+	    pilot.travel(distanceCm * 10, b);
+	}
 
 	public void turn(float degrees) {
 	    pilot.rotate(degrees);
