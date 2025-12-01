@@ -14,6 +14,14 @@ public class Automate extends NavAlgo {
 		boolean objDetected = false;
 		boolean picking     = false;
 		boolean attrape     = false;
+		
+		/*récupération premier palet
+		 * play.moveToGrab();
+		 * play.pickUpGrab();
+		 * play.decalageADroite();
+		 * play.goToBaseAdverse();
+		 * grab++;
+		 */
 
 		while (grab < 9) {
 
