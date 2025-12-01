@@ -66,7 +66,7 @@ public class NavAlgo {
 	public boolean goToYcenter2() {
 		// cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(180);
-		align(180);
+		smartAlign();
 		float dist1 = s.getDistance();
 		r.turn(-180);
 		float dist2 = s.getDistance();
@@ -93,7 +93,7 @@ public class NavAlgo {
 	public boolean goToXcenter2() {
 		// cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(90);
-		align(90);
+		smartAlign();
 		float dist1 = s.getDistance();
 		r.turn(-180);
 		float dist2 = s.getDistance();
