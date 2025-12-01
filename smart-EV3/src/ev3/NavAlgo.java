@@ -595,6 +595,7 @@ public class NavAlgo {
 				i++;
 			}
 		}
+		r.turn((float)angles[0]);
 		return angles;
 	}
 
