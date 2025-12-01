@@ -58,8 +58,6 @@ public class NavAlgo {
 	public void goToYcenter() {
 		rotateTo(180);
 
-		align(180);
-
 		while (s.getDistance() != table_length / 2) {
 			r.forward(s.getDistance() - table_length / 2);
 		}
@@ -85,7 +83,7 @@ public class NavAlgo {
 
 	public void goToXcenter() {
 		rotateTo(90);
-		align(90);
+		smartAlign();
 
 		while (s.getDistance() != table_width / 2) {
 			r.forward(s.getDistance() - table_width / 2);
@@ -172,52 +170,7 @@ public class NavAlgo {
 		p.setAngle(orientation);
 	}
 
-	public void align(int startPos) {
-		int dist1 = 0;
-		int min = 1000;
-		float minAngle = startPos;
-		// minimise distance between wall
-
-		int i = 0;
-
-		while (i < 10) {
-
-			// rotate to random angle
-			int randAngle = (int) (Math.random() * 7);
-			rotateTo(startPos);
-
-			for (int j = 0; j < 10; i++) {
-				randAngle = (int) (Math.random() * 7);
-				r.turn(randAngle);
-
-				dist1 = (int) s.getDistance();
-
-				// new best candidate
-				if (dist1 < min) {
-					min = dist1;
-					minAngle = p.getPosition();
-
-					r.display("New min angle: " + minAngle);
-				}
-
-				// return to starting position center
-				rotateTo(startPos);
-			}
-
-			// rotate to smallest distance to wall
-			rotateTo(minAngle);
-
-			// set minAngle as intended start angle
-			if (dist1 < min) {
-				min = dist1;
-				minAngle = p.getPosition();
-				r.display("New min angle: " + minAngle);
-			}
-
-			rotateTo(startPos);
-		}
-	}
-
+	
 	/**
 	 * Aligns the robot to a target position using a smart alignment algorithm.
 	 * The method starts with a specified sweep angle and iteratively reduces the
@@ -342,9 +295,10 @@ public class NavAlgo {
 	}
 
 	/**
-	 * Finds the index of the center point in a list of distances by analyzing the
-	 * derivative of the values. The method identifies a local minimum where the
+	 * Finds the index of the center point in a list of distances by identifying a local minimum where the
 	 * derivative changes from negative to positive, indicating a valley bottom.
+	 * 
+	 * 
 	 *
 	 * @param distances An ArrayList of Float values representing distances.
 	 *                  The list must contain at least 3 elements.
@@ -383,7 +337,7 @@ public class NavAlgo {
 	}
 
 	/**
-	 * Finds the index of the minimum value in a list of distances.
+	 * Finds the index of the minimum value in a list of distances. Simpler alternative for findCenterByDerivative 
 	 *
 	 * @param distances An ArrayList of Float values representing distances.
 	 *                  The list must not be null, but it can be empty.

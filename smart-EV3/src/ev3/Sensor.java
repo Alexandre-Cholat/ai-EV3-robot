@@ -1,3 +1,10 @@
+/**
+ * The Sensor class is responsible for providing sensor output information
+ * to other components of the EV3 robot system. It is utilized by the NavAlgo class to retrieve sensor data
+ * necessary for navigation and algorithmic computations. It abstracts
+ * the details of sensor operations, ensuring a modular and maintainable
+ * design.
+ */
 package ev3;
 
 import java.util.Arrays;
@@ -14,9 +21,8 @@ import lejos.robotics.SampleProvider;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
 
-
 // sensor controller
-public class Sensor{
+public class Sensor {
 
 	// UltrasonicSensor
 	private EV3UltrasonicSensor ultrasonic;
@@ -27,8 +33,6 @@ public class Sensor{
 	// ColorSensor
 	private EV3ColorSensor colorSensor;
 	private SampleProvider colorProvider;
-
-
 
 	// constructor
 	public Sensor() {
@@ -42,9 +46,8 @@ public class Sensor{
 		colorProvider = colorSensor.getRGBMode();
 	}
 
-
 	// true if touch sensor is pressed
-	public boolean isPressed()	{
+	public boolean isPressed() {
 		float[] sample = new float[1];
 		touch.fetchSample(sample, 0);
 		return sample[0] != 0;
@@ -71,59 +74,57 @@ public class Sensor{
 		System.out.println("Program terminated by user.");
 	}
 
-
 	public String getColor() {
-		colorProvider =  colorSensor.getRGBMode();
+		colorProvider = colorSensor.getRGBMode();
 		float[] colorSample = new float[colorProvider.sampleSize()];
 		colorProvider.fetchSample(colorSample, 0);
 		return convertColor(colorSample);
 	}
 
-	public static String convertColor(float [] tabColor) {
+	public static String convertColor(float[] tabColor) {
 		double r = tabColor[0];
 		double v = tabColor[1];
 		double b = tabColor[2];
-		if ((r>0.03 && r<0.04) && (v>0.06 && v<0.07) && (b>0.03 && b<0.04)) {
+		if ((r > 0.03 && r < 0.04) && (v > 0.06 && v < 0.07) && (b > 0.03 && b < 0.04)) {
 			return "Green";
 		}
-		if ((r>0.08 && r<0.09) && (v>0.015 && v<0.025) && (b>0.015 && b<0.025)) {
+		if ((r > 0.08 && r < 0.09) && (v > 0.015 && v < 0.025) && (b > 0.015 && b < 0.025)) {
 			return "Red";
 		}
-		if ((r>0.01 && r<0.02) && (v>0.02 && v<0.03) && (b>0.045 && b<0.055)) {
-			return "Blue"; 
+		if ((r > 0.01 && r < 0.02) && (v > 0.02 && v < 0.03) && (b > 0.045 && b < 0.055)) {
+			return "Blue";
 		}
-		if ((r>0.055 && r<0.065) && (v>0.045 && v<0.055) && (b>0.06 && b<0.07)) {
+		if ((r > 0.055 && r < 0.065) && (v > 0.045 && v < 0.055) && (b > 0.06 && b < 0.07)) {
 			return "Grey";
 		}
-		if ((r>0.14 && r<0.17) && (v>0.1 && v<0.15) && (b>0.035 && b<0.045)) {
-			return "Yellow"; 
+		if ((r > 0.14 && r < 0.17) && (v > 0.1 && v < 0.15) && (b > 0.035 && b < 0.045)) {
+			return "Yellow";
 		}
-		if ((r>0.0075 && r<0.0085) && (v>0.0065 && v<0.0075) && (b>0.0075 && b<0.0085)) {
-			return "Back"; 
+		if ((r > 0.0075 && r < 0.0085) && (v > 0.0065 && v < 0.0075) && (b > 0.0075 && b < 0.0085)) {
+			return "Back";
 		}
-		if ((r>0.15 && r<0.25) && (v>0.10 && v<0.20) && (b>0.10 && b<0.20)) {
-			return "White"; 
-		}
-		else return "Unknown Color";
+		if ((r > 0.15 && r < 0.25) && (v > 0.10 && v < 0.20) && (b > 0.10 && b < 0.20)) {
+			return "White";
+		} else
+			return "Unknown Color";
 	}
-
 
 	public void testTouch() {
 		Sensor s = new Sensor();
 		int i = 0;
-		while(i<4) {
-			if(s.isPressed() ){
+		while (i < 4) {
+			if (s.isPressed()) {
 				Sound.beep();
 				i++;
-				GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
-				g.drawString( "Touched "+ i+" times", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
+				GraphicsLCD g = BrickFinder.getDefault().getGraphicsLCD();
+				g.drawString("Touched " + i + " times", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
 				Delay.msDelay(3000);
-				g.clear();		
+				g.clear();
 			}
 		}
 
-		GraphicsLCD g= BrickFinder.getDefault().getGraphicsLCD();
-		g.drawString( "Touched 4 times", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
+		GraphicsLCD g = BrickFinder.getDefault().getGraphicsLCD();
+		g.drawString("Touched 4 times", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
 		Delay.msDelay(2000);
 		g.clear();
 		g.drawString("Bye...", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
@@ -135,25 +136,25 @@ public class Sensor{
 		SampleProvider distance = ultrasonic.getDistanceMode();
 		float[] sample = new float[distance.sampleSize()];
 		distance.fetchSample(sample, 0);
-		return sample[0] * 100.0f;  // Convert to cm
+		return sample[0] * 100.0f; // Convert to cm
 	}
 
 	/*
-	public float[] look(float[] tab) {
-		float[] newTab = Arrays.copyOf(tab, tab.length+1);
-		ultrasonic.fetchSample(newTab, newTab.length-1);
-		Delay.msDelay(20);
-		return newTab;
-	}
-
-	// cas ou pas de tableau initee
-	public float[] look() {
-		float[] tab = new float[0];
-		float[] newTab = Arrays.copyOf(tab, tab.length+1);
-		ultrasonic.fetchSample(newTab, newTab.length-1);
-		Delay.msDelay(20);
-		return newTab;
-	}
+	 * public float[] look(float[] tab) {
+	 * float[] newTab = Arrays.copyOf(tab, tab.length+1);
+	 * ultrasonic.fetchSample(newTab, newTab.length-1);
+	 * Delay.msDelay(20);
+	 * return newTab;
+	 * }
+	 * 
+	 * // cas ou pas de tableau initee
+	 * public float[] look() {
+	 * float[] tab = new float[0];
+	 * float[] newTab = Arrays.copyOf(tab, tab.length+1);
+	 * ultrasonic.fetchSample(newTab, newTab.length-1);
+	 * Delay.msDelay(20);
+	 * return newTab;
+	 * }
 	 */
 
 	// Cleanup method
