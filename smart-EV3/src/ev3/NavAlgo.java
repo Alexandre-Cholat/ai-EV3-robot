@@ -558,6 +558,43 @@ public class NavAlgo {
 		r.display(angles[0] + "");
 		return angles;
 	}
+	public double[] angles_grab2(ArrayList<Float> t) {
+		double[] angles=new double[9];
+		int number = 0;
+		int i = 0;
+
+		while (i < t.size() - 2) {
+			float d1 = t.get(i);
+			float d2 = t.get(i + 1);
+			float diff = d1-d2;
+
+			// First discontinuity
+			if (diff > 10) {
+				r.display("First discontinuity");
+				int j=i+1;
+				float diff2=0;
+				// Second discontinuity
+				while(j<t.size()-2&&(Math.abs(diff2)<10)) {
+					float d3 = t.get(j);
+					float d4 = t.get(j + 1);
+					diff2 = d3-d4;
+					j++;
+				}
+				if((j-i>10)) {
+					r.display("Second discontinuity");
+					//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
+					angles[number]=((i+j)/2)*360/t.size();
+					number++;
+				}
+
+				// Looking for a new grab
+				i = j+1;
+			} else {
+				i++;
+			}
+		}
+		return angles;
+	}
 
 	// }
 	// ────────────────
