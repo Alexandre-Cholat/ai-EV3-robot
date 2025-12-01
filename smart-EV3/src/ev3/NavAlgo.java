@@ -218,121 +218,124 @@ public class NavAlgo {
 
 	// ArrayList<Float> tabDistances = spin(360);
 
-	int turnSpeed = 30;r.turn(-(sweepAngle/2),turnSpeed,false);r.display("Spinning",500);
-	ArrayList<Float> tabDistances = spin(sweepAngle);r.turn(-(sweepAngle/2),turnSpeed,false);
+public boolean align(float startAng, float sweepAngle) {
+		
+		//rotation 360
+		//ArrayList<Float> tabDistances = spin(360);
+	
+		int turnSpeed = 30;
+		//	sweep ( already facing wall )
+		r.turn(-(sweepAngle/2), turnSpeed, false);
+		r.display("Spinning", 500);
+		ArrayList<Float> tabDistances = spin(sweepAngle);
+		r.turn(-(sweepAngle/2), turnSpeed, false);	
+	
+		
+		//filter and reduce number of distance measurements
+		ArrayList<Float> filteredDistances= downsampleToHalfDegree(tabDistances, sweepAngle);
+		r.display("reduced nb = " + filteredDistances.size());
 
-	r.display("sample nb= "+tabDistances.size());
-
-	// filter and reduce number of distance measurements
-	ArrayList<Float> filteredDistances = downsampleToHalfDegree(tabDistances,
-			sweepAngle);r.display("reduced nb = "+filteredDistances.size());
-
-			// int minIdx = findCenterByDerivative(filteredDistances);
+		
+		//Calcul de indexe de la valeur la plus proche du mur
+		try {
+			
+			//int minIdx = findCenterByDerivative(filteredDistances);
 			int minIdx = findMinimum(filteredDistances);
-
-			r.display("Best: "+minIdx+" of "+filteredDistances.size(),4000);
+			
+			r.display("Best: "+minIdx + " of "+ filteredDistances.size(), 4000);
+			
 			// Calcul angle relative de minIdx
-			// float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) -
-			// (sweepAngle/2);
-			float minAngle = ((sweepAngle / filteredDistances.size()) * minIdx)
-					- (sweepAngle / 4);r.display("Best rel angle: "+minAngle,2000);
+			//float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) - (sweepAngle/2);
+			float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) - (sweepAngle/4);
+			r.display("Best rel angle: " + minAngle, 2000);
 
-					float wallAngle = startAng + minAngle;
-
-					// rotate to smallest distance to wall
-					if(wallAngle!=startAng)
-					{
-						rotateTo(wallAngle);
-						p.setAngle(wallAngle);
-						r.display("New Position: " + wallAngle, 8000);
-					}else
-					{
-						r.display("Already centered!" + wallAngle, 8000);
-					}
-
-}catch(
-		Exception e)
-{
-	r.display("no derivative found", 2500);
-	r.display("tab length =  " + filteredDistances.size(), 2000);
-	//try again
-	align( startAng, sweepAngle);
-
-}
-
-return true;
-}
-
-public ArrayList<Float> spin(int rotationDegrees) {
-
-	ArrayList<Float> tabDistances= new ArrayList<Float>();
-
-	// Start rotation
-	r.turn(rotationDegrees);
-	while(r.isMoving()){
-		float distCm = s.getDistance();
-		r.display("D: " + distCm, 200);
-		tabDistances.add(distCm);
-
-	}
-
-	return tabDistances;
-}
-
-public void align2() {
-	ArrayList<Float> vals = spin(360);
-
-	float minIdx;
-
-}
-
-public ArrayList<Float> spin(float rotationDegrees) {
-
-	ArrayList<Float> tabDistances= new ArrayList<Float>();
-
-	int speed = 15;
-	r.turn(rotationDegrees, speed, true);
-	while(r.isMoving()){
-		float distCm = s.getDistance();
-		//100 delay time works decent
-		//r.display("D: " + distCm, 100);
-		tabDistances.add(distCm);	
-	}
-
-	// length = 3000 if no delays
-	return tabDistances;
-}
-
-private int findCenterByDerivative(ArrayList<Float> distances) throws Exception {
-	if (distances.size() < 3) return 0;
-
-	ArrayList<Float> derivatives = new ArrayList<>();
-
-	// Calculate simple derivatives
-	for (int i = 1; i < distances.size(); i++) {
-		derivatives.add(distances.get(i) - distances.get(i - 1));
-	}
-
-	//find local minima
-
-	// Find where derivative changes from negative to positive (valley bottom)
-	for (int i = 1; i < derivatives.size(); i++) {
-		if (derivatives.get(i - 1) < 0 && derivatives.get(i) >= 0) {
-			if (derivatives.get(i - 2) < 0 && derivatives.get(i+1) >= 0) {
-				if (derivatives.get(i - 2) < 0 && derivatives.get(i+2) >= 0) {
-					return i; // Return index in original array
-				}
-
+			float wallAngle =  startAng + minAngle;
+			
+			//rotate to smallest distance to wall
+			if(wallAngle != startAng) {
+				rotateTo(wallAngle);
+				p.setAngle(wallAngle);
+				r.display("New Position: " + wallAngle, 8000);
+			}else {
+				r.display("Already centered!" + wallAngle, 8000);
 			}
+			
+		}catch(Exception e){
+			r.display("no derivative found", 2500);
+			r.display("tab length =  " + filteredDistances.size(), 2000);
+			//try again
+			align( startAng, sweepAngle);
 
 		}
+		
+		
+		return true;
 	}
 
-	throw new Exception("no derivative found");
+	public ArrayList<Float> spin(int rotationDegrees) {
+	
+		ArrayList<Float> tabDistances= new ArrayList<Float>();
+	
+		// Start rotation
+		r.turn(rotationDegrees);
+		while(r.isMoving()){
+			float distCm = s.getDistance();
+			r.display("D: " + distCm, 200);
+			tabDistances.add(distCm);
+	
+		}
+	
+		return tabDistances;
+	}
 
-}
 
-private int findMinimum(ArrayList<Float> distances) {
+	public ArrayList<Float> spin(float rotationDegrees) {
+	
+		ArrayList<Float> tabDistances= new ArrayList<Float>();
+	
+		int speed = 15;
+		r.turn(rotationDegrees, speed, true);
+		while(r.isMoving()){
+			float distCm = s.getDistance();
+			//100 delay time works decent
+			//r.display("D: " + distCm, 100);
+			tabDistances.add(distCm);	
+		}
+	
+		// length = 3000 if no delays
+		return tabDistances;
+	}
+
+	private int findCenterByDerivative(ArrayList<Float> distances) throws Exception {
+		if (distances.size() < 3) return 0;
+	
+		ArrayList<Float> derivatives = new ArrayList<>();
+	
+		// Calculate simple derivatives
+		for (int i = 1; i < distances.size(); i++) {
+			derivatives.add(distances.get(i) - distances.get(i - 1));
+		}
+	
+		//find local minima
+	
+		// Find where derivative changes from negative to positive (valley bottom)
+		for (int i = 1; i < derivatives.size(); i++) {
+			if (derivatives.get(i - 1) < 0 && derivatives.get(i) >= 0) {
+				if (derivatives.get(i - 2) < 0 && derivatives.get(i+1) >= 0) {
+					if (derivatives.get(i - 2) < 0 && derivatives.get(i+2) >= 0) {
+						return i; // Return index in original array
+					}
+	
+				}
+	
+			}
+		}
+	
+		throw new Exception("no derivative found");
+	
+	}
+
+	private int findMinimum(ArrayList<Float> distances) {
 	if (distances.isEmpty())
 		return 0;
 
@@ -347,7 +350,7 @@ private int findMinimum(ArrayList<Float> distances) {
 	}
 
 	return minIdx;
-}
+	}
 
 // for continous sampling (very large distance.size() array), filters distance
 // measurements
