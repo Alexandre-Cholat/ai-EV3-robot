@@ -58,8 +58,6 @@ public class NavAlgo {
 	public void goToYcenter() {
 		rotateTo(180);
 
-		align(180);
-
 		while (s.getDistance() != table_length / 2) {
 			r.forward(s.getDistance() - table_length / 2);
 		}
@@ -85,7 +83,7 @@ public class NavAlgo {
 
 	public void goToXcenter() {
 		rotateTo(90);
-		align(90);
+		smartAlign();
 
 		while (s.getDistance() != table_width / 2) {
 			r.forward(s.getDistance() - table_width / 2);
