@@ -433,13 +433,29 @@ public class NavAlgo {
 	 * }
 	 * }
 	 */
-	public boolean moveToGrab() {
+
+	public float trajectory(float f) {
+		//Dans la mesure où j'ai vraiment besoin de faire un balayage
+		// pour retrouver le palet
+		int[] angles = { -7, 2, 2, 2, 2, 2 };
+		for(int an:angles ) {
+			r.turn(an); 
+			Delay.msDelay(100);
+
+			if(s.getDistance()+2 <=f) {
+				r.display("Bonne direction", 3000);
+				return s.getDistance() ;
+			}
+		}
+		return -1 ;
+	}
+	public void moveToGrab() {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
 		int error = 0;
-		r.pincherOpen();
+
 		r.forward();
-		while (!s.isPressed()) {
+		while (previousDistance >15 || !s.isPressed()) {
 			r.display("Rien touche", 3000);
 			// Moving forward for approximately 200ms
 			Delay.msDelay(200);
@@ -449,37 +465,43 @@ public class NavAlgo {
 			// If currentDistance > distance to which the robot was 200ms
 			if (currentDistance >= previousDistance + 2) {
 				error++;
+
 			}
 			if (error >= 3) {
-				r.stop();
-				r.display("Mauvaise trajectoire", 3000);
-				return false;
-			}
-			// Update of the distance before the following 200ms
-			previousDistance = currentDistance;
-		}
+				Float newDistance =trajectory(previousDistance);
+				if(newDistance !=-1) {
+					previousDistance=newDistance;
+				}else {
+					r.stop();
+				}
 
-		r.pincherClose();
+			}
+			else{
+				// Update of the distance before the following 200ms
+				previousDistance = currentDistance;
+			}
+		}
+		r.pincherOpen();
 		r.display("Distance assez proche du pavé", 5000);
-		return true;
 	}
 
 	public void pickUpGrab() {
-		// if (s.getDistance() <= 10) {
-		// r.forward(5);
+		//if (s.getDistance() <= 10) {
+
+		r.forward(s.getDistance());
 		r.pincherClose();
 		r.display("Pavé attrapé", 5000);
-		// }
-
-		/*
-		 * r.pincherOpen();
-		 * int [] tab = p.getPosition();
-		 * r.display("Angle: " + tab[0], 5000);
-		 * Robot.pincherOpen= true;
-		 * r.pincherClose();
-		 */
-
 	}
+
+	/*
+	 * r.pincherOpen();
+	 * int [] tab = p.getPosition();
+	 * r.display("Angle: " + tab[0], 5000);
+	 * Robot.pincherOpen= true;
+	 * r.pincherClose();
+	 */
+
+
 
 	public void setDowngrab() {
 		// méthode qui va deposer le palet et reculer et fermer les pinces

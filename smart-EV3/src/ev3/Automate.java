@@ -7,33 +7,33 @@ public class Automate extends NavAlgo {
 	Sensor s= new Sensor ();
 	Position p= new Position();
 	NavAlgo play = new NavAlgo(r,s,p);
-	
+
 	public Automate() {
-		
+
 	}
 
 	public void play() {
-		
+
 		int grab = 0;
 		boolean center      = false;
 		boolean objDetected = false;
 		boolean picking     = false;
 		boolean attrape     = false;
-		
+
 		//récupération premier palet
-		 play.moveToGrab();
-		 play.pickUpGrab();
-		 play.decalageDroite();
-		 play.goToBaseAdverse();
-		 grab++;
-		 
+		play.moveToGrab();
+		play.pickUpGrab();
+		play.decalageDroite();
+		play.goToBaseAdverse();
+		grab++;
+
 		while (grab < 9) {
 
 			// STAP 1 : go to center
 			if (!center) {
 				r.display("Going to center");
 				/*if(!goToXcenter2()|| (!goToYcenter2())) {
-					
+
 				}
 				 */
 				// grab detected before reaching the center
@@ -61,15 +61,16 @@ public class Automate extends NavAlgo {
 
 				r.display("Approaching object");
 
-				boolean reached = play.moveToGrab();
+				play.moveToGrab();
+				picking = true;
 
-				// Lost object : Back to search
+				/*// Lost object : Back to search
 				if (!obj_detected()) {
 					objDetected = false;
 				}
 				if (reached) {
 					picking = true;
-				}
+				}*/
 			}
 			// Catch the object
 			if (picking && !attrape) {
