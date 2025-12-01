@@ -1,5 +1,7 @@
 package ev3;
 
+import java.util.ArrayList;
+
 public class Automate extends NavAlgo {
 	RobotPilot r = new RobotPilot(); 
 	Sensor s= new Sensor ();
@@ -7,20 +9,29 @@ public class Automate extends NavAlgo {
 	NavAlgo play = new NavAlgo(r,s,p);
 
 	public void play() {
-
+		
 		int grab = 0;
 		boolean center      = false;
 		boolean objDetected = false;
 		boolean picking     = false;
 		boolean attrape     = false;
-
+		
+		//récupération premier palet
+		 play.moveToGrab();
+		 play.pickUpGrab();
+		 play.decalageDroite();
+		 play.goToBaseAdverse();
+		 grab++;
+		 
 		while (grab < 9) {
 
 			// STAP 1 : go to center
 			if (!center) {
 				r.display("Going to center");
-				goToCenter();
-
+				/*if(!goToXcenter2()|| (!goToYcenter2())) {
+					
+				}
+				 */
 				// grab detected before reaching the center
 				if (obj_detected()) {
 					objDetected = true;   //Go to STAP 3
@@ -32,11 +43,14 @@ public class Automate extends NavAlgo {
 
 				r.display("Searching object");
 
-				rotate_until_disc_detected();
-
-				if (obj_detected()) {
-					objDetected = true;
+				ArrayList<Float> t=play.spin(90);
+				double[] tab=play.angles_grab(t);
+				while(tab==null) {
+					t=play.spin(90);
+					tab=play.angles_grab(t);
 				}
+				play.rotateTo((float)tab[0]);
+				objDetected=true;
 			}
 			// STAP 3:Object detected
 			if (objDetected && !picking) {
