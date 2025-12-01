@@ -59,7 +59,7 @@ public class NavAlgo {
 	public void goToYcenter() {
 		// must add aprox values: it will never reach perfect mesurement
 		rotateTo(180);
-		
+
 		float sample = s.getDistance();
 
 		while (Math.abs(sample - table_length / 2) > 5) {
@@ -68,7 +68,7 @@ public class NavAlgo {
 			r.forward(true);
 		}
 	}
-	
+
 	public void goToXcenter() {
 		rotateTo(90);
 		smartAlign();
@@ -96,7 +96,7 @@ public class NavAlgo {
 		return false;
 	}
 
-	
+
 
 	public boolean goToXcenter2() {
 		// cette methode verifie qu'il detecte bien un mur et pas un objet
@@ -459,12 +459,13 @@ public class NavAlgo {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
 		int error = 0;
+		r.display("distance :"+ previousDistance, 10);
+		r.forward(s.getDistance()/2);
 
-		r.forward();
 		while (previousDistance >15 || !s.isPressed()) {
-			r.display("Rien touche", 3000);
+			r.display("distance :"+ s.getDistance(), 10);
 			// Moving forward for approximately 200ms
-			Delay.msDelay(200);
+			Delay.msDelay(10);
 			// Distance between robot and grab after moving during 200ms
 			currentDistance = s.getDistance();
 
@@ -488,7 +489,8 @@ public class NavAlgo {
 			}
 		}
 		r.pincherOpen();
-		r.display("Distance assez proche du pavé", 5000);
+		r.stop();
+		r.display("Distance assez proche du pavé", 200);
 	}
 
 	public void pickUpGrab() {
