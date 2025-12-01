@@ -332,9 +332,10 @@ public class NavAlgo {
 	}
 
 	/**
-	 * Finds the index of the center point in a list of distances by analyzing the
-	 * derivative of the values. The method identifies a local minimum where the
+	 * Finds the index of the center point in a list of distances by identifying a local minimum where the
 	 * derivative changes from negative to positive, indicating a valley bottom.
+	 * 
+	 * 
 	 *
 	 * @param distances An ArrayList of Float values representing distances.
 	 *                  The list must contain at least 3 elements.
@@ -373,7 +374,7 @@ public class NavAlgo {
 	}
 
 	/**
-	 * Finds the index of the minimum value in a list of distances.
+	 * Finds the index of the minimum value in a list of distances. Simpler alternative for findCenterByDerivative 
 	 *
 	 * @param distances An ArrayList of Float values representing distances.
 	 *                  The list must not be null, but it can be empty.
