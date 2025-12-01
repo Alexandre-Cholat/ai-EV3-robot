@@ -149,7 +149,16 @@ public class NavAlgo {
 			r.display("Obstacle evite", 500);
 		}
 	}
-
+	public void decalageDroite() {
+		r.turn(-90);
+		r.forward(15);
+		r.turn(90);
+	}
+	public void decalageGauche() {
+		r.turn(90);
+		r.forward(15);
+		r.turn(-90);
+	}
 	public void rotateTo(float orientation) {
 		float current_a = p.getPosition();
 		float calc_turn = orientation - current_a;
@@ -218,7 +227,9 @@ public class NavAlgo {
 
 	// ArrayList<Float> tabDistances = spin(360);
 
-	int turnSpeed = 30;r.turn(-(sweepAngle/2),turnSpeed,false);r.display("Spinning",500);
+	int turnSpeed = 30;
+	r.turn(-(sweepAngle/2),turnSpeed,false);
+	r.display("Spinning",500);
 	ArrayList<Float> tabDistances = spin(sweepAngle);r.turn(-(sweepAngle/2),turnSpeed,false);
 
 	r.display("sample nb= "+tabDistances.size());
@@ -250,8 +261,7 @@ public class NavAlgo {
 						r.display("Already centered!" + wallAngle, 8000);
 					}
 
-}catch(
-		Exception e)
+}catch(Exception e)
 {
 	r.display("no derivative found", 2500);
 	r.display("tab length =  " + filteredDistances.size(), 2000);
