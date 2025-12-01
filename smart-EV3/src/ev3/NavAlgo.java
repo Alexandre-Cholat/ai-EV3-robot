@@ -303,6 +303,17 @@ public class NavAlgo {
 		return true;
 	}
 
+	/**
+	 * Spins the robot by a specified number of degrees while collecting distance
+	 * measurements during the rotation.
+	 *
+	 * @param rotationDegrees The number of degrees to rotate the robot. Positive
+	 *                        values indicate clockwise rotation, and negative
+	 *                        values indicate counterclockwise rotation.
+	 * @return An ArrayList of Float values representing the distances measured
+	 *         during the rotation. Each distance is collected at intervals while
+	 *         the robot is moving.
+	 */
 	public ArrayList<Float> spin(float rotationDegrees) {
 
 		ArrayList<Float> tabDistances = new ArrayList<Float>();
@@ -320,6 +331,17 @@ public class NavAlgo {
 		return tabDistances;
 	}
 
+	/**
+	 * Finds the index of the center point in a list of distances by analyzing the
+	 * derivative of the values. The method identifies a local minimum where the
+	 * derivative changes from negative to positive, indicating a valley bottom.
+	 *
+	 * @param distances An ArrayList of Float values representing distances.
+	 *                  The list must contain at least 3 elements.
+	 * @return The index of the center point in the original distances list where
+	 *         a local minimum is detected.
+	 * @throws Exception If no local minimum is found in the distances list.
+	 */
 	private int findCenterByDerivative(ArrayList<Float> distances) throws Exception {
 		if (distances.size() < 3)
 			return 0;
@@ -350,6 +372,14 @@ public class NavAlgo {
 
 	}
 
+	/**
+	 * Finds the index of the minimum value in a list of distances.
+	 *
+	 * @param distances An ArrayList of Float values representing distances.
+	 *                  The list must not be null, but it can be empty.
+	 * @return The index of the smallest value in the list. If the list is empty,
+	 *         the method returns 0.
+	 */
 	private int findMinimum(ArrayList<Float> distances) {
 		if (distances.isEmpty())
 			return 0;
