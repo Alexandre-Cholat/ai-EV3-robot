@@ -52,30 +52,39 @@ public class NavAlgo {
 	// navigates to center from any position
 	public void goToCenter() {
 		goToYcenter();
+		r.display("Y is centered", 5000);
 		goToXcenter();
+		r.display("X is centered", 5000);
+
 
 	}
 
 	public void goToYcenter() {
-		// must add aprox values: it will never reach perfect mesurement
 		rotateTo(180);
 
 		float sample = s.getDistance();
+		
+		r.forward(sample - (table_length / 2), true);
 
-		while (Math.abs(sample - table_length / 2) > 5) {
+		// aprox abs values: it will never reach perfect mesurement
+		while (Math.abs(sample - (table_length / 2)) > 2.5) {
 			r.display("D : " + sample, 50);
 			sample = s.getDistance();
-			r.forward(true);
+
 		}
+		r.stop();
 	}
 
+	//change forwards logic for asynchronous
 	public void goToXcenter() {
 		rotateTo(90);
 		smartAlign();
 
+		r.forward();
 		while (Math.abs(s.getDistance() - table_width / 2) > 5) {
 			r.forward(s.getDistance() - table_width / 2);
 		}
+		r.stop();
 	}
 
 	public boolean goToYcenter2() {
@@ -251,7 +260,7 @@ public class NavAlgo {
 			// float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) -
 			// (sweepAngle/2);
 			float minAngle = ((sweepAngle / filteredDistances.size()) * minIdx) - (sweepAngle / 4);
-			r.display("Best rel angle: " + minAngle, 2000);
+			r.display("Best rel angle: " + minAngle, 1000);
 
 			float wallAngle = startAng + minAngle;
 
@@ -259,9 +268,9 @@ public class NavAlgo {
 			if (wallAngle != startAng) {
 				rotateTo(wallAngle);
 				p.setAngle(wallAngle);
-				r.display("New Position: " + wallAngle, 8000);
+				r.display("New Position: " + wallAngle, 2000);
 			} else {
-				r.display("Already centered!" + wallAngle, 8000);
+				r.display("Already centered!" + wallAngle, 2000);
 			}
 
 		} catch (Exception e) {
@@ -459,19 +468,21 @@ public class NavAlgo {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
 		int error = 0;
-		r.display("distance :"+ previousDistance, 10);
+		r.display("distance :"+ previousDistance, 50);
 		r.forward(s.getDistance()/2);
 
-		while (previousDistance >15 || !s.isPressed()) {
-			r.display("distance :"+ s.getDistance(), 10);
-			// Moving forward for approximately 200ms
-			Delay.msDelay(10);
+		while (previousDistance > 35 || !s.isPressed()) {
+			r.display("distance :"+ s.getDistance(), 50);			// Moving forward for approximately 200ms
 			// Distance between robot and grab after moving during 200ms
 			currentDistance = s.getDistance();
 
 			// If currentDistance > distance to which the robot was 200ms
-			if (currentDistance >= previousDistance + 2) {
+
+
+			if (currentDistance > previousDistance + 2) {
 				error++;
+				//r.display("erruer ", 1000);
+
 
 			}
 			if (error >= 3) {
@@ -483,12 +494,12 @@ public class NavAlgo {
 				}
 
 			}
+
 			else{
 				// Update of the distance before the following 200ms
 				previousDistance = currentDistance;
 			}
 		}
-		r.pincherOpen();
 		r.stop();
 		r.display("Distance assez proche du pavé", 200);
 	}

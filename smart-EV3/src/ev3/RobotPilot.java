@@ -117,6 +117,7 @@ public class RobotPilot {
 	// ───────────────────────────────────────────────
 	
     
+    //asynchronous forwards travel until break/ end of loop
 	public void forward() {
 	    pilot.forward();
 	}
