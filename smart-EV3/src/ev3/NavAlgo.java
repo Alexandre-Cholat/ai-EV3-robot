@@ -64,9 +64,8 @@ public class NavAlgo {
 			r.forward(s.getDistance() - table_length / 2);
 		}
 	}
-
-	public boolean goToYcenter2() {
-		// cette methode verifie qu'il detecte bien un mur et pas un objet
+	public void goToYcenter2() {
+		//cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(180);
 		align(180);
 		float dist1 = s.getDistance();
@@ -77,10 +76,8 @@ public class NavAlgo {
 			r.turn(180);
 			while (s.getDistance() != table_length / 2) {
 				r.forward(s.getDistance() - table_length / 2);
-				return true;
 			}
-		} else
-			return false;
+		}
 	}
 
 	public void goToXcenter() {
@@ -91,9 +88,8 @@ public class NavAlgo {
 			r.forward(s.getDistance() - table_width / 2);
 		}
 	}
-
-	public boolean goToXcenter2() {
-		// cette methode verifie qu'il detecte bien un mur et pas un objet
+	public void goToXcenter2() {
+		//cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(90);
 		align(90);
 		float dist1 = s.getDistance();
@@ -104,9 +100,7 @@ public class NavAlgo {
 			r.turn(180);
 			while (s.getDistance() != table_width / 2) {
 				r.forward(s.getDistance() - table_width / 2);
-				return true;
 			}
-			return false;
 		}
 	}
 
@@ -153,18 +147,6 @@ public class NavAlgo {
 			r.forward(20);
 			r.display("Obstacle evite", 500);
 		}
-	}
-
-	public void decalageDroite() {
-		r.turn(-90);
-		r.forward(15);
-		r.turn(90);
-	}
-
-	public void decalageGauche() {
-		r.turn(90);
-		r.forward(15);
-		r.turn(-90);
 	}
 
 	public void rotateTo(float orientation) {
@@ -235,57 +217,6 @@ public class NavAlgo {
 
 	// ArrayList<Float> tabDistances = spin(360);
 
-	public boolean align(float startAng, float sweepAngle) {
-
-		// rotation 360
-		// ArrayList<Float> tabDistances = spin(360);
-
-		int turnSpeed = 30;
-		// sweep ( already facing wall )
-		r.turn(-(sweepAngle / 2), turnSpeed, false);
-		r.display("Spinning", 500);
-		ArrayList<Float> tabDistances = spin(sweepAngle);
-		r.turn(-(sweepAngle / 2), turnSpeed, false);
-
-		// filter and reduce number of distance measurements
-		ArrayList<Float> filteredDistances = downsampleToHalfDegree(tabDistances, sweepAngle);
-		r.display("reduced nb = " + filteredDistances.size());
-
-		// Calcul de indexe de la valeur la plus proche du mur
-		try {
-
-			// int minIdx = findCenterByDerivative(filteredDistances);
-			int minIdx = findMinimum(filteredDistances);
-
-			r.display("Best: " + minIdx + " of " + filteredDistances.size(), 4000);
-
-			// Calcul angle relative de minIdx
-			// float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) -
-			// (sweepAngle/2);
-			float minAngle = ((sweepAngle / filteredDistances.size()) * minIdx) - (sweepAngle / 4);
-			r.display("Best rel angle: " + minAngle, 2000);
-
-			float wallAngle = startAng + minAngle;
-
-			// rotate to smallest distance to wall
-			if (wallAngle != startAng) {
-				rotateTo(wallAngle);
-				p.setAngle(wallAngle);
-				r.display("New Position: " + wallAngle, 8000);
-			} else {
-				r.display("Already centered!" + wallAngle, 8000);
-			}
-
-		} catch (Exception e) {
-			r.display("no derivative found", 2500);
-			r.display("tab length =  " + filteredDistances.size(), 2000);
-			// try again
-			align(startAng, sweepAngle);
-
-		}
-
-		return true;
-	}
 
 	public ArrayList<Float> spin(float rotationDegrees) {
 
@@ -322,56 +253,27 @@ private int findCenterByDerivative(ArrayList<Float> distances) throws Exception 
 			if (derivatives.get(i - 2) < 0 && derivatives.get(i+1) >= 0) {
 				if (derivatives.get(i - 2) < 0 && derivatives.get(i+2) >= 0) {
 					return i; // Return index in original array
+				} else {
+					// Handle the case where the condition is not met
+					r.display("No local minima found", 1000);
 				}
-
-			float wallAngle =  startAng + minAngle;
-			
-			//rotate to smallest distance to wall
-			if(wallAngle != startAng) {
+			}
+			}
+	
+			float wallAngle = startAng + minAngle;
+	
+			// Rotate to smallest distance to wall
+			if (wallAngle != startAng) {
 				rotateTo(wallAngle);
 				p.setAngle(wallAngle);
 				r.display("New Position: " + wallAngle, 8000);
-			}else {
+			} else {
 				r.display("Already centered!" + wallAngle, 8000);
 			}
-			
 		}
-
-		
-		
-		return true;
 	}
 
-	private int findCenterByDerivative(ArrayList<Float> distances) throws Exception {
-		if (distances.size() < 3)
-			return 0;
-
-		ArrayList<Float> derivatives = new ArrayList<>();
-
-		// Calculate simple derivatives
-		for (int i = 1; i < distances.size(); i++) {
-			derivatives.add(distances.get(i) - distances.get(i - 1));
-		}
-
-		// find local minima
-
-		// Find where derivative changes from negative to positive (valley bottom)
-		for (int i = 1; i < derivatives.size(); i++) {
-			if (derivatives.get(i - 1) < 0 && derivatives.get(i) >= 0) {
-				if (derivatives.get(i - 2) < 0 && derivatives.get(i + 1) >= 0) {
-					if (derivatives.get(i - 2) < 0 && derivatives.get(i + 2) >= 0) {
-						return i; // Return index in original array
-					}
-
-				}
-
-			}
-		}
-
-		throw new Exception("no derivative found");
-
-	}
-
+	
 	private int findMinimum(ArrayList<Float> distances) {
 		if (distances.isEmpty())
 			return 0;
