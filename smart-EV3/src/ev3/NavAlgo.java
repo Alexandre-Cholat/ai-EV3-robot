@@ -162,52 +162,7 @@ public class NavAlgo {
 		p.setAngle(orientation);
 	}
 
-	public void align(int startPos) {
-		int dist1 = 0;
-		int min = 1000;
-		float minAngle = startPos;
-		// minimise distance between wall
-
-		int i = 0;
-
-		while (i < 10) {
-
-			// rotate to random angle
-			int randAngle = (int) (Math.random() * 7);
-			rotateTo(startPos);
-
-			for (int j = 0; j < 10; i++) {
-				randAngle = (int) (Math.random() * 7);
-				r.turn(randAngle);
-
-				dist1 = (int) s.getDistance();
-
-				// new best candidate
-				if (dist1 < min) {
-					min = dist1;
-					minAngle = p.getPosition();
-
-					r.display("New min angle: " + minAngle);
-				}
-
-				// return to starting position center
-				rotateTo(startPos);
-			}
-
-			// rotate to smallest distance to wall
-			rotateTo(minAngle);
-
-			// set minAngle as intended start angle
-			if (dist1 < min) {
-				min = dist1;
-				minAngle = p.getPosition();
-				r.display("New min angle: " + minAngle);
-			}
-
-			rotateTo(startPos);
-		}
-	}
-
+	
 	/**
 	 * Aligns the robot to a target position using a smart alignment algorithm.
 	 * The method starts with a specified sweep angle and iteratively reduces the
