@@ -58,19 +58,50 @@ public class NavAlgo {
 	public void goToYcenter() {
 		rotateTo(180);
 
-		align(180, 45);
+		align(180);
 
 		while (s.getDistance() != table_length / 2) {
 			r.forward(s.getDistance() - table_length / 2);
 		}
 	}
+	public void goToYcenter2() {
+		//cette methode verifie qu'il detecte bien un mur et pas un objet
+		rotateTo(180);
+		align(180);
+		float dist1=s.getDistance();
+		r.turn(-180);
+		float dist2=s.getDistance();
+		if(dist1+dist2+20>table_length) {
+			//il n'y a pas de palet sur cette trajectoire, le robot peut avancer
+			r.turn(180);
+			while (s.getDistance() != table_length / 2) {
+				r.forward(s.getDistance() - table_length / 2);
+			}
+		}
+	}
+
 
 	public void goToXcenter() {
 		rotateTo(90);
-		align(90, 45);
+		align(90);
 
 		while (s.getDistance() != table_width / 2) {
 			r.forward(s.getDistance() - table_width / 2);
+		}
+	}
+	public void goToXcenter2() {
+		//cette methode verifie qu'il detecte bien un mur et pas un objet
+		rotateTo(90);
+		align(90);
+		float dist1=s.getDistance();
+		r.turn(-180);
+		float dist2=s.getDistance();
+		if(dist1+dist2+20>table_width) {
+			//il n'y a pas de palet sur cette trajectoire, le robot peut avancer
+			r.turn(180);
+			while (s.getDistance() != table_width / 2) {
+				r.forward(s.getDistance() - table_width / 2);
+			}
 		}
 	}
 
@@ -83,33 +114,40 @@ public class NavAlgo {
 				//cas ou le robot voit un obstacle, il l'évite
 				r.stop();
 				r.display("Obstacle detecte", 800);
-				avoidOneObstacle();
+				avoidObstacle();
 				r.forward();
 			}
-			 if (s.getColor().equals("White")) {
-		            r.stop();
-		            r.display("Ligne blanche detectee", 1000);
-		            r.forward(10);
-		            r.pincherOpen();
-		            r.forward(-10);
-		            r.pincherClose();
-		            return;
-		        }
+			if (s.getColor().equals("White")) {
+				r.stop();
+				r.display("Ligne blanche detectee", 1000);
+				r.forward(10);
+				r.pincherOpen();
+				r.forward(-(table_length/2-10));
+				r.pincherClose();
+			}
 		}
 	}
-	public void avoidOneObstacle() {
+	public void avoidObstacle() {
 		//le robot de décale pour éviter un obstacle
 		r.display("Evitement d'un obstacle", 500);
 
-		r.turn(-90, 50, true);
+		r.turn(-90);
+		if(s.getDistance()<=15) {
 
-		r.forward(15);
+			r.forward(15);
 
-		r.turn(90, 50, true);
+			r.turn(90);
 
-		r.forward(20);
-
-		r.display("Obstacle evite", 500);
+			r.forward(20);
+			r.display("Obstacle evite", 500);
+		}
+		else {
+			r.turn(-180);
+			r.forward(15);
+			r.turn(90);
+			r.forward(20);
+			r.display("Obstacle evite", 500);
+		}
 	}
 
 	public void rotateTo(float orientation) {

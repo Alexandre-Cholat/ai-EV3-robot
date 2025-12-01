@@ -128,7 +128,7 @@ public class RobotPilot {
 	public void forward(float distanceCm) {
 	    pilot.travel(distanceCm * 10); // cm to mm
 	}
-	
+
 	// @param b true for synchronous execution
 	public void forward(float distanceCm, int speed, boolean b) {
 	    setSpeed(speed);
