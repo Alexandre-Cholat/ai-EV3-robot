@@ -15,7 +15,9 @@ public class Main {
 			
 			//monRobot.obj_detected();
 			
-			//monRobot.grab();
+			//monRobot.moveToGrab();
+			// monRobot.goToXcenter2();
+			monRobot.angles_grab(monRobot.spin(90));	
 						
 			//monRobot.calibrateTurn(720);
 			

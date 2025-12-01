@@ -7,6 +7,10 @@ public class Automate extends NavAlgo {
 	Sensor s= new Sensor ();
 	Position p= new Position();
 	NavAlgo play = new NavAlgo(r,s,p);
+	
+	public Automate() {
+		
+	}
 
 	public void play() {
 		

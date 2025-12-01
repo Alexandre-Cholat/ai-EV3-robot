@@ -22,7 +22,7 @@ public class NavAlgo {
 	private Position p;
 	private boolean objDetected = false;
 
-	// environment dimensions
+	// environment dimensions (must be capitalized)!
 	static int table_length = 300;
 	static int table_width = 200;
 
@@ -51,11 +51,13 @@ public class NavAlgo {
 
 	// navigates to center from any position
 	public void goToCenter() {
-		goToXcenter();
 		goToYcenter();
+		goToXcenter();
+
 	}
 
 	public void goToYcenter() {
+		//must add aprox values: it will never reach perfect mesurement
 		rotateTo(180);
 
 		while (s.getDistance() != table_length / 2) {
@@ -66,7 +68,7 @@ public class NavAlgo {
 	public boolean goToYcenter2() {
 		// cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(180);
-		align(180);
+		//smartAlign();
 		float dist1 = s.getDistance();
 		r.turn(-180);
 		float dist2 = s.getDistance();
@@ -93,7 +95,7 @@ public class NavAlgo {
 	public boolean goToXcenter2() {
 		// cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(90);
-		align(90);
+		smartAlign();
 		float dist1 = s.getDistance();
 		r.turn(-180);
 		float dist2 = s.getDistance();
@@ -170,7 +172,7 @@ public class NavAlgo {
 		p.setAngle(orientation);
 	}
 
-	
+
 	/**
 	 * Aligns the robot to a target position using a smart alignment algorithm.
 	 * The method starts with a specified sweep angle and iteratively reduces the
@@ -290,7 +292,7 @@ public class NavAlgo {
 			tabDistances.add(distCm);
 		}
 
-		// length = 3000 if no delays
+		// length = 3000+ if no delays
 		return tabDistances;
 	}
 
@@ -435,6 +437,7 @@ public class NavAlgo {
 		r.pincherOpen();
 		r.forward();
 		while (!s.isPressed()) {
+			r.display("Rien touche", 3000);
 			// Moving forward for approximately 200ms
 			Delay.msDelay(200);
 			// Distance between robot and grab after moving during 200ms
@@ -453,7 +456,7 @@ public class NavAlgo {
 			previousDistance = currentDistance;
 		}
 
-		r.stop();
+		r.pincherClose();
 		r.display("Distance assez proche du pavé", 5000);
 		return true;
 	}
@@ -509,7 +512,7 @@ public class NavAlgo {
 				}
 				r.display("Deuxième discontinuité");
 				int end = j;
-				double angle = ((start + end) / 2) * 0.5;
+				double angle = ((start + end) / 2) /t.size();
 				angles[number] = angle;
 				number++;
 
@@ -519,7 +522,7 @@ public class NavAlgo {
 				i++;
 			}
 		}
-
+		r.display(angles[0]+ "");
 		return angles;
 	}
 
