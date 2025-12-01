@@ -57,10 +57,10 @@ public class NavAlgo {
 	}
 
 	public void goToYcenter() {
-		//must add aprox values: it will never reach perfect mesurement
+		// must add aprox values: it will never reach perfect mesurement
 		rotateTo(180);
 
-		while (s.getDistance() != table_length / 2) {
+		while (Math.abs(s.getDistance() - table_length / 2) > 5) {
 			r.forward(s.getDistance() - table_length / 2);
 		}
 	}
@@ -68,7 +68,7 @@ public class NavAlgo {
 	public boolean goToYcenter2() {
 		// cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(180);
-		//smartAlign();
+		// smartAlign();
 		float dist1 = s.getDistance();
 		r.turn(-180);
 		float dist2 = s.getDistance();
@@ -87,7 +87,7 @@ public class NavAlgo {
 		rotateTo(90);
 		smartAlign();
 
-		while (s.getDistance() != table_width / 2) {
+		while (Math.abs(s.getDistance() - table_width / 2) > 5) {
 			r.forward(s.getDistance() - table_width / 2);
 		}
 	}
@@ -154,11 +154,13 @@ public class NavAlgo {
 			r.display("Obstacle evite", 500);
 		}
 	}
+
 	public void decalageDroite() {
 		r.turn(-90);
 		r.forward(15);
 		r.turn(90);
 	}
+
 	public void decalageGauche() {
 		r.turn(-90);
 		r.forward(15);
@@ -171,7 +173,6 @@ public class NavAlgo {
 		r.turn(calc_turn); // set to synchronous?
 		p.setAngle(orientation);
 	}
-
 
 	/**
 	 * Aligns the robot to a target position using a smart alignment algorithm.
@@ -297,7 +298,8 @@ public class NavAlgo {
 	}
 
 	/**
-	 * Finds the index of the center point in a list of distances by identifying a local minimum where the
+	 * Finds the index of the center point in a list of distances by identifying a
+	 * local minimum where the
 	 * derivative changes from negative to positive, indicating a valley bottom.
 	 * 
 	 * 
@@ -339,7 +341,8 @@ public class NavAlgo {
 	}
 
 	/**
-	 * Finds the index of the minimum value in a list of distances. Simpler alternative for findCenterByDerivative 
+	 * Finds the index of the minimum value in a list of distances. Simpler
+	 * alternative for findCenterByDerivative
 	 *
 	 * @param distances An ArrayList of Float values representing distances.
 	 *                  The list must not be null, but it can be empty.
@@ -512,7 +515,7 @@ public class NavAlgo {
 				}
 				r.display("Deuxième discontinuité");
 				int end = j;
-				double angle = ((start + end) / 2) /t.size();
+				double angle = ((start + end) / 2) / t.size();
 				angles[number] = angle;
 				number++;
 
@@ -522,7 +525,7 @@ public class NavAlgo {
 				i++;
 			}
 		}
-		r.display(angles[0]+ "");
+		r.display(angles[0] + "");
 		return angles;
 	}
 
