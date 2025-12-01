@@ -9,19 +9,10 @@ public class Automate extends NavAlgo {
 	public void play() {
 
 		int grab = 0;
-
 		boolean center      = false;
 		boolean objDetected = false;
 		boolean picking     = false;
 		boolean attrape     = false;
-		
-		/*récupération premier palet
-		 * play.moveToGrab();
-		 * play.pickUpGrab();
-		 * play.decalageADroite();
-		 * play.goToBaseAdverse();
-		 * grab++;
-		 */
 
 		while (grab < 9) {
 
