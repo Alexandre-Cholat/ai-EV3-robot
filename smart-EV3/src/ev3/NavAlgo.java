@@ -64,8 +64,9 @@ public class NavAlgo {
 			r.forward(s.getDistance() - table_length / 2);
 		}
 	}
+
 	public boolean goToYcenter2() {
-		//cette methode verifie qu'il detecte bien un mur et pas un objet
+		// cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(180);
 		align(180);
 		float dist1 = s.getDistance();
@@ -90,8 +91,9 @@ public class NavAlgo {
 			r.forward(s.getDistance() - table_width / 2);
 		}
 	}
+
 	public boolean goToXcenter2() {
-		//cette methode verifie qu'il detecte bien un mur et pas un objet
+		// cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(90);
 		align(90);
 		float dist1 = s.getDistance();
@@ -206,76 +208,100 @@ public class NavAlgo {
 		}
 	}
 
+	/**
+	 * Aligns the robot to a target position using a smart alignment algorithm.
+	 * The method starts with a specified sweep angle and iteratively reduces the
+	 * sweep angle until it reaches a minimum threshold. At each step, it aligns
+	 * the robot based on the current position and the sweep angle.
+	 *
+	 * @return true if the alignment process completes successfully.
+	 */
 	public boolean smartAlign() {
 		float startAng = p.getPosition();
 		float sweepAngle = 45;
 
 		while (sweepAngle > 10) {
 			startAng = p.getPosition();
-			align(startAng, sweepAngle);
-			sweepAngle = sweepAngle - 10;
+			if (align(startAng, sweepAngle)) {
+				sweepAngle = sweepAngle - 10;
+			}
+
 		}
 
 		return true;
 	}
 
 	// ArrayList<Float> tabDistances = spin(360);
-	
-public boolean align(float startAng, float sweepAngle) {
-		
-		//rotation 360
-		//ArrayList<Float> tabDistances = spin(360);
-	
+
+	/**
+	 * Aligns the robot to face the closest wall within a specified sweep angle.
+	 *
+	 * This method performs the following steps:
+	 * 1. Rotates the robot to perform a sweep within the given sweep angle.
+	 * 2. Collects distance measurements during the sweep.
+	 * 3. Filters and reduces the number of distance measurements for processing.
+	 * 4. Identifies the angle corresponding to the closest wall.
+	 * 5. Rotates the robot to align with the closest wall, if necessary.
+	 *
+	 * If an error occurs during the alignment process, the method retries the
+	 * alignment.
+	 *
+	 * @param startAng   The starting angle of the robot before the sweep.
+	 * @param sweepAngle The angle (in degrees) over which the robot sweeps to
+	 *                   detect walls.
+	 * @return returns true if alignment completes successfully.
+	 */
+	public boolean align(float startAng, float sweepAngle) {
+
+		// rotation 360
+		// ArrayList<Float> tabDistances = spin(360);
+
 		int turnSpeed = 30;
-		//	sweep ( already facing wall )
-		r.turn(-(sweepAngle/2), turnSpeed, false);
+		// sweep ( already facing wall )
+		r.turn(-(sweepAngle / 2), turnSpeed, false);
 		r.display("Spinning", 500);
 		ArrayList<Float> tabDistances = spin(sweepAngle);
-		r.turn(-(sweepAngle/2), turnSpeed, false);	
-	
-		
-		//filter and reduce number of distance measurements
-		ArrayList<Float> filteredDistances= downsampleToHalfDegree(tabDistances, sweepAngle);
+		r.turn(-(sweepAngle / 2), turnSpeed, false);
+
+		// filter and reduce number of distance measurements
+		ArrayList<Float> filteredDistances = downsampleToHalfDegree(tabDistances, sweepAngle);
 		r.display("reduced nb = " + filteredDistances.size());
 
-		
-		//Calcul de indexe de la valeur la plus proche du mur
+		// Calcul de indexe de la valeur la plus proche du mur
 		try {
-			
-			//int minIdx = findCenterByDerivative(filteredDistances);
+
+			// int minIdx = findCenterByDerivative(filteredDistances);
 			int minIdx = findMinimum(filteredDistances);
-			
-			r.display("Best: "+minIdx + " of "+ filteredDistances.size(), 4000);
-			
+
+			r.display("Best: " + minIdx + " of " + filteredDistances.size(), 4000);
+
 			// Calcul angle relative de minIdx
-			//float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) - (sweepAngle/2);
-			float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) - (sweepAngle/4);
+			// float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) -
+			// (sweepAngle/2);
+			float minAngle = ((sweepAngle / filteredDistances.size()) * minIdx) - (sweepAngle / 4);
 			r.display("Best rel angle: " + minAngle, 2000);
 
-			float wallAngle =  startAng + minAngle;
-			
-			//rotate to smallest distance to wall
-			if(wallAngle != startAng) {
+			float wallAngle = startAng + minAngle;
+
+			// rotate to smallest distance to wall
+			if (wallAngle != startAng) {
 				rotateTo(wallAngle);
 				p.setAngle(wallAngle);
 				r.display("New Position: " + wallAngle, 8000);
-			}else {
+			} else {
 				r.display("Already centered!" + wallAngle, 8000);
 			}
-			
-		}catch(Exception e){
+
+		} catch (Exception e) {
 			r.display("no derivative found", 2500);
 			r.display("tab length =  " + filteredDistances.size(), 2000);
-			//try again
-			align( startAng, sweepAngle);
+			// try again
+			align(startAng, sweepAngle);
 
 		}
-		
-		
+
 		return true;
 	}
-
-
 
 	public ArrayList<Float> spin(float rotationDegrees) {
 
@@ -295,35 +321,35 @@ public boolean align(float startAng, float sweepAngle) {
 	}
 
 	private int findCenterByDerivative(ArrayList<Float> distances) throws Exception {
-        if (distances.size() < 3) return 0;
-        
-        ArrayList<Float> derivatives = new ArrayList<>();
-        
-        // Calculate simple derivatives
-        for (int i = 1; i < distances.size(); i++) {
-            derivatives.add(distances.get(i) - distances.get(i - 1));
-        }
-        
-        //find local minima
-        
-        // Find where derivative changes from negative to positive (valley bottom)
-        for (int i = 1; i < derivatives.size(); i++) {
-            if (derivatives.get(i - 1) < 0 && derivatives.get(i) >= 0) {
-            	if (derivatives.get(i - 2) < 0 && derivatives.get(i+1) >= 0) {
-            		if (derivatives.get(i - 2) < 0 && derivatives.get(i+2) >= 0) {
-            			return i; // Return index in original array
-            		}
-            		
-            	}
-                
-            }
-        }
-        
-        throw new Exception("no derivative found");
+		if (distances.size() < 3)
+			return 0;
 
-    }
+		ArrayList<Float> derivatives = new ArrayList<>();
 
-	
+		// Calculate simple derivatives
+		for (int i = 1; i < distances.size(); i++) {
+			derivatives.add(distances.get(i) - distances.get(i - 1));
+		}
+
+		// find local minima
+
+		// Find where derivative changes from negative to positive (valley bottom)
+		for (int i = 1; i < derivatives.size(); i++) {
+			if (derivatives.get(i - 1) < 0 && derivatives.get(i) >= 0) {
+				if (derivatives.get(i - 2) < 0 && derivatives.get(i + 1) >= 0) {
+					if (derivatives.get(i - 2) < 0 && derivatives.get(i + 2) >= 0) {
+						return i; // Return index in original array
+					}
+
+				}
+
+			}
+		}
+
+		throw new Exception("no derivative found");
+
+	}
+
 	private int findMinimum(ArrayList<Float> distances) {
 		if (distances.isEmpty())
 			return 0;
