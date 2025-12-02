@@ -171,9 +171,9 @@ public class NavAlgo {
 	}
 
 	public void decalageGauche() {
-		r.turn(-90);
-		r.forward(15);
 		r.turn(90);
+		r.forward(15);
+		r.turn(-90);
 	}
 
 	public void rotateTo(float orientation) {
@@ -574,7 +574,7 @@ public class NavAlgo {
 			float diff = d1-d2;
 
 			// First discontinuity
-			if (diff > 10) {
+			if (diff > 15) {
 				r.display("First discontinuity");
 				int j=i+1;
 				float diff2=0;
