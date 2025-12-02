@@ -582,9 +582,17 @@ public class NavAlgo {
 					diff2 = d3-d4;
 					j++;
 				}
-				if((j-i>10)) {
+				if((j-i>15)) {
 					r.display("Second discontinuity");
 					//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
+					if(number>=9) {
+						/*cas ou le capteur percoit plus de 9 discontinuité
+						 * alors qu'il ne doit y avoir que 9 palets->surement un bug du capteur
+						 */
+						
+						r.display("touts les palets detecter");
+						return angles;
+					}
 					angles[number]=((i+j)/2)*360/t.size();
 					number++;
 				}
