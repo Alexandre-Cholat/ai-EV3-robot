@@ -118,25 +118,28 @@ public class NavAlgo {
 
 	public void goToBaseAdverse() {
 		rotateTo(180);
-		r.forward(table_length - 20, 50, true);
-		while (s.getColor().equals("White")) {
-			r.forward(table_length - 20, 50, true);
-			if (s.getDistance() < 10) {
-				// cas ou le robot voit un obstacle, il l'évite
-				r.stop();
-				r.display("Obstacle detecte", 800);
-				avoidObstacle();
-				r.forward();
-			}
+		boolean estArrivee=false;
+		while(!estArrivee) {
+			r.forward(s.getDistance()-10, 50, true);
 			if (s.getColor().equals("White")) {
-				r.stop();
+				estArrivee=true;
 				r.display("Ligne blanche detectee", 1000);
-				r.forward(10);
-				r.pincherOpen();
-				r.forward(-(table_length / 2 - 10));
-				r.pincherClose();
 			}
+			float f1=s.getDistance();
+			//on fait faire un decalage au robot pour verifier qu'il allait bien vers la base adverse et non vers un palet
+			decalageDroite();
+			if(Math.abs(s.getDistance()-f1)<5) {
+				estArrivee=true;
+			}
+			//si la distance a augmenté lorsqu'il s'est decalé, alors il detectait surement un palet
 		}
+		r.stop();
+		r.display("Est au centre");
+		r.forward(10);
+		r.pincherOpen();
+		r.forward(-15);
+		r.pincherClose();
+		r.display("palet deposé");
 	}
 
 	public void avoidObstacle() {
@@ -589,8 +592,8 @@ public class NavAlgo {
 						/*cas ou le capteur percoit plus de 9 discontinuité
 						 * alors qu'il ne doit y avoir que 9 palets->surement un bug du capteur
 						 */
-						
-						r.display("touts les palets detecter");
+
+						r.display("touts les palets detectes");
 						return angles;
 					}
 					angles[number]=((i+j)/2)*360/t.size();
