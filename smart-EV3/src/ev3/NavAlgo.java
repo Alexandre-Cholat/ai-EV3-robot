@@ -446,12 +446,12 @@ public class NavAlgo {
 	public float trajectory(float f) {
 		//Dans la mesure où j'ai vraiment besoin de faire un balayage
 		// pour retrouver le palet
-		int[] angles = { -7, 2, 2, 2, 2, 2 };
+		int[] angles = { -7, 3, 3, 3, 3, 2 };
 		for(int an:angles ) {
 			r.turn(an); 
 			Delay.msDelay(100);
 
-			if(s.getDistance()+2 <=f) {
+			if(s.getDistance() <= f-2) {
 				r.display("Bonne direction", 3000);
 				return s.getDistance() ;
 			}
@@ -463,27 +463,35 @@ public class NavAlgo {
 		float currentDistance = previousDistance;
 		int error = 0;
 		r.display("distance :"+ previousDistance, 10);
-		r.forward(s.getDistance()/2);
+		r.forward();
 
-		while (previousDistance >15 || !s.isPressed()) {
-			//r.display("distance :"+ s.getDistance(), 10);
+		while (previousDistance >30 && !s.isPressed()) {
+
 			// Moving forward for approximately 200ms
-			Delay.msDelay(50);
+			Delay.msDelay(100);
 			// Distance between robot and grab after moving during 200ms
 			currentDistance = s.getDistance();
+
+			r.display("distance :"+ currentDistance, 20);
 
 			// If currentDistance > distance to which the robot was 200ms
 			if (currentDistance >= previousDistance + 2) {
 				error++;
+			}else {
+				error = 0;
 			}
+
 			if (error >= 3) {
+				//r.stop();
+				r.display("Objet perdu :"+ currentDistance, 20);
 				Float newDistance =trajectory(previousDistance);
 				if(newDistance !=-1) {
 					previousDistance=newDistance;
-				}else {
+					error=0;
+					//r.forward(); // reprendre la marche
+				} else {
 					r.stop();
 				}
-
 			}
 			else{
 				// Update of the distance before the following 200ms
@@ -593,7 +601,7 @@ public class NavAlgo {
 						 * alors qu'il ne doit y avoir que 9 palets->surement un bug du capteur
 						 */
 
-						r.display("touts les palets detectes");
+						r.display("tous les palets detectés");
 						return angles;
 					}
 					angles[number]=((i+j)/2)*360/t.size();
