@@ -37,7 +37,7 @@ public class Automate extends NavAlgo {
 				}
 				 */
 				// grab detected before reaching the center
-				if (obj_detected()) {
+				if (play.obj_detected()) {
 					objDetected = true;   //Go to STAP 3
 				}
 				center = true;
