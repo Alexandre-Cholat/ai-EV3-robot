@@ -464,26 +464,24 @@ public class NavAlgo {
 		}
 		return -1 ;
 	}
+	
 	public void moveToGrab() {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
 		int error = 0;
-		r.display("distance :"+ previousDistance, 50);
-		r.forward(s.getDistance()/2);
+		r.display("distance :"+ previousDistance, 10);
+		r.forward();
 
-		while (previousDistance > 35 || !s.isPressed()) {
-			r.display("distance :"+ s.getDistance(), 50);			// Moving forward for approximately 200ms
+		while (previousDistance >15 || !s.isPressed()) {
+			//r.display("distance :"+ s.getDistance(), 10);
+			// Moving forward for approximately 200ms
+			Delay.msDelay(50);
 			// Distance between robot and grab after moving during 200ms
 			currentDistance = s.getDistance();
 
 			// If currentDistance > distance to which the robot was 200ms
-
-
-			if (currentDistance > previousDistance + 2) {
+			if (currentDistance >= previousDistance + 2) {
 				error++;
-				//r.display("erruer ", 1000);
-
-
 			}
 			if (error >= 3) {
 				Float newDistance =trajectory(previousDistance);
@@ -494,14 +492,17 @@ public class NavAlgo {
 				}
 
 			}
-
 			else{
 				// Update of the distance before the following 200ms
 				previousDistance = currentDistance;
+				r.display("distance :"+ previousDistance, 10);
 			}
 		}
+		//if(previousDistance<15) {
+		r.pincherOpen();
 		r.stop();
 		r.display("Distance assez proche du pavé", 200);
+		//}
 	}
 
 	public void pickUpGrab() {
@@ -567,6 +568,46 @@ public class NavAlgo {
 			}
 		}
 		r.display(angles[0] + "");
+		return angles;
+	}
+	
+	
+	public double[] angles_grab2(ArrayList<Float> t) {
+		double[] angles=new double[9];
+		int number = 0;
+		int i = 0;
+
+		while (i < t.size() - 2) {
+			float d1 = t.get(i);
+			float d2 = t.get(i + 1);
+			float diff = d1-d2;
+
+			// First discontinuity
+			if (diff > 10) {
+				r.display("First discontinuity");
+				int j=i+1;
+				float diff2=0;
+				// Second discontinuity
+				while(j<t.size()-2&&(Math.abs(diff2)<10)) {
+					float d3 = t.get(j);
+					float d4 = t.get(j + 1);
+					diff2 = d3-d4;
+					j++;
+				}
+				if((j-i>10)) {
+					r.display("Second discontinuity");
+					//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
+					angles[number]=((i+j)/2)*360/t.size();
+					number++;
+				}
+
+				// Looking for a new grab
+				i = j+1;
+			} else {
+				i++;
+			}
+		}
+		r.turn((float)angles[0]);
 		return angles;
 	}
 
