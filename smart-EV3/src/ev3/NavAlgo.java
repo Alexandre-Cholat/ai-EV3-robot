@@ -122,8 +122,9 @@ public class NavAlgo {
 		while(!estArrivee) {
 			r.forward(s.getDistance()-10, 50, true);
 			if (s.getColor().equals("White")) {
+				//cas ou il detecte du blanc, on est donc sur qu'il est arrivé 
 				estArrivee=true;
-				r.display("Ligne blanche detectee", 1000);
+				r.display("Ligne blanche detectee");
 			}
 			float f1=s.getDistance();
 			//on fait faire un decalage au robot pour verifier qu'il allait bien vers la base adverse et non vers un palet
@@ -531,47 +532,20 @@ public class NavAlgo {
 		r.pincherClose();
 		r.display("Pavé déposer", 5000);
 	}
+	public void firstGrab() {
+		r.pincherOpen();
+		r.forward(60);
+		pickUpGrab();
+		decalageDroite();
+		goToBaseAdverse();
+	}
 
 	public void batteryStatus() {
 		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
 	}
 
+
 	public double[] angles_grab(ArrayList<Float> t) {
-		double[] angles = new double[9];
-		int number = 0;
-		int i = 0;
-
-		while (i < t.size() - 2) {
-			float d1 = t.get(i);
-			float d2 = t.get(i + 1);
-			float diff = d2 - d1;
-
-			// First discontinuity
-			if (diff <= -10) {
-				r.display("Première discontinuité");
-				int start = i;
-
-				// Second discontinuity
-				int j = i + 1;
-				while (j < t.size() - 1 && Math.abs(t.get(j + 1) - t.get(j)) < 5) {
-					j++;
-				}
-				r.display("Deuxième discontinuité");
-				int end = j;
-				double angle = ((start + end) / 2) / t.size();
-				angles[number] = angle;
-				number++;
-
-				// Looking for a new grab
-				i = end + 1;
-			} else {
-				i++;
-			}
-		}
-		r.display(angles[0] + "");
-		return angles;
-	}
-	public double[] angles_grab2(ArrayList<Float> t) {
 		double[] angles=new double[9];
 		int number = 0;
 		int i = 0;

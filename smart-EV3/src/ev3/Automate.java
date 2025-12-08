@@ -21,10 +21,7 @@ public class Automate extends NavAlgo {
 		boolean attrape     = false;
 
 		//récupération premier palet
-		play.moveToGrab();
-		play.pickUpGrab();
-		play.decalageDroite();
-		play.goToBaseAdverse();
+		play.firstGrab();
 		grab++;
 
 		while (grab < 9) {
