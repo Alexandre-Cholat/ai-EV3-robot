@@ -47,7 +47,7 @@ import lejos.hardware.Battery;
  */
 public class NavAlgo {
 
-	private RobotPilot r;
+	public RobotPilot r;
 	private Sensor s;
 	private Position p;
 	private boolean objDetected = false;
@@ -522,18 +522,22 @@ public class NavAlgo {
 		// tourne jusqu'a detecter une discontinuité, renvoie vrai s'il en trouve, false
 		// sinon
 		float previousDist = s.getDistance();
-		for (int angle = 0; angle <= 360; angle += 5) {
-			r.turn(5);
+		for (int angle = 0; angle <= 360; angle += 1) {
+			r.turn(1);
 			Delay.msDelay(100);
 			float currentDist = s.getDistance();
-			if (Math.abs(previousDist - currentDist) > 10) {// a voir s'il faut valeur plus grande ou plus petite
+			if (Math.abs(previousDist - currentDist) > 5) {// a voir s'il faut valeur plus grande ou plus petite
 				objDetected = true;
 				r.display("Grab detected in " + angle);
+				r.turn(15);
 				return;
 			}
 			previousDist = currentDist;
 		}
 		objDetected = false;
+		
+		
+		r.display("FIN", 10000);
 
 	}
 
@@ -568,9 +572,6 @@ public class NavAlgo {
 		float d2 = s.getDistance();
 
 		float d = Math.min(d1, d2);
-
-
-
 		r.forward(d-20);
 		r.stop();
 
@@ -582,14 +583,30 @@ public class NavAlgo {
 		if( s.isPressed()) {
 			r.pincherClose();
 			r.display("j'ai pavé");
-			return true;
-
-		}else {
-			r.display("j'ai pas trouve");
-			r.pincherClose();
-			r.forward(-d);
-			return false;
+			
+			
+			//recoder joliment avec boucle
 		}
+		
+		else {
+			r.pincherClose();
+			r.display("pas encore trouve");
+
+			r.pincherOpen();
+			r.forward(10);
+			if( s.isPressed()) {
+				r.pincherClose();
+				r.display("j'ai pavé");
+			}else {
+				r.pincherClose();
+				r.forward(-d);
+				r.display("j'ai pas trouve");
+	
+				return false;
+			}
+		}
+		
+		return true;
 
 
 	}

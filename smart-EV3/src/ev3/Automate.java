@@ -3,13 +3,8 @@ package ev3;
 import java.util.ArrayList;
 
 public class Automate extends NavAlgo {
-	RobotPilot r = new RobotPilot(); 
-	Sensor s= new Sensor ();
-	Position p= new Position();
-	NavAlgo play = new NavAlgo(r,s,p);
 
 	public Automate() {
-
 	}
 
 	public void play() {
@@ -21,21 +16,21 @@ public class Automate extends NavAlgo {
 		boolean attrape     = false;
 
 		//récupération premier palet
-		play.firstGrab();
-		grab++;
+		//play.firstGrab();
+		//grab++;
 
 		while (grab < 9) {
 
 			// STAP 1 : go to center
 			if (!center) {
 				r.display("Going to center");
-				play.goToCenter();
+				goToCenter();
 				/*if(!goToXcenter2()|| (!goToYcenter2())) {
 
 				}
 				 */
 				// grab detected before reaching the center
-				if (play.obj_detected()) {
+				if (obj_detected()) {
 					objDetected = true;   //Go to STAP 3
 				}
 				center = true;
@@ -44,17 +39,7 @@ public class Automate extends NavAlgo {
 			if (!objDetected && !picking) {
 
 				r.display("Searching object");
-				
-				
-				ArrayList<Float> t=play.downsampleToHalfDegree(play.spin(360), 360);
-				double[] tab=play.angles_grab(t);
-				if(tab==null) {
-					r.display("aucun palet detecté...");
-				}else {
-					r.turn((int)tab[0]);
-					objDetected=true;
-					r.display("Obj Detected!");
-				}
+				rotate_until_disc_detected();
 				
 			}
 			// STAP 3:Object detected
@@ -62,8 +47,8 @@ public class Automate extends NavAlgo {
 
 				r.display("Approaching object");
 
-				//play.moveToGrab();
-				picking = true;
+				picking =moveToGrabFacile();
+	
 
 				/*// Lost object : Back to search
 				if (!obj_detected()) {
@@ -73,17 +58,12 @@ public class Automate extends NavAlgo {
 					picking = true;
 				}*/
 			}
-			// Catch the object
-			if (picking && !attrape) {
-				r.display("Grabbing object");
-				pickUpGrab();
-				attrape = true;
-			}
+			
 			// STAP 4 : Return to the opposing camp
-			if (attrape) {
+			if (picking) {
 				r.display("Returning to base");
-				play.goToBaseAdverse();
-				play.setDowngrab();
+				goToBaseAdverse();
+				setDowngrab();
 				grab++;
 
 				// HERE WE GO AGAIN FOR ANOTHER ROUND
