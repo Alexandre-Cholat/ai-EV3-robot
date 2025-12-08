@@ -729,9 +729,9 @@ public class NavAlgo {
 				r.turn((float)angle+5);
 				return angle;
 			}
-			r.display("0 discontinuity detected");
-			return 0;
 		}
+		r.display("0 discontinuity detected");
+		return 0;
 	}
 	
 	
