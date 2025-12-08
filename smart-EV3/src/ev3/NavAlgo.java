@@ -127,25 +127,29 @@ public class NavAlgo {
 
 	public void goToBaseAdverse() {
 		rotateTo(180);
-		r.forward(table_length - 20, 50, true);
-		while (s.getColor().equals("White")) {
-			r.forward(table_length - 20, 50, true);
-			if (s.getDistance() < 10) {
-				// cas ou le robot voit un obstacle, il l'évite
-				r.stop();
-				r.display("Obstacle detecte", 800);
-				avoidObstacle();
-				r.forward();
-			}
+		boolean estArrivee=false;
+		while(!estArrivee) {
+			r.forward(s.getDistance()-10, 50, true);
 			if (s.getColor().equals("White")) {
-				r.stop();
-				r.display("Ligne blanche detectee", 1000);
-				r.forward(10);
-				r.pincherOpen();
-				r.forward(-(table_length / 2 - 10));
-				r.pincherClose();
+				//cas ou il detecte du blanc, on est donc sur qu'il est arrivé 
+				estArrivee=true;
+				r.display("Ligne blanche detectee");
 			}
+			float f1=s.getDistance();
+			//on fait faire un decalage au robot pour verifier qu'il allait bien vers la base adverse et non vers un palet
+			decalageDroite();
+			if(Math.abs(s.getDistance()-f1)<5) {
+				estArrivee=true;
+			}
+			//si la distance a augmenté lorsqu'il s'est decalé, alors il detectait surement un palet
 		}
+		r.stop();
+		r.display("Est au centre");
+		r.forward(10);
+		r.pincherOpen();
+		r.forward(-15);
+		r.pincherClose();
+		r.display("palet deposé");
 	}
 
 	public void avoidObstacle() {
@@ -177,9 +181,9 @@ public class NavAlgo {
 	}
 
 	public void decalageGauche() {
-		r.turn(-90);
-		r.forward(15);
 		r.turn(90);
+		r.forward(15);
+		r.turn(-90);
 	}
 
 	public void rotateTo(float orientation) {
@@ -452,12 +456,12 @@ public class NavAlgo {
 	public float trajectory(float f) {
 		//Dans la mesure où j'ai vraiment besoin de faire un balayage
 		// pour retrouver le palet
-		int[] angles = { -7, 2, 2, 2, 2, 2 };
+		int[] angles = { -7, 3, 3, 3, 3, 2 };
 		for(int an:angles ) {
 			r.turn(an); 
 			Delay.msDelay(100);
 
-			if(s.getDistance()+2 <=f) {
+			if(s.getDistance() <= f-2) {
 				r.display("Bonne direction", 3000);
 				return s.getDistance() ;
 			}
@@ -472,25 +476,33 @@ public class NavAlgo {
 		r.display("distance :"+ previousDistance, 10);
 		r.forward();
 
-		while (previousDistance >15 || !s.isPressed()) {
-			//r.display("distance :"+ s.getDistance(), 10);
+		while (previousDistance >30 && !s.isPressed()) {
+
 			// Moving forward for approximately 200ms
-			Delay.msDelay(50);
+			Delay.msDelay(100);
 			// Distance between robot and grab after moving during 200ms
 			currentDistance = s.getDistance();
+
+			r.display("distance :"+ currentDistance, 20);
 
 			// If currentDistance > distance to which the robot was 200ms
 			if (currentDistance >= previousDistance + 2) {
 				error++;
+			}else {
+				error = 0;
 			}
+
 			if (error >= 3) {
+				//r.stop();
+				r.display("Objet perdu :"+ currentDistance, 20);
 				Float newDistance =trajectory(previousDistance);
 				if(newDistance !=-1) {
 					previousDistance=newDistance;
-				}else {
+					error=0;
+					//r.forward(); // reprendre la marche
+				} else {
 					r.stop();
 				}
-
 			}
 			else{
 				// Update of the distance before the following 200ms
@@ -530,10 +542,18 @@ public class NavAlgo {
 		r.pincherClose();
 		r.display("Pavé déposer", 5000);
 	}
+	public void firstGrab() {
+		r.pincherOpen();
+		r.forward(60);
+		pickUpGrab();
+		decalageDroite();
+		goToBaseAdverse();
+	}
 
 	public void batteryStatus() {
 		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
 	}
+
 
 	public double[] angles_grab(ArrayList<Float> t) {
 		double[] angles = new double[9];
@@ -583,7 +603,7 @@ public class NavAlgo {
 			float diff = d1-d2;
 
 			// First discontinuity
-			if (diff > 10) {
+			if (diff > 15) {
 				r.display("First discontinuity");
 				int j=i+1;
 				float diff2=0;
@@ -594,9 +614,17 @@ public class NavAlgo {
 					diff2 = d3-d4;
 					j++;
 				}
-				if((j-i>10)) {
+				if((j-i>15)) {
 					r.display("Second discontinuity");
 					//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
+					if(number>=9) {
+						/*cas ou le capteur percoit plus de 9 discontinuité
+						 * alors qu'il ne doit y avoir que 9 palets->surement un bug du capteur
+						 */
+
+						r.display("tous les palets detectés");
+						return angles;
+					}
 					angles[number]=((i+j)/2)*360/t.size();
 					number++;
 				}
