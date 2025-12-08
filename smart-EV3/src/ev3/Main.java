@@ -9,7 +9,7 @@ public class Main {
 	public static void main(String[] args) {
 		NavAlgo monRobot = new NavAlgo();
 		
-		monRobot.goToCenter();
+		monRobot.moveToGrab();
 		
 		Etat etat=Etat.CHERCHE_MILIEU;
 
