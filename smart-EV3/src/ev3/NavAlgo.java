@@ -15,6 +15,36 @@ import java.util.HashMap;
 
 import lejos.hardware.Battery;
 
+/**
+ * The NavAlgo class provides a comprehensive set of navigation algorithms 
+ * for controlling a robot in a predefined environment. It integrates 
+ * functionalities for movement, alignment, obstacle avoidance, and object 
+ * interaction, leveraging sensor data and position tracking to achieve 
+ * precise navigation and task execution.
+ * 
+ * Key Features:
+ * - Navigate to specific positions (e.g., center of the table, opponent's base).
+ * - Align the robot to walls or targets using smart alignment algorithms.
+ * - Avoid obstacles dynamically during movement.
+ * - Detect and interact with objects, such as grabbing and depositing items.
+ * - Perform calibration and testing routines for movement and turning.
+ * - Monitor battery status and display relevant information.
+ * 
+ * The class relies on the RobotPilot, Sensor, and Position classes to 
+ * interface with the robot's hardware components, including motors, sensors, 
+ * and display. It is designed to operate within a rectangular environment 
+ * with predefined dimensions.
+ * 
+ * Usage:
+ * Instantiate the NavAlgo class and call the appropriate methods to perform 
+ * navigation tasks. The class supports both autonomous and semi-autonomous 
+ * operations, with methods for manual calibration and testing.
+ * 
+ * Note:
+ * Ensure that the environment dimensions (table_length and table_width) are 
+ * correctly set to match the physical setup. The robot's sensors should be 
+ * calibrated for accurate distance and color detection.
+ */
 public class NavAlgo {
 
 	private RobotPilot r;
@@ -50,6 +80,11 @@ public class NavAlgo {
 	}
 
 	// navigates to center from any position
+	/**
+	 * Moves the robot to the center of the coordinate system by first centering 
+	 * it along the Y-axis and then along the X-axis. Displays messages at each 
+	 * step to indicate progress.
+	 */
 	public void goToCenter() {
 		goToYcenter();
 		r.display("Y is centered", 5000);
@@ -59,6 +94,10 @@ public class NavAlgo {
 
 	}
 
+	/**
+	 * Adjusts the robot's position to align with the center of the Y-axis 
+	 * of the table by measuring the distance and moving accordingly.
+	 */
 	public void goToYcenter() {
 		rotateTo(180);
 
@@ -82,6 +121,12 @@ public class NavAlgo {
 		r.stop();
 	}
 
+	
+	/**
+	 * Moves the robot to the center of the X-axis of the table.
+	 * The method aligns the robot, calculates the distance to the center,
+	 * and adjusts its position accordingly.
+	 */
 	public void goToXcenter() {
 		rotateTo(90);
 		smartAlign();
@@ -91,6 +136,7 @@ public class NavAlgo {
 			r.forward(s.getDistance() - table_width / 2);
 		}
 		r.stop();
+		rotateTo(180);
 	}
 
 	public boolean goToYcenter2() {
@@ -192,6 +238,22 @@ public class NavAlgo {
 		r.turn(-90);
 	}
 
+	/**
+	 * Rotates the robot to the specified orientation.
+	 * 
+	 * This method calculates the required turn angle based on the current position
+	 * and the desired orientation, then commands the robot to perform the turn.
+	 * After the turn, it updates the robot's position data.
+	 * 
+	 * Functions that call this method:
+	 * - navigateTo()
+	 * - alignToTarget()
+	 * 
+	 * Updates the following variables in the position object (p):
+	 * - Angle (setAngle)
+	 * 
+	 * @param orientation The target orientation in degrees to rotate to.
+	 */
 	public void rotateTo(float orientation) {
 		float current_a = p.getPosition();
 		float calc_turn = orientation - current_a;
@@ -391,8 +453,21 @@ public class NavAlgo {
 		return minIdx;
 	}
 
-	// for continous sampling (very large distance.size() array), filters distance
-	// measurements
+	
+	/**
+	 * Downsamples a list of distance measurements to one measurement per 0.5 degrees
+	 * using a moving average approach. This method is useful for reducing the number
+	 * of data points in a sweep while maintaining a representative average of the
+	 * original data.
+	 *
+	 * @param distances  The list of distance measurements to be downsampled. Each
+	 *                   measurement represents a distance reading at a specific angle.
+	 * @param sweepAngle The total sweep angle (in degrees) covered by the distance
+	 *                   measurements.
+	 * @return A new list of downsampled distance measurements, where the number of
+	 *         measurements corresponds to one per 0.5 degrees of the sweep angle.
+	 *         Returns an empty list if the input list is null or empty.
+	 */
 	ArrayList<Float> downsampleToHalfDegree(ArrayList<Float> distances, float sweepAngle) {
 		if (distances == null || distances.isEmpty()) {
 			return new ArrayList<>();
