@@ -569,18 +569,19 @@ public class NavAlgo {
 
 			// First discontinuity
 			if (diff > 15) {
-				r.display("First discontinuity");
+				r.display("d1 = " + i);
 				int j=i+1;
 				float diff2=0;
 				// Second discontinuity
-				while(j<t.size()-2) {
+				while(j<t.size()-2 && (Math.abs(diff2)< 10)) {
 					float d3 = t.get(j);
 					float d4 = t.get(j + 1);
 					diff2 = d3-d4;
 					j++;
 				}
+				r.display("d2 = " + j);
+
 				if((j-i>15)) {
-					r.display("Second discontinuity");
 					//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
 					if(number>=9) {
 						/*cas ou le capteur percoit plus de 9 discontinuité
@@ -601,7 +602,9 @@ public class NavAlgo {
 				i++;
 			}
 		}
+		r.display("Turning to " + angles[0]);
 		r.turn((float)angles[0]);
+		r.display("done");
 		return angles;
 	}
 
