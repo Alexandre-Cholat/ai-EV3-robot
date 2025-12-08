@@ -387,7 +387,7 @@ public class NavAlgo {
 
 	// for continous sampling (very large distance.size() array), filters distance
 	// measurements
-	private ArrayList<Float> downsampleToHalfDegree(ArrayList<Float> distances, float sweepAngle) {
+	ArrayList<Float> downsampleToHalfDegree(ArrayList<Float> distances, float sweepAngle) {
 		if (distances == null || distances.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -557,7 +557,7 @@ public class NavAlgo {
 
 	
 	
-	public double[] angles_grab2(ArrayList<Float> t) {
+	public double[] angles_grab(ArrayList<Float> t) {
 		double[] angles=new double[9];
 		int number = 0;
 		int i = 0;
@@ -591,6 +591,7 @@ public class NavAlgo {
 						return angles;
 					}
 					angles[number]=((i+j)/2)*360/t.size();
+					r.display(" Add: " + angles[number]);
 					number++;
 				}
 
