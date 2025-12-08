@@ -70,12 +70,18 @@ public class NavAlgo {
 		while (Math.abs(sample - (table_length / 2)) > 2.5) {
 			r.display("D : " + sample, 50);
 			sample = s.getDistance();
-
 		}
+		/*
+		r.forward(true);
+		while (Math.abs(sample - table_length / 2) > 5) {
+			r.display("D : " + sample, 50);
+			sample = s.getDistance();
+			
+		}
+		*/
 		r.stop();
 	}
 
-	//change forwards logic for asynchronous
 	public void goToXcenter() {
 		rotateTo(90);
 		smartAlign();
@@ -480,6 +486,12 @@ public class NavAlgo {
 
 			// Moving forward for approximately 200ms
 			Delay.msDelay(100);
+		}	
+		r.forward(300, true);
+		while (previousDistance > 25 || !s.isPressed()) {
+			r.display("D: " + previousDistance, 10);
+			// Moving forward for approximately 200ms
+			Delay.msDelay(10);
 			// Distance between robot and grab after moving during 200ms
 			currentDistance = s.getDistance();
 
@@ -495,6 +507,16 @@ public class NavAlgo {
 			if (error >= 3) {
 				//r.stop();
 				r.display("Objet perdu :"+ currentDistance, 20);
+
+
+			if (currentDistance > previousDistance + 2) {
+				//error++;
+				//r.display("erruer ", 1000);
+
+				
+			}
+			/*if (error >= 3) {
+>>>>>>> Stashed changes
 				Float newDistance =trajectory(previousDistance);
 				if(newDistance !=-1) {
 					previousDistance=newDistance;
@@ -504,17 +526,23 @@ public class NavAlgo {
 					r.stop();
 				}
 			}
+
+			}*/
+
 			else{
 				// Update of the distance before the following 200ms
 				previousDistance = currentDistance;
 				r.display("distance :"+ previousDistance, 10);
 			}
 		}
-		//if(previousDistance<15) {
-		r.pincherOpen();
+		if(previousDistance<15) {
+			r.pincherOpen();
+			r.stop();
+			r.display("Distance assez proche du pavé", 200);
+		}
 		r.stop();
-		r.display("Distance assez proche du pavé", 200);
-		//}
+		r.display("Distance assez proche du pavé", 5000);
+		
 	}
 
 	public void pickUpGrab() {

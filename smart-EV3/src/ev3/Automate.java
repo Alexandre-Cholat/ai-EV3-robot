@@ -45,13 +45,15 @@ public class Automate extends NavAlgo {
 
 				r.display("Searching object");
 
-				ArrayList<Float> t=play.spin(360);
+				ArrayList<Float> t=play.downsampleToHalfDegree(play.spin(360), 360);
 				double[] tab=play.angles_grab(t);
 				if(tab==null) {
 					r.display("aucun palet detecté...");
+				}else {
+					r.turn((int)tab[0]);
+					objDetected=true;
 				}
-				r.turn((int)tab[0]);
-				objDetected=true;
+				
 			}
 			// STAP 3:Object detected
 			if (objDetected && !picking) {
