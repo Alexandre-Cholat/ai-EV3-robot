@@ -583,7 +583,7 @@ public class NavAlgo {
 				//r.stop();
 				r.display("Objet perdu :"+ currentDistance, 20);
 
-
+			}
 			if (currentDistance > previousDistance + 2) {
 				//error++;
 				//r.display("erruer ", 1000);
@@ -617,6 +617,7 @@ public class NavAlgo {
 		}
 		r.stop();
 		r.display("Distance assez proche du pavé", 5000);
+
 		
 	}
 
@@ -730,6 +731,8 @@ public class NavAlgo {
 			}
 		}
 	}
+	
+	
 public void goToMin(ArrayList<Float> t) {
 	float min = t.get(0);
 
