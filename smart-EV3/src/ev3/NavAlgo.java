@@ -52,30 +52,39 @@ public class NavAlgo {
 	// navigates to center from any position
 	public void goToCenter() {
 		goToYcenter();
+		r.display("Y is centered", 5000);
 		goToXcenter();
+		r.display("X is centered", 5000);
+
 
 	}
 
 	public void goToYcenter() {
-		// must add aprox values: it will never reach perfect mesurement
 		rotateTo(180);
 
 		float sample = s.getDistance();
+		
+		r.forward(sample - (table_length / 2), true);
 
-		while (Math.abs(sample - table_length / 2) > 5) {
+		// aprox abs values: it will never reach perfect mesurement
+		while (Math.abs(sample - (table_length / 2)) > 2.5) {
 			r.display("D : " + sample, 50);
 			sample = s.getDistance();
-			r.forward(true);
+
 		}
+		r.stop();
 	}
 
+	//change forwards logic for asynchronous
 	public void goToXcenter() {
 		rotateTo(90);
 		smartAlign();
 
+		r.forward();
 		while (Math.abs(s.getDistance() - table_width / 2) > 5) {
 			r.forward(s.getDistance() - table_width / 2);
 		}
+		r.stop();
 	}
 
 	public boolean goToYcenter2() {
@@ -255,7 +264,7 @@ public class NavAlgo {
 			// float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) -
 			// (sweepAngle/2);
 			float minAngle = ((sweepAngle / filteredDistances.size()) * minIdx) - (sweepAngle / 4);
-			r.display("Best rel angle: " + minAngle, 2000);
+			r.display("Best rel angle: " + minAngle, 1000);
 
 			float wallAngle = startAng + minAngle;
 
@@ -263,9 +272,9 @@ public class NavAlgo {
 			if (wallAngle != startAng) {
 				rotateTo(wallAngle);
 				p.setAngle(wallAngle);
-				r.display("New Position: " + wallAngle, 8000);
+				r.display("New Position: " + wallAngle, 2000);
 			} else {
-				r.display("Already centered!" + wallAngle, 8000);
+				r.display("Already centered!" + wallAngle, 2000);
 			}
 
 		} catch (Exception e) {
@@ -378,7 +387,7 @@ public class NavAlgo {
 
 	// for continous sampling (very large distance.size() array), filters distance
 	// measurements
-	private ArrayList<Float> downsampleToHalfDegree(ArrayList<Float> distances, float sweepAngle) {
+	ArrayList<Float> downsampleToHalfDegree(ArrayList<Float> distances, float sweepAngle) {
 		if (distances == null || distances.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -459,6 +468,7 @@ public class NavAlgo {
 		}
 		return -1 ;
 	}
+	
 	public void moveToGrab() {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
@@ -545,6 +555,8 @@ public class NavAlgo {
 	}
 
 
+	
+	
 	public double[] angles_grab(ArrayList<Float> t) {
 		double[] angles=new double[9];
 		int number = 0;
@@ -557,18 +569,19 @@ public class NavAlgo {
 
 			// First discontinuity
 			if (diff > 15) {
-				r.display("First discontinuity");
+				r.display("d1 = " + i);
 				int j=i+1;
 				float diff2=0;
 				// Second discontinuity
-				while(j<t.size()-2&&(Math.abs(diff2)<10)) {
+				while(j<t.size()-2 && (Math.abs(diff2)< 10)) {
 					float d3 = t.get(j);
 					float d4 = t.get(j + 1);
 					diff2 = d3-d4;
 					j++;
 				}
+				r.display("d2 = " + j);
+
 				if((j-i>15)) {
-					r.display("Second discontinuity");
 					//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
 					if(number>=9) {
 						/*cas ou le capteur percoit plus de 9 discontinuité
@@ -579,6 +592,7 @@ public class NavAlgo {
 						return angles;
 					}
 					angles[number]=((i+j)/2)*360/t.size();
+					r.display(" Add: " + angles[number]);
 					number++;
 				}
 
@@ -588,8 +602,23 @@ public class NavAlgo {
 				i++;
 			}
 		}
+		r.display("Turning to " + angles[0]);
 		r.turn((float)angles[0]);
+		r.display("done");
 		return angles;
+	}
+public void goToMin(ArrayList<Float> t) {
+	float min = t.get(0);
+
+    for (int i = 1; i < t.size(); i++) {
+        if (t.get(i) < min) {
+            min = t.get(i);
+        }
+        float angle =i*360/t.size();
+        r.display("le minimum est "+t.get(i));
+        r.display("angle :"+angle);
+        r.turn(angle);
+    }
 	}
 
 	// }

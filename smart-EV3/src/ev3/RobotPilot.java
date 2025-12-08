@@ -37,7 +37,7 @@ public class RobotPilot {
 	//for adelie robot chassis_offset, 62 almost perfect, 55 millimeters from center to wheel actual measurement: 61 not enough, 63 is too much
 	// for alexandre robot chassis_offset use 65 
 	double wheel_size = 56;
-	double chassis_offset = 65; 
+	double chassis_offset = 62; 
 	
 	double default_linear_speed = 200;
 	double default_angular_Speed = 50;
@@ -117,6 +117,7 @@ public class RobotPilot {
 	// ───────────────────────────────────────────────
 	
     
+    //asynchronous forwards travel until break/ end of loop
 	public void forward() {
 	    pilot.forward();
 	}
