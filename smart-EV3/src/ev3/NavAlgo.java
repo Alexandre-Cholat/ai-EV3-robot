@@ -607,6 +607,19 @@ public class NavAlgo {
 		r.display("done");
 		return angles;
 	}
+public void goToMin(ArrayList<Float> t) {
+	float min = t.get(0);
+
+    for (int i = 1; i < t.size(); i++) {
+        if (t.get(i) < min) {
+            min = t.get(i);
+        }
+        float angle =i*360/t.size();
+        r.display("le minimum est "+t.get(i));
+        r.display("angle :"+angle);
+        r.turn(angle);
+    }
+	}
 
 	// }
 	// ────────────────
