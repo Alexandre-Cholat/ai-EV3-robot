@@ -176,6 +176,18 @@ public class NavAlgo {
 		}
 		return false;
 	}
+	
+	public void simpleDepot() {
+		rotateTo(180);
+		// smartAlign();
+		float dist1 = s.getDistance();
+		r.forward(dist1-12);
+		r.pincherOpen();
+		r.forward(-25);
+		r.pincherClose();
+		r.display("pave dropped");
+		
+	}
 
 	public void goToBaseAdverse() {
 		rotateTo(180);
@@ -550,7 +562,38 @@ public class NavAlgo {
 		return -1 ;
 	}
 	
-	public void moveToGrab() {
+	public boolean moveToGrabFacile() {
+		float d1 = s.getDistance();
+		float d2 = s.getDistance();
+		
+		float d = Math.min(d1, d2);
+		
+		
+		
+		r.forward(d-20);
+		r.stop();
+
+		r.pincherOpen();
+		r.display("devant pavé");
+		
+		r.forward(22);
+				
+		if( s.isPressed()) {
+			r.pincherClose();
+			r.display("j'ai pavé");
+			return true;
+
+		}else {
+			r.display("j'ai pas trouve");
+			r.pincherClose();
+			r.forward(-d);
+			return false;
+		}
+		
+		
+	}
+	
+	/*public void moveToGrab() {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
 		int error = 0;
@@ -559,12 +602,6 @@ public class NavAlgo {
 
 		while (previousDistance >30 && !s.isPressed()) {
 
-			// Moving forward for approximately 200ms
-			Delay.msDelay(100);
-		}	
-		r.forward(300, true);
-		while (previousDistance > 25 || !s.isPressed()) {
-			r.display("D: " + previousDistance, 10);
 			// Moving forward for approximately 200ms
 			Delay.msDelay(10);
 			// Distance between robot and grab after moving during 200ms
@@ -582,45 +619,10 @@ public class NavAlgo {
 			if (error >= 3) {
 				//r.stop();
 				r.display("Objet perdu :"+ currentDistance, 20);
-
-			}
-			if (currentDistance > previousDistance + 2) {
-				//error++;
-				//r.display("erruer ", 1000);
-
 				
-			}
-			/*if (error >= 3) {
->>>>>>> Stashed changes
-				Float newDistance =trajectory(previousDistance);
-				if(newDistance !=-1) {
-					previousDistance=newDistance;
-					error=0;
-					//r.forward(); // reprendre la marche
-				} else {
-					r.stop();
-				}
-			}
 
 			}*/
-
-			else{
-				// Update of the distance before the following 200ms
-				previousDistance = currentDistance;
-				r.display("distance :"+ previousDistance, 10);
-			}
-		}
-		if(previousDistance<15) {
-			r.pincherOpen();
-			r.stop();
-			r.display("Distance assez proche du pavé", 200);
-		}
-		r.stop();
-		r.display("Distance assez proche du pavé", 5000);
-
-		
-	}
-
+	
 	public void pickUpGrab() {
 		//if (s.getDistance() <= 10) {
 
@@ -672,20 +674,20 @@ public class NavAlgo {
 			float diff = d1-d2;
 
 			// First discontinuity
-			if (diff > 15) {
-				r.display("d1 = " + i);
+			if (diff > 20) {
+				r.display("d1 = " + i*360/t.size());
 				int j=i+1;
 				float diff2=0;
 				// Second discontinuity
-				while(j<t.size()-2 && (Math.abs(diff2)< 10)) {
+				while(j<t.size()-2 && (Math.abs(diff2)< 20)) {
 					float d3 = t.get(j);
 					float d4 = t.get(j + 1);
 					diff2 = d3-d4;
 					j++;
 				}
-				r.display("d2 = " + j);
+				r.display("d2 = " + j*360/t.size());
 
-				if((j-i>15)) {
+				if((j-i>3)) {
 					//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
 					if(number>=9) {
 						/*cas ou le capteur percoit plus de 9 discontinuité
@@ -733,18 +735,19 @@ public class NavAlgo {
 	}
 	
 	
-public void goToMin(ArrayList<Float> t) {
-	float min = t.get(0);
-
-    for (int i = 1; i < t.size(); i++) {
-        if (t.get(i) < min) {
-            min = t.get(i);
-        }
-        float angle =i*360/t.size();
-        r.display("le minimum est "+t.get(i));
-        r.display("angle :"+angle);
-        r.turn(angle);
-    }
+	public void goToMin(ArrayList<Float> t) {
+		float min = t.get(0);
+	
+	    for (int i = 1; i < t.size(); i++) {
+	        if (t.get(i) < min) {
+	            min = i;
+	        }
+	        
+	    }
+	    float angle =min*360/t.size();
+	    r.display("indx min = "+ min);
+	    r.display("angle :"+angle);
+	    r.turn(angle);
 	}
 
 	// }
