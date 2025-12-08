@@ -516,7 +516,8 @@ public class NavAlgo {
 			float currentDist = s.getDistance();
 			if (Math.abs(previousDist - currentDist) > 10) {// a voir s'il faut valeur plus grande ou plus petite
 				objDetected = true;
-				r.display("Grab detected", 5000);
+				r.display("Grab detected in " + angle);
+				
 			}
 			previousDist = currentDist;
 		}
