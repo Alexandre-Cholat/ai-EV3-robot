@@ -573,7 +573,7 @@ public class NavAlgo {
 				int j=i+1;
 				float diff2=0;
 				// Second discontinuity
-				while(j<t.size()-2&&(Math.abs(diff2)<10)) {
+				while(j<t.size()-2) {
 					float d3 = t.get(j);
 					float d4 = t.get(j + 1);
 					diff2 = d3-d4;
