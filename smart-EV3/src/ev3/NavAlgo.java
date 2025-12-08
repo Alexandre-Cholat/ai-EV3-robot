@@ -144,7 +144,7 @@ public class NavAlgo {
 			//si la distance a augmenté lorsqu'il s'est decalé, alors il detectait surement un palet
 		}
 		r.stop();
-		r.display("Est au centre");
+		r.display("Est a la base");
 		r.forward(10);
 		r.pincherOpen();
 		r.forward(-15);
@@ -606,6 +606,26 @@ public class NavAlgo {
 		r.turn((float)angles[0]);
 		r.display("done");
 		return angles;
+	}
+	
+	public double angles_grab2(ArrayList<Float> t) {
+		double angle = 0;
+		int i = 0;
+
+		while (i < t.size() - 2) {
+			float d1 = t.get(i);
+			float d2 = t.get(i + 1);
+			float diff = d1-d2;
+
+			// First discontinuity
+			if (diff > 15) {
+				r.display("d1 = " + i);
+				angle = i*360/t.size();
+				r.display("angle :" +angle);
+				r.turn((float)angle);
+				return angle;
+			}
+		}
 	}
 public void goToMin(ArrayList<Float> t) {
 	float min = t.get(0);
