@@ -63,6 +63,7 @@ public class NavAlgo {
 		rotateTo(180);
 
 		float sample = s.getDistance();
+<<<<<<< Updated upstream
 		
 		r.forward(sample - (table_length / 2), true);
 
@@ -71,11 +72,21 @@ public class NavAlgo {
 			r.display("D : " + sample, 50);
 			sample = s.getDistance();
 
+=======
+		r.forward(true);
+		while (Math.abs(sample - table_length / 2) > 5) {
+			r.display("D : " + sample, 50);
+			sample = s.getDistance();
+			
+>>>>>>> Stashed changes
 		}
 		r.stop();
 	}
 
+<<<<<<< Updated upstream
 	//change forwards logic for asynchronous
+=======
+>>>>>>> Stashed changes
 	public void goToXcenter() {
 		rotateTo(90);
 		smartAlign();
@@ -473,6 +484,7 @@ public class NavAlgo {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
 		int error = 0;
+<<<<<<< Updated upstream
 		r.display("distance :"+ previousDistance, 10);
 		r.forward();
 
@@ -480,12 +492,21 @@ public class NavAlgo {
 
 			// Moving forward for approximately 200ms
 			Delay.msDelay(100);
+=======
+
+		r.forward(300, true);
+		while (previousDistance > 25 || !s.isPressed()) {
+			r.display("D: " + previousDistance, 10);
+			// Moving forward for approximately 200ms
+			Delay.msDelay(10);
+>>>>>>> Stashed changes
 			// Distance between robot and grab after moving during 200ms
 			currentDistance = s.getDistance();
 
 			r.display("distance :"+ currentDistance, 20);
 
 			// If currentDistance > distance to which the robot was 200ms
+<<<<<<< Updated upstream
 			if (currentDistance >= previousDistance + 2) {
 				error++;
 			}else {
@@ -495,6 +516,17 @@ public class NavAlgo {
 			if (error >= 3) {
 				//r.stop();
 				r.display("Objet perdu :"+ currentDistance, 20);
+=======
+
+
+			if (currentDistance > previousDistance + 2) {
+				//error++;
+				//r.display("erruer ", 1000);
+
+				
+			}
+			/*if (error >= 3) {
+>>>>>>> Stashed changes
 				Float newDistance =trajectory(previousDistance);
 				if(newDistance !=-1) {
 					previousDistance=newDistance;
@@ -503,18 +535,29 @@ public class NavAlgo {
 				} else {
 					r.stop();
 				}
+<<<<<<< Updated upstream
 			}
+=======
+
+			}*/
+
+>>>>>>> Stashed changes
 			else{
 				// Update of the distance before the following 200ms
 				previousDistance = currentDistance;
 				r.display("distance :"+ previousDistance, 10);
 			}
 		}
+<<<<<<< Updated upstream
 		//if(previousDistance<15) {
 		r.pincherOpen();
 		r.stop();
 		r.display("Distance assez proche du pavé", 200);
 		//}
+=======
+		r.stop();
+		r.display("Distance assez proche du pavé", 5000);
+>>>>>>> Stashed changes
 	}
 
 	public void pickUpGrab() {
