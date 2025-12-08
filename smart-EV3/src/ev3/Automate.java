@@ -32,6 +32,7 @@ public class Automate extends NavAlgo {
 			// STAP 1 : go to center
 			if (!center) {
 				r.display("Going to center");
+				play.goToCenter();
 				/*if(!goToXcenter2()|| (!goToYcenter2())) {
 
 				}
@@ -47,13 +48,12 @@ public class Automate extends NavAlgo {
 
 				r.display("Searching object");
 
-				ArrayList<Float> t=play.spin(90);
+				ArrayList<Float> t=play.spin(360);
 				double[] tab=play.angles_grab(t);
-				while(tab==null) {
-					t=play.spin(90);
-					tab=play.angles_grab(t);
+				if(tab==null) {
+					r.display("aucun palet detecté...");
 				}
-				play.rotateTo((float)tab[0]);
+				r.turn((int)tab[0]);
 				objDetected=true;
 			}
 			// STAP 3:Object detected
@@ -81,8 +81,8 @@ public class Automate extends NavAlgo {
 			// STAP 4 : Return to the opposing camp
 			if (attrape) {
 				r.display("Returning to base");
-				play.setDowngrab();
 				play.goToBaseAdverse();
+				play.setDowngrab();
 				grab++;
 
 				// HERE WE GO AGAIN FOR ANOTHER ROUND
