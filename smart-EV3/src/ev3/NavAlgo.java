@@ -550,7 +550,7 @@ public class NavAlgo {
 		return -1 ;
 	}
 
-	public void moveToGrab() {
+	/*public void moveToGrab() {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
 		int error = 0;
@@ -604,22 +604,7 @@ public class NavAlgo {
 
 			}*/
 
-				else{
-					// Update of the distance before the following 200ms
-					previousDistance = currentDistance;
-					r.display("distance :"+ previousDistance, 10);
-				}
-			}
-			if(previousDistance<15) {
-				r.pincherOpen();
-				r.stop();
-				r.display("Distance assez proche du pavé", 200);
-			}
-			r.stop();
-			r.display("Distance assez proche du pavé", 5000);
-
-		}
-
+				
 		public void pickUpGrab() {
 			//if (s.getDistance() <= 10) {
 
@@ -732,7 +717,7 @@ public class NavAlgo {
 			return -1 ;
 		}
 
-		public double angles(ArrayList<Float> t) {
+		/*public double angles(ArrayList<Float> t) {
 			double angle ;
 			//int number = 0;
 			int i = 0;
@@ -769,7 +754,7 @@ public class NavAlgo {
 
 				}
 			}
-		}
+		}*/
 			public void goToMin(ArrayList<Float> t) {
 				float min = t.get(0);
 
