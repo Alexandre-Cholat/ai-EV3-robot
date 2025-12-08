@@ -646,6 +646,69 @@ public class NavAlgo {
 		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
 	}
 
+	public double[] angles_grab(ArrayList<Float> t) {
+		double[] angles=new double[9];
+		int number = 0;
+		int i = 0;
+
+		while (i < t.size() - 2) {
+			float d1 = t.get(i);
+			float d2 = t.get(i + 1);
+			float diff = d1-d2;
+
+			// First discontinuity
+			if (diff > 20) {
+				r.display("d1 = " + i);
+				int j=i+1;
+				float diff2=0;
+				// Second discontinuity
+				while(j<t.size()-2 && (diff2>-10)) {
+					float d3 = t.get(j);
+					float d4 = t.get(j + 1);
+					diff2 = d3-d4;
+					j++;
+				}
+				r.display("d2 = " + j);
+
+				if((j-i>3&&j-i<40)) {
+					//on vérifie que la discontinuité est assez grande mais aussi pas trop grande et que ce n'est pas un bug capteur !
+					if(number>=9) {
+						/*cas ou le capteur percoit plus de 9 discontinuité
+						 * alors qu'il ne doit y avoir que 9 palets->surement un bug du capteur
+						 */
+
+						r.display("tous les palets detectés");
+						return angles;
+					}
+					r.display("d2 = " + j);
+
+					if((j-i>15)) {
+						//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
+						if(number>=9) {
+							/*cas ou le capteur percoit plus de 9 discontinuité
+							 * alors qu'il ne doit y avoir que 9 palets->surement un bug du capteur
+							 */
+
+							r.display("tous les palets detectés");
+							return angles;
+						}
+						angles[number]=((i+j)/2)*360/t.size();
+						r.display(" Add: " + angles[number]);
+						number++;
+					}
+
+					// Looking for a new grab
+					i = j+1;
+				} else {
+					i++;
+				}
+			}
+		}
+		r.display("Turning to " + angles[0]);
+		r.turn((float)angles[0]);
+		r.display("done");
+		return angles;
+	}
 
 
 
@@ -656,12 +719,12 @@ public class NavAlgo {
 	public double angles_grab2(ArrayList<Float> t) {
 		double angle = 0;
 		int i = 0;
-	
+
 		while (i < t.size() - 2) {
 			float d1 = t.get(i);
 			float d2 = t.get(i + 1);
 			float diff = d1-d2;
-	
+
 			// First discontinuity
 			if (diff > 15) {
 				r.display("d1 = " + i);
@@ -674,28 +737,28 @@ public class NavAlgo {
 		r.display("0 discontinuity detected");
 		return 0;
 	}
-	
-	
+
+
 	public void goToMin(ArrayList<Float> t) {
 		float min = t.get(0);
-	
+
 		for (int i = 1; i < t.size(); i++) {
 			if (t.get(i) < min) {
 				min = i;
 			}
-	
+
 		}
 		float angle =min*360/t.size();
 		r.display("indx min = "+ min);
 		r.display("angle :"+angle);
 		r.turn(angle);
 	}
-	
+
 	// }
 	// ────────────────
 	// TESTING FUNCTIONS
 	// ────────────────
-	
+
 	public void wander() {
 		while (s.getDistance() > 10) {
 			r.forward();
@@ -706,22 +769,22 @@ public class NavAlgo {
 		// stop
 		r.stop();
 	}
-	
+
 	public void dist_greater_than_20() {
 		float distCm = s.getDistance();
 		r.display("D: " + distCm, 200);
-	
+
 		while (distCm > 20) {
 			distCm = s.getDistance();
 			r.display("D: " + distCm, 200);
 			r.forward();
 		}
-	
+
 		r.beep();
 		r.stop();
-	
-	}
-	
-	
 
 	}
+
+
+
+}
