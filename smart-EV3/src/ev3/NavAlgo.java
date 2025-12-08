@@ -102,7 +102,7 @@ public class NavAlgo {
 		rotateTo(180);
 
 		float sample = s.getDistance();
-		
+
 		r.forward(sample - (table_length / 2), true);
 
 		// aprox abs values: it will never reach perfect mesurement
@@ -115,13 +115,13 @@ public class NavAlgo {
 		while (Math.abs(sample - table_length / 2) > 5) {
 			r.display("D : " + sample, 50);
 			sample = s.getDistance();
-			
+
 		}
-		*/
+		 */
 		r.stop();
 	}
 
-	
+
 	/**
 	 * Moves the robot to the center of the X-axis of the table.
 	 * The method aligns the robot, calculates the distance to the center,
@@ -465,7 +465,7 @@ public class NavAlgo {
 		return minIdx;
 	}
 
-	
+
 	/**
 	 * Downsamples a list of distance measurements to one measurement per 0.5 degrees
 	 * using a moving average approach. This method is useful for reducing the number
@@ -528,7 +528,8 @@ public class NavAlgo {
 			float currentDist = s.getDistance();
 			if (Math.abs(previousDist - currentDist) > 10) {// a voir s'il faut valeur plus grande ou plus petite
 				objDetected = true;
-				r.display("Grab detected", 5000);
+				r.display("Grab detected in " + angle);
+				
 			}
 			previousDist = currentDist;
 		}
@@ -593,6 +594,7 @@ public class NavAlgo {
 		
 	}
 	
+
 	/*public void moveToGrab() {
 		float previousDistance = s.getDistance();
 		float currentDistance = previousDistance;
@@ -631,36 +633,93 @@ public class NavAlgo {
 		r.display("Pavé attrapé", 5000);
 	}
 
-	/*
-	 * r.pincherOpen();
-	 * int [] tab = p.getPosition();
-	 * r.display("Angle: " + tab[0], 5000);
-	 * Robot.pincherOpen= true;
-	 * r.pincherClose();
-	 */
 
 
 
-	public void setDowngrab() {
-		// méthode qui va deposer le palet et reculer et fermer les pinces
-		r.pincherOpen();
-		r.forward(-10);
-		r.pincherClose();
-		r.display("Pavé déposer", 5000);
-	}
-	public void firstGrab() {
-		r.pincherOpen();
-		r.forward(60);
-		pickUpGrab();
-		decalageDroite();
-		goToBaseAdverse();
-	}
-
-	public void batteryStatus() {
-		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
-	}
+				if (currentDistance > previousDistance + 2) {
+					//error++;
+					//r.display("erruer ", 1000);
 
 
+				}
+				/*if (error >= 3) {
+>>>>>>> Stashed changes
+				Float newDistance =trajectory(previousDistance);
+				if(newDistance !=-1) {
+					previousDistance=newDistance;
+					error=0;
+					//r.forward(); // reprendre la marche
+				} else {
+					r.stop();
+				}
+			}
+
+			}*/
+
+				
+		public void pickUpGrab() {
+			//if (s.getDistance() <= 10) {
+
+			r.forward(s.getDistance());
+			r.pincherClose();
+			r.display("Pavé attrapé", 5000);
+		}
+
+		/*
+		 * r.pincherOpen();
+		 * int [] tab = p.getPosition();
+		 * r.display("Angle: " + tab[0], 5000);
+		 * Robot.pincherOpen= true;
+		 * r.pincherClose();
+		 */
+
+
+
+		public void setDowngrab() {
+			// méthode qui va deposer le palet et reculer et fermer les pinces
+			r.pincherOpen();
+			r.forward(-10);
+			r.pincherClose();
+			r.display("Pavé déposer", 5000);
+		}
+		public void firstGrab() {
+			r.pincherOpen();
+			r.forward(60);
+			pickUpGrab();
+			decalageDroite();
+			goToBaseAdverse();
+		}
+
+		public void batteryStatus() {
+			r.display("Battery: " + Battery.getVoltage() + " v", 5000);
+		}
+>>>>>>> 7a4c6bb0ec131966be062e75be614bb38b441828
+
+
+
+
+		public double[] angles_grab(ArrayList<Float> t) {
+			double[] angles=new double[9];
+			int number = 0;
+			int i = 0;
+
+			while (i < t.size() - 2) {
+				float d1 = t.get(i);
+				float d2 = t.get(i + 1);
+				float diff = d1-d2;
+
+
+				// First discontinuity
+				if (diff > 15) {
+					r.display("d1 = " + i);
+					int j=i+1;
+					float diff2=0;
+					// Second discontinuity
+					while(j<t.size()-2 && (Math.abs(diff2)< 10)) {
+						float d3 = t.get(j);
+						float d4 = t.get(j + 1);
+						diff2 = d3-d4;
+						j++;
 	
 	
 	public double[] angles_grab(ArrayList<Float> t) {
@@ -675,11 +734,19 @@ public class NavAlgo {
 
 			// First discontinuity
 			if (diff > 20) {
+<<<<<<< HEAD
 				r.display("d1 = " + i*360/t.size());
 				int j=i+1;
 				float diff2=0;
 				// Second discontinuity
 				while(j<t.size()-2 && (Math.abs(diff2)< 20)) {
+=======
+				r.display("d1 = " + i);
+				int j=i+1;
+				float diff2=0;
+				// Second discontinuity
+				while(j<t.size()-2 && (diff2>-10)) {
+>>>>>>> 7a4c6bb0ec131966be062e75be614bb38b441828
 					float d3 = t.get(j);
 					float d4 = t.get(j + 1);
 					diff2 = d3-d4;
@@ -687,8 +754,13 @@ public class NavAlgo {
 				}
 				r.display("d2 = " + j*360/t.size());
 
+<<<<<<< HEAD
 				if((j-i>3)) {
 					//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
+=======
+				if((j-i>3&&j-i<40)) {
+					//on vérifie que la discontinuité est assez grande mais aussi pas trop grande et que ce n'est pas un bug capteur !
+>>>>>>> 7a4c6bb0ec131966be062e75be614bb38b441828
 					if(number>=9) {
 						/*cas ou le capteur percoit plus de 9 discontinuité
 						 * alors qu'il ne doit y avoir que 9 palets->surement un bug du capteur
@@ -697,12 +769,137 @@ public class NavAlgo {
 						r.display("tous les palets detectés");
 						return angles;
 					}
-					angles[number]=((i+j)/2)*360/t.size();
-					r.display(" Add: " + angles[number]);
-					number++;
+					r.display("d2 = " + j);
+
+					if((j-i>15)) {
+						//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
+						if(number>=9) {
+							/*cas ou le capteur percoit plus de 9 discontinuité
+							 * alors qu'il ne doit y avoir que 9 palets->surement un bug du capteur
+							 */
+
+							r.display("tous les palets detectés");
+							return angles;
+						}
+						angles[number]=((i+j)/2)*360/t.size();
+						r.display(" Add: " + angles[number]);
+						number++;
+					}
+
+					// Looking for a new grab
+					i = j+1;
+				} else {
+					i++;
+				}
+			}
+			r.display("Turning to " + angles[0]);
+			r.turn((float)angles[0]);
+			r.display("done");
+			return angles;
+		}
+
+		public double angles_grab2(ArrayList<Float> t) {
+			double angle = 0;
+			int i = 0;
+
+			while (i < t.size() - 2) {
+				float d1 = t.get(i);
+				float d2 = t.get(i + 1);
+				float diff = d1-d2;
+
+				// First discontinuity
+				if (diff > 15) {
+					r.display("d1 = " + i);
+					angle = i*360/t.size();
+					r.display("angle :" +angle);
+					r.turn((float)angle);
+					return angle ;
+				}
+			}
+			return -1 ;
+		}
+
+		/*public double angles(ArrayList<Float> t) {
+			double angle ;
+			//int number = 0;
+			int i = 0;
+
+			while (i < t.size() - 2) {
+				float d1 = t.get(i);
+				float d2 = t.get(i + 1);
+				float diff = d1-d2;
+
+				// First discontinuity
+				if (diff > 10) {
+					r.display("d1 = " + i*360/t.size());
+					int j=i+1;
+					float diff2=0;
+					// Second discontinuity
+					while(j<t.size()-2 && (Math.abs(diff2)< 10)) {
+						float d3 = t.get(j);
+						float d4 = t.get(j + 1);
+						diff2 = d3-d4;
+						j++;
+					}
+					r.display("d2 = " + j*360/t.size());
+
+					if((j-i>15)) {
+						//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
+						angle=((i+j)/2)*360/t.size();
+						r.display("Turning to " + angle);
+						r.turn((float)angle);
+						r.display("done");
+						return angle;
+					}
+				} else {
+					i++;
+
+				}
+			}
+		}*/
+			public void goToMin(ArrayList<Float> t) {
+				float min = t.get(0);
+
+				for (int i = 1; i < t.size(); i++) {
+					if (t.get(i) < min) {
+						min = t.get(i);
+					}
+					float angle =i*360/t.size();
+					r.display("le minimum est "+t.get(i));
+					r.display("angle :"+angle);
+					r.turn(angle);
+				}
+			}
+
+
+
+			// }
+			// ────────────────
+			// TESTING FUNCTIONS
+			// ────────────────
+
+			public void wander() {
+				while (s.getDistance() > 10) {
+					r.forward();
+				}
+				r.turn(1000000); // infinite turn
+				long rand = (long) (Math.random() * 10000);
+				Delay.msDelay(rand);
+				// stop
+				r.stop();
+			}
+
+			public void dist_greater_than_20() {
+				float distCm = s.getDistance();
+				r.display("D: " + distCm, 200);
+
+				while (distCm > 20) {
+					distCm = s.getDistance();
+					r.display("D: " + distCm, 200);
+					r.forward();
 				}
 
-				// Looking for a new grab
+	// Looking for a new grab
 				i = j+1;
 			} else {
 				i++;
@@ -728,10 +925,12 @@ public class NavAlgo {
 				r.display("d1 = " + i);
 				angle = i*360/t.size();
 				r.display("angle :" +angle);
-				r.turn((float)angle);
+				r.turn((float)angle+5);
 				return angle;
 			}
 		}
+		r.display("0 discontinuity detected");
+		return 0;
 	}
 	
 	
@@ -791,43 +990,57 @@ public class NavAlgo {
 
 			if (s.isPressed()) {
 				r.beep();
-				return;
+				r.stop();
+
 			}
+
+			public void testing() {
+				float distCm = s.getDistance();
+				r.display("D: " + distCm, 200);
+
+				while (true) {
+					distCm = s.getDistance();
+					r.display("D: " + distCm, 200);
+
+					if (s.isPressed()) {
+						r.beep();
+						return;
+					}
+				}
+			}
+
+			public void forwardsTest() {
+				r.forward(-50);
+			}
+
+			public void calibrateTurn(int x) {
+				r.turn(x);
+
+			}
+
+			public void calibrateMove() {
+				r.forward(200);
+				Delay.msDelay(500);
+				r.turn(20);
+				Delay.msDelay(500);
+				r.turn(-10);
+				Delay.msDelay(500);
+				r.turn(-20);
+				Delay.msDelay(500);
+				r.turn(10);
+				r.forward(-200);
+
+			}
+
+			public void errorCalc() {
+
+				// 5 loops
+				for (int i = 0; i < 2; i++) {
+					r.forward(100);
+					Delay.msDelay(500);
+					r.turn(180, 150, true);
+				}
+
+			}
+
 		}
-	}
-
-	public void forwardsTest() {
-		r.forward(-50);
-	}
-
-	public void calibrateTurn(int x) {
-		r.turn(x);
-
-	}
-
-	public void calibrateMove() {
-		r.forward(200);
-		Delay.msDelay(500);
-		r.turn(20);
-		Delay.msDelay(500);
-		r.turn(-10);
-		Delay.msDelay(500);
-		r.turn(-20);
-		Delay.msDelay(500);
-		r.turn(10);
-		r.forward(-200);
-
-	}
-
-	public void errorCalc() {
-
-		// 5 loops
-		for (int i = 0; i < 2; i++) {
-			r.forward(100);
-			Delay.msDelay(500);
-			r.turn(180, 150, true);
-		}
-
-	}
-
-}

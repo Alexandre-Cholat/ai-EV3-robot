@@ -62,7 +62,7 @@ public class Automate extends NavAlgo {
 
 				r.display("Approaching object");
 
-				play.moveToGrab();
+				//play.moveToGrab();
 				picking = true;
 
 				/*// Lost object : Back to search

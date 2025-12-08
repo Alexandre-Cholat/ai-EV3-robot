@@ -11,14 +11,20 @@ public class Main {
 	public static void main(String[] args) {
 		NavAlgo monRobot = new NavAlgo();
 		
+		monRobot.rotate_until_disc_detected();
+		
 
-		monRobot.moveToGrab();
-
+		if(monRobot.moveToGrabFacile()) {
+			monRobot.simpleDepot();
+			monRobot.goToCenter();
+		}
+		
 		ArrayList<Float> map = monRobot.downsampleToHalfDegree(monRobot.spin(360), 360);
 		
 		monRobot.angles_grab(map);
 		
-		
+		//monRobot.moveToGrab();
+
 
 		
 		Etat etat=Etat.CHERCHE_MILIEU;
