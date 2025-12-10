@@ -2,83 +2,66 @@ package ev3;
 
 import java.util.ArrayList;
 
-public class Automate extends NavAlgo {
+public class Automate {
+
+	private NavAlgo nav;
 
 	public Automate() {
+		nav = new NavAlgo();
 	}
 
 	public void play() {
 
 		int grab = 0;
-		boolean center      = false;
+		boolean center = false;
 		boolean objDetected = false;
-		boolean picking     = false;
-		boolean attrape     = false;
-
-		//récupération premier palet
-		//play.firstGrab();
-		//grab++;
+		boolean picking = false;
 
 		while (grab < 9) {
 
-			// STAP 1 : go to center
+			// STEP 1 : go to center
 			if (!center) {
-				r.display("Going to center");
-				goToCenter();
-				/*if(!goToXcenter2()|| (!goToYcenter2())) {
 
+				nav.r.display("Going to center");
+				nav.goToCenter();
+
+				if (nav.obj_detected()) {
+					objDetected = true;
 				}
-				 */
-				// grab detected before reaching the center
-				if (obj_detected()) {
-					objDetected = true;   //Go to STAP 3
-				}
+
 				center = true;
 			}
-			// STAP 2 :Search for object
+
+			// STEP 2 : search object
 			if (!objDetected && !picking) {
 
-				r.display("Searching object");
-				rotate_until_disc_detected();
-				
+				nav.r.display("Searching object");
+				nav.rotate_until_disc_detected();
+				objDetected = true;
 			}
-			// STAP 3:Object detected
+
+			// STEP 3 : approach object
 			if (objDetected && !picking) {
 
-				r.display("Approaching object");
-
-				picking =moveToGrabFacile();
-	
-
-				/*// Lost object : Back to search
-				if (!obj_detected()) {
-					objDetected = false;
-				}
-				if (reached) {
-					picking = true;
-				}*/
+				nav.r.display("Approaching object");
+				picking = nav.moveToGrabFacile();
 			}
-			
-			// STAP 4 : Return to the opposing camp
+
+			// STEP 4 : return object
 			if (picking) {
-				r.display("Returning to base");
-				goToBaseAdverse();
-				setDowngrab();
+
+				nav.r.display("Returning to base");
+				nav.goToBaseAdverse();
+				nav.setDowngrab();
 				grab++;
 
 				// HERE WE GO AGAIN FOR ANOTHER ROUND
 				center = false;
 				objDetected = false;
 				picking = false;
-				attrape = false;
 			}
 		}
-		r.display("Mission done!");
+
+		nav.r.display("Mission done!");
 	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
