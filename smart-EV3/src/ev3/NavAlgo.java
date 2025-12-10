@@ -535,8 +535,8 @@ public class NavAlgo {
 			previousDist = currentDist;
 		}
 		objDetected = false;
-		
-		
+
+
 		r.display("FIN", 10000);
 
 	}
@@ -568,48 +568,39 @@ public class NavAlgo {
 	}
 
 	public boolean moveToGrabFacile() {
+
 		float d1 = s.getDistance();
 		float d2 = s.getDistance();
-
 		float d = Math.min(d1, d2);
 		r.forward(d-20);
 		r.stop();
 
-		r.pincherOpen();
-		r.display("devant pavé");
-
-		r.forward(22);
-
-		if( s.isPressed()) {
-			r.pincherClose();
-			r.display("j'ai pavé");
-			
-			
-			//recoder joliment avec boucle
-		}
-		
-		else {
-			r.pincherClose();
-			r.display("pas encore trouve");
+		float[] essais = {22, 10}; 
+		for (int i= 0; i < 2; i++) {
 
 			r.pincherOpen();
-			r.forward(10);
-			if( s.isPressed()) {
+			r.display("Je suis en face du palet");
+			r.forward(essais[i]);
+			r.stop();
+			if (s.isPressed()) {
 				r.pincherClose();
-				r.display("j'ai pavé");
-			}else {
-				r.pincherClose();
-				r.forward(-d);
-				r.display("j'ai pas trouve");
-	
-				return false;
+				r.display("J'ai senti la pression du palet !");
+				return true;
 			}
-		}
-		
-		return true;
-
-
+			// Distance assez proche pour avoir le palet !!!
+			if (s.getDistance() < 25) {
+				r.pincherClose();
+				r.display("J'ai le palet entre les pinces");
+				return true;
+			}
+			r.pincherClose();
+			r.display("Pas encore trouvé");
+		}	
+		r.forward(-d);
+		r.display("J'ai pas trouvé");
+		return false;
 	}
+
 
 
 	public void pickUpGrab(){
