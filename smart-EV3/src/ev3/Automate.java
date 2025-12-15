@@ -9,7 +9,7 @@ public class Automate extends NavAlgo {
 	NavAlgo play = new NavAlgo(r,s,p);
 
 	public Automate() {
-
+		
 	}
 
 	public void play() {
@@ -44,8 +44,7 @@ public class Automate extends NavAlgo {
 			if (!objDetected && !picking) {
 
 				r.display("Searching object");
-				
-				
+
 				ArrayList<Float> t=play.downsampleToHalfDegree(play.spin(360), 360);
 				double[] tab=play.angles_grab(t);
 				if(tab==null) {
@@ -53,7 +52,6 @@ public class Automate extends NavAlgo {
 				}else {
 					r.turn((int)tab[0]);
 					objDetected=true;
-					r.display("Obj Detected!");
 				}
 				
 			}
@@ -62,7 +60,7 @@ public class Automate extends NavAlgo {
 
 				r.display("Approaching object");
 
-				//play.moveToGrab();
+				play.moveToGrab();
 				picking = true;
 
 				/*// Lost object : Back to search
