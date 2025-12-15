@@ -1,17 +1,8 @@
 package ev3;
 
-import lejos.hardware.BrickFinder;
-import lejos.hardware.Button;
-import lejos.hardware.Sound;
-import lejos.hardware.lcd.GraphicsLCD;
-import lejos.utility.Delay;
-import lejos.robotics.navigation.MovePilot;
-import lejos.robotics.chassis.Chassis;
-import lejos.robotics.chassis.Wheel;
-import lejos.robotics.chassis.WheeledChassis;
 
+import lejos.utility.Delay;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import lejos.hardware.Battery;
 
