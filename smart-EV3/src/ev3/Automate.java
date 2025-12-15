@@ -7,7 +7,9 @@ public class Automate {
 	private NavAlgo nav;
 
 	public Automate() {
+
 		nav = new NavAlgo();
+
 	}
 
 	public void play() {
@@ -34,10 +36,10 @@ public class Automate {
 
 			// STEP 2 : search object
 			if (!objDetected && !picking) {
-
 				nav.r.display("Searching object");
 				nav.rotate_until_disc_detected();
 				objDetected = true;
+
 			}
 
 			// STEP 3 : approach object

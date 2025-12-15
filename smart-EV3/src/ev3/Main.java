@@ -26,9 +26,9 @@ public class Main {
 		//ArrayList<Float> map = monRobot.downsampleToHalfDegree(monRobot.spin(360), 360);
 		
 		//monRobot.angles_grab(map);
-		
-		//monRobot.moveToGrab();
 
+		
+		
 
 		
 		Etat etat=Etat.CHERCHE_MILIEU;
