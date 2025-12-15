@@ -651,11 +651,19 @@ public class NavAlgo {
 	public void batteryStatus() {
 		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
 	}
-	/*Method using the ArrayList returned by the spin method
-	 * to detect discontinuities, and therefore potential pucks in the measured distances,
-	 * assuming that the spin method has completed a full 360-degree rotation.
-	 * In the end, the robot turn to the first angle of discontinuity
-	 * and return an array of the discontinuity angles
+	/*The goal is to detect discontinuities in the data that correspond
+	 * to pallets and to determine the angles of these pallets.
+	 * To do this, the method scans the list until it finds the first discontinuity,
+	 * which occurs when the difference between the value at index i and the value at
+	 * index i+1 suddenly changes. This indicates that the robot has detected the start
+	 * of a pallet.
+	 * Next, the method looks for the second discontinuity,
+	 * which marks the end of the pallet. To ensure that this is indeed a
+	 * pallet, we check the length of the discontinuity: if it is too short or too long,
+	 * it is unlikely that a pallet caused it, so the search continues.
+	 * However, if the length between the first and second discontinuity seems
+	 * plausible for a pallet, we take the midpoint of these two values, convert it
+	 * to an angle, and store it in the array of angles returned by the function.
 	 */
 	public double[] angles_grab(ArrayList<Float> t) {
 		double[] angles=new double[9];
