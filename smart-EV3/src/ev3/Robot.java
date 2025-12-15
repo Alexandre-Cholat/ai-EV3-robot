@@ -13,10 +13,8 @@ import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.utility.Delay;
 import lejos.hardware.BrickFinder;
-import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.GraphicsLCD;
-import lejos.robotics.navigation.MovePilot;
 
 // robot movement and output controller
 public class Robot {
@@ -28,7 +26,6 @@ public class Robot {
     private EV3MediumRegulatedMotor rightMotor;
     private EV3MediumRegulatedMotor pincher;
     static boolean pincherOpen;
-    private MovePilot movePilot;
 
     // constants
     private static final float WHEEL_DIAMETER_CM = 5.6f; // Standard EV3 wheel diameter

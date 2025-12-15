@@ -1,25 +1,19 @@
 package ev3;
 
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.motor.Motor;
-import lejos.hardware.port.MotorPort;
+
 import lejos.hardware.port.Port;
 import lejos.utility.Delay;
 import lejos.hardware.BrickFinder;
-import lejos.hardware.Button;
 import lejos.hardware.Sound;
-import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.GraphicsLCD;
 import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
-import lejos.hardware.motor.BaseRegulatedMotor;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.RegulatedMotor;
 
-import lejos.hardware.motor.MotorRegulator;
-import lejos.internal.ev3.EV3MotorPort;
 
 // Movement with the MovePilot Class: lejos.robotics.navigation.MovePilot
 public class RobotPilot {
