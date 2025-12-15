@@ -10,12 +10,23 @@ public class Main {
 	//automate a etats
 	public static void main(String[] args) {
 		NavAlgo monRobot = new NavAlgo();
+		//Automate play = new Automate ();
 		
-		monRobot.moveToGrab();
+		//play.play();
+		monRobot.goToCenter();
+		monRobot.rotate_until_disc_detected();
+		
+		if(monRobot.moveToGrabFacile()) {
+			monRobot.simpleDepot();
+			monRobot.goToCenter();
+		}
+				monRobot.goToBaseAdverse();
+				monRobot.setDowngrab();
+				
+		//ArrayList<Float> map = monRobot.downsampleToHalfDegree(monRobot.spin(360), 360);
+		
+		//monRobot.angles_grab(map);
 
-		ArrayList<Float> map = monRobot.downsampleToHalfDegree(monRobot.spin(360), 360);
-		
-		monRobot.angles_grab(map);
 		
 		
 
@@ -29,7 +40,7 @@ public class Main {
 			
 			//monRobot.moveToGrab();
 			// monRobot.goToXcenter2();
-			monRobot.angles_grab(monRobot.spin(90));	
+			//monRobot.angles_grab(monRobot.spin(90));	
 						
 			//monRobot.calibrateTurn(720);
 			
@@ -50,7 +61,7 @@ public class Main {
 			}
 			
 			monRobot.batteryStatus();
-			monRobot.errorCalc();
+			//monRobot.errorCalc();
 
 			//monRobot.calibrateTurn(720);
 

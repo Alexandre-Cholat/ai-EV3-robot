@@ -208,7 +208,7 @@ public class RobotPilot {
 			g.drawString( "Pincher opening", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);  
 	        Delay.msDelay(2000);
 
-			unPinch(1000);
+			unPinch(1200);
 			pincherOpen = true;
 			
 			g.clear();
@@ -224,7 +224,7 @@ public class RobotPilot {
 			g.drawString( "Pincher closing", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);  
 	        Delay.msDelay(2000);
 
-			pinch(1000);
+			pinch(1200);
 			pincherOpen = false;
 			g.clear();
 		}else {
