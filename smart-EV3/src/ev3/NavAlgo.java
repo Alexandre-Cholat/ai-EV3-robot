@@ -568,7 +568,6 @@ public class NavAlgo {
 	}
 
 	public boolean moveToGrabFacile() {
-
 		float d1 = s.getDistance();
 		float d2 = s.getDistance();
 		float d = Math.min(d1, d2);
