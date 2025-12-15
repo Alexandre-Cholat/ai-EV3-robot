@@ -49,7 +49,8 @@ public class Sensor {
 		touch.fetchSample(sample, 0);
 		return sample[0] != 0;
 	}
-
+	
+	//Display the color on the robot's screen.
 	public void displayColor() {
 		GraphicsLCD g = BrickFinder.getDefault().getGraphicsLCD();
 		float[] colorSample = new float[colorProvider.sampleSize()];
@@ -70,14 +71,16 @@ public class Sensor {
 		colorSensor.close();
 		System.out.println("Program terminated by user.");
 	}
-
+	
+	//Returns the detected color.
 	public String getColor() {
 		colorProvider = colorSensor.getRGBMode();
 		float[] colorSample = new float[colorProvider.sampleSize()];
 		colorProvider.fetchSample(colorSample, 0);
 		return convertColor(colorSample);
 	}
-
+	
+	//Returns the name of the detected color.
 	public static String convertColor(float[] tabColor) {
 		double r = tabColor[0];
 		double v = tabColor[1];
@@ -106,6 +109,7 @@ public class Sensor {
 			return "Unknown Color";
 	}
 
+		//to test the touch sensor
 	public void testTouch() {
 		Sensor s = new Sensor();
 		int i = 0;
@@ -127,7 +131,7 @@ public class Sensor {
 		g.drawString("Bye...", 0, 0, GraphicsLCD.VCENTER | GraphicsLCD.LEFT);
 		Delay.msDelay(3000);
 	}
-
+	//return the distance detected by the ultrasonis sensor
 	public float getDistance() {
 		ultrasonic.enable();
 		SampleProvider distance = ultrasonic.getDistanceMode();
