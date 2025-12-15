@@ -168,7 +168,7 @@ public class RobotPilot {
 		g.clear();
 
 	}
-
+	//Make the robot beep.
 	public void beep() {
 		Sound.beep();
 	}
@@ -264,12 +264,13 @@ public class RobotPilot {
 		setTurnSpeed(speed);
 		pilot.rotate(degrees, b);
 	}
-
+	
+	//To stop the robot.
 	public void stop() {
 		pilot.stop();
 	}
 
-	// sert à savoir si le robot est en mouvement
+	// Used to determine if the robot is moving.
 	public boolean isMoving() {
 		return pilot.isMoving();
 	}
@@ -278,10 +279,12 @@ public class RobotPilot {
 	// SPEED CONTROL METHODS
 	// ───────────────────────────────────────────────
 
+	//to changed the speed of the robot
 	public void setSpeed(int speed) {
 		pilot.setLinearSpeed(speed); // in mm/s
 	}
-
+	
+	//to changed the turn speed of the robot
 	public void setTurnSpeed(int speed) {
 		pilot.setAngularSpeed(speed); // degrees/s
 	}

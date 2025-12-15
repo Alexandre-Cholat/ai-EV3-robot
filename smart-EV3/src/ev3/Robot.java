@@ -82,19 +82,19 @@ public class Robot {
 		leftMotor.forward();
 		rightMotor.forward();
 	}
-	
+
 	//stop the robot
 	public void stop() {
 		leftMotor.stop(true);
 		rightMotor.stop(true);
 	}
-	
+
 	//turn the robot to the left
 	public void turnLeft() {
 		leftMotor.backward();
 		rightMotor.forward();
 	}
-	
+
 	//turn the robot to the right
 	public void turnRight() {
 		leftMotor.forward();
@@ -104,14 +104,14 @@ public class Robot {
 	// ───────────────────────────────────────────────
 	// SPEED CONTROL METHODS
 	// ───────────────────────────────────────────────
-	
+
 	//to changed the robot speed
 	public void setSpeed(int speed) {
 		leftMotor.setSpeed(speed);
 		rightMotor.setSpeed(speed);
 		// defaultSpeed = speed;
 	}
-	
+
 	//to changed the robot speed to turn
 	public void setTurnSpeed(int speed) {
 		defaultTurnSpeed = speed;
@@ -127,7 +127,7 @@ public class Robot {
 	public int getLeftMotorSpeed() {
 		return leftMotor.getSpeed();
 	}
-	
+
 	//to changed the right motor speed
 	public int getRightMotorSpeed() {
 		return rightMotor.getSpeed();
@@ -136,12 +136,12 @@ public class Robot {
 	// ───────────────────────────────────────────────
 	// PRECISE MOVEMENT METHODS
 	// ───────────────────────────────────────────────
-	
+
 	//To move the robot forward by cm centimeters.
 	public void forward(float distanceCm) {
 		forward(distanceCm, defaultSpeed);
 	}
-	
+
 	//To move the robot forward by cm centimeters and choose the speed.
 	public void forward(float distanceCm, int speed) {
 		int degrees = (int) (distanceCm * DEGREES_PER_CM);
@@ -177,7 +177,7 @@ public class Robot {
 	// ───────────────────────────────────────────────
 	// TIMED MOVEMENTS
 	// ───────────────────────────────────────────────
-	
+
 	//To move forward for a certain amount of time.
 	public void forwardTimed(int durationMs) {
 		forwardTimed(durationMs, defaultSpeed);
@@ -193,7 +193,7 @@ public class Robot {
 	public void turnLeftTimed(int durationMs) {
 		turnLeftTimed(durationMs, defaultTurnSpeed);
 	}
-	
+
 	//To turn to left for a certain amount of time and choose the speed of rotation.
 	public void turnLeftTimed(int durationMs, int speed) {
 		setTurnSpeed(speed);
@@ -201,7 +201,7 @@ public class Robot {
 		Delay.msDelay(durationMs);
 		stop();
 	}
-	
+
 	//To turn to right for a certain amount of time.
 	public void turnRightTimed(int durationMs) {
 		turnRightTimed(durationMs, defaultTurnSpeed);
@@ -218,7 +218,7 @@ public class Robot {
 	// ───────────────────────────────────────────────
 	// PINCHER CONTROL
 	// ───────────────────────────────────────────────
-	
+
 	//
 	public void unPinch(int degrees) {
 		pincher.rotate(degrees, true);
@@ -231,12 +231,12 @@ public class Robot {
 		pincher.waitComplete(); // Wait for rotation to finish
 
 	}
-	
+
 	//stop the pincher
 	public void stopAux() {
 		pincher.stop();
 	}
-	
+
 	//close the pincher and motors
 	public void close() {
 		stop();
