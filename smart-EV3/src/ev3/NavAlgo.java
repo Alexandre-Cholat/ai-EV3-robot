@@ -534,7 +534,6 @@ public class NavAlgo {
 		}
 		objDetected = false;
 
-
 		r.display("END", 10000);
 
 	}
@@ -651,6 +650,7 @@ public class NavAlgo {
 	public void batteryStatus() {
 		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
 	}
+	
 	/*Method using the ArrayList returned by the spin method
 	 * to detect discontinuities, and therefore potential pucks in the measured distances,
 	 * assuming that the spin method has completed a full 360-degree rotation.
