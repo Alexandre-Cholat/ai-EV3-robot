@@ -67,15 +67,9 @@ public class NavAlgo {
 		this.s = s;
 		this.p = p;
 	}
-	/*
-	 * public NavAlgo(RobotPilot r , Sensor s , Position p) {
-	 * this.r = r;
-	 * this.s = s;
-	 * this.p = p;
-	 * }
-	 */
 
 	public boolean obj_detected() {
+		//Returns true if an object is detected, false otherwise
 		return objDetected;
 	}
 
@@ -138,16 +132,17 @@ public class NavAlgo {
 		r.stop();
 		rotateTo(180);
 	}
-
+	/*Another method that centers the robot on the Y axis and checks, 
+	 * using the measured distances, that it is detecting a wall and not an object.
+	 */
 	public boolean goToYcenter2() {
-		// cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(180);
 		// smartAlign();
 		float dist1 = s.getDistance();
 		r.turn(-180);
 		float dist2 = s.getDistance();
 		if (dist1 + dist2 + 20 > table_length) {
-			// il n'y a pas de palet sur cette trajectoire, le robot peut avancer
+			// There is no puck on this path; the robot can move forward.
 			r.turn(180);
 			while (s.getDistance() != table_length / 2) {
 				r.forward(s.getDistance() - table_length / 2);
@@ -157,17 +152,18 @@ public class NavAlgo {
 		return false;
 	}
 
-
+	/*Another method that centers the robot on the X axis and checks,
+	 * using the measured distances, that it is detecting a wall and not an object.
+	 */
 
 	public boolean goToXcenter2() {
-		// cette methode verifie qu'il detecte bien un mur et pas un objet
 		rotateTo(90);
 		smartAlign();
 		float dist1 = s.getDistance();
 		r.turn(-180);
 		float dist2 = s.getDistance();
 		if (dist1 + dist2 + 20 > table_width) {
-			// il n'y a pas de palet sur cette trajectoire, le robot peut avancer
+			// There is no puck on this path; the robot can move forward.
 			r.turn(180);
 			while (s.getDistance() != table_width / 2) {
 				r.forward(s.getDistance() - table_width / 2);
@@ -176,7 +172,7 @@ public class NavAlgo {
 		}
 		return false;
 	}
-
+	//Method to drop the puck in the opponent’s base
 	public void simpleDepot() {
 		rotateTo(180);
 		// smartAlign();
@@ -185,41 +181,51 @@ public class NavAlgo {
 		r.pincherOpen();
 		r.forward(-25);
 		r.pincherClose();
-		r.display("pave dropped");
+		r.display("Puck dropped");
 
 	}
-
+	/*Method that makes the robot go to the opponent’s base,
+	 * using either white line detection or perceived distance
+	 * to verify that it has arrived.
+	 */
 	public void goToBaseAdverse() {
 		rotateTo(180);
 		boolean estArrivee=false;
 		while(!estArrivee) {
 			r.forward(s.getDistance()-10, 50, true);
 			if (s.getColor().equals("White")) {
-				//cas ou il detecte du blanc, on est donc sur qu'il est arrivé 
+				//Case where it detects the white line.
 				estArrivee=true;
-				r.display("Ligne blanche detectee");
+				r.display("White line detected");
 			}
 			float f1=s.getDistance();
-			//on fait faire un decalage au robot pour verifier qu'il allait bien vers la base adverse et non vers un palet
+			/*Apply an offset to the robot to check that
+			it is indeed heading toward the opponent’s base and not toward a puck
+			 */
 			decalageDroite();
 			if(Math.abs(s.getDistance()-f1)<5) {
 				estArrivee=true;
 			}
-			//si la distance a augmenté lorsqu'il s'est decalé, alors il detectait surement un palet
+			/*If the distance increased when it shifted,
+			then it was probably detecting a puck or another object
+			 */
 		}
+		//deposit grab
 		r.stop();
-		r.display("Est a la base");
+		r.display("I'm in base adverse");
 		r.forward(10);
 		r.pincherOpen();
 		r.forward(-15);
 		r.pincherClose();
-		r.display("palet deposé");
+		r.display("Puck dropped.");
 	}
 
 	public void avoidObstacle() {
-		// le robot de décale pour éviter un obstacle
-		r.display("Evitement d'un obstacle", 500);
-
+		/* The robot shifts either to the right
+		or to the left based on the best distance
+		to avoid an obstacle
+		 */
+		r.display("Obstacle avoidance", 500);
 		r.turn(-90);
 		if (s.getDistance() <= 15) {
 
@@ -228,22 +234,23 @@ public class NavAlgo {
 			r.turn(90);
 
 			r.forward(20);
-			r.display("Obstacle evite", 500);
+			r.display("Obstacle avoided", 500);
 		} else {
 			r.turn(-180);
 			r.forward(15);
 			r.turn(90);
 			r.forward(20);
-			r.display("Obstacle evite", 500);
+			r.display("Obstacle avoided", 500);
 		}
 	}
-
+	//the robot shifts to the right
 	public void decalageDroite() {
+		
 		r.turn(-90);
 		r.forward(15);
 		r.turn(90);
 	}
-
+	//the robot shifts to the left
 	public void decalageGauche() {
 		r.turn(90);
 		r.forward(15);
@@ -296,7 +303,6 @@ public class NavAlgo {
 		return true;
 	}
 
-	// ArrayList<Float> tabDistances = spin(360);
 
 	/**
 	 * Aligns the robot to face the closest wall within a specified sweep angle.
@@ -332,7 +338,7 @@ public class NavAlgo {
 		ArrayList<Float> filteredDistances = downsampleToHalfDegree(tabDistances, sweepAngle);
 		r.display("reduced nb = " + filteredDistances.size());
 
-		// Calcul de indexe de la valeur la plus proche du mur
+		// Calculation of the index of the value closest to the wall.
 		try {
 
 			// int minIdx = findCenterByDerivative(filteredDistances);
@@ -340,7 +346,7 @@ public class NavAlgo {
 
 			r.display("Best: " + minIdx + " of " + filteredDistances.size(), 4000);
 
-			// Calcul angle relative de minIdx
+			// Calculation of the relative angle of minIdx.
 			// float minAngle = ((sweepAngle/filteredDistances.size()) * minIdx) -
 			// (sweepAngle/2);
 			float minAngle = ((sweepAngle / filteredDistances.size()) * minIdx) - (sweepAngle / 4);
@@ -517,16 +523,17 @@ public class NavAlgo {
 
 		return downsampled;
 	}
-
+	/*This method makes the robot rotate degree by degree while calculating distances.
+	When a discontinuity is detected (a change in the measured distance of more than 5 cm),
+	the robot stops its rotation and turns toward the detected discontinuity.
+	 */
 	public void rotate_until_disc_detected() {
-		// tourne jusqu'a detecter une discontinuité, renvoie vrai s'il en trouve, false
-		// sinon
 		float previousDist = s.getDistance();
 		for (int angle = 0; angle <= 360; angle += 1) {
 			r.turn(1);
 			Delay.msDelay(100);
 			float currentDist = s.getDistance();
-			if (Math.abs(previousDist - currentDist) > 5) {// a voir s'il faut valeur plus grande ou plus petite
+			if (Math.abs(previousDist - currentDist) > 5) {
 				objDetected = true;
 				r.display("Grab detected in " + angle);
 				r.turn(15);
@@ -537,36 +544,30 @@ public class NavAlgo {
 		objDetected = false;
 
 
-		r.display("FIN", 10000);
+		r.display("END", 10000);
 
 	}
 
-	/*
-	 * public float[] tabDisc() {
-	 * float[] tab = new float[];
-	 * r.turn(360);
-	 * while(r.isMoving()) {
-	 * 
-	 * }
-	 * }
+	/*Method that makes the robot perform a scan
+	to check that it is moving in the correct direction, toward a puck
 	 */
-
 	public float trajectory(float f) {
-		//Dans la mesure où j'ai vraiment besoin de faire un balayage
-		// pour retrouver le palet
 		int[] angles = { -7, 3, 3, 3, 3, 2 };
 		for(int an:angles ) {
 			r.turn(an); 
 			Delay.msDelay(100);
 
 			if(s.getDistance() <= f-2) {
-				r.display("Bonne direction", 3000);
+				r.display("Good direction", 3000);
 				return s.getDistance() ;
 			}
 		}
 		return -1 ;
 	}
-
+	/*Method that positions the robot at the ideal distance from the puck,
+	 * based either on the touch sensor or on the measured distances.
+	 * When the robot is at the correct distance from the puck, it grabs it. 
+	 */
 	public boolean moveToGrabFacile() {
 		float d1 = s.getDistance();
 		float d2 = s.getDistance();
@@ -578,34 +579,37 @@ public class NavAlgo {
 		for (int i= 0; i < 2; i++) {
 
 			r.pincherOpen();
-			r.display("Je suis en face du palet");
+			r.display("I am facing the puck");
 			r.forward(essais[i]);
 			r.stop();
 			if (s.isPressed()) {
+				//case where it is certain that the grab has been caught because the sensor is pressed
 				r.pincherClose();
-				r.display("J'ai senti la pression du palet !");
+				r.display("I felt the pressure of the puck!");
 				return true;
 			}
-			// Distance assez proche pour avoir le palet !!!
+			// case where the distance is close enough to have the puck
 			if (s.getDistance() < 25) {
 				r.pincherClose();
-				r.display("J'ai le palet entre les pinces");
+				r.display("I have the puck between the grippers.");
 				return true;
 			}
 			r.pincherClose();
-			r.display("Pas encore trouvé");
+			r.display("Grab not found yet.");
 		}	
 		r.forward(-d);
-		r.display("J'ai pas trouvé");
+		r.display("Grab not found.");
 		return false;
 	}
 
 
-
+	/*Method assuming the robot is perfectly facing a puck
+	 * and will grab it.
+	 */
 	public void pickUpGrab(){
 		r.forward(s.getDistance());
 		r.pincherClose();
-		r.display("Pavé attrapé", 5000);
+		r.display("Puck grabbed.", 5000);
 	}
 
 	/*if (error >= 3) {
@@ -633,14 +637,18 @@ public class NavAlgo {
 	 */
 
 
-
+	/* Method that will drop the puck at the location
+	 * where the robot is when this method is called.
+	 */
 	public void setDowngrab() {
-		// méthode qui va deposer le palet et reculer et fermer les pinces
 		r.pincherOpen();
 		r.forward(-10);
 		r.pincherClose();
-		r.display("Pavé déposer", 5000);
+		r.display("Puck placed", 5000);
 	}
+	/*Method to retrieve the first puck during the game,
+	 * assuming the robot starts facing a puck and the opponent's base.
+	 */
 	public void firstGrab() {
 		r.pincherOpen();
 		r.forward(60);
@@ -648,11 +656,16 @@ public class NavAlgo {
 		decalageDroite();
 		goToBaseAdverse();
 	}
-
+	//return the status of battery
 	public void batteryStatus() {
 		r.display("Battery: " + Battery.getVoltage() + " v", 5000);
 	}
-
+	/*Method using the ArrayList returned by the spin method
+	 * to detect discontinuities, and therefore potential pucks in the measured distances,
+	 * assuming that the spin method has completed a full 360-degree rotation.
+	 * In the end, the robot turn to the first angle of discontinuity
+	 * and return an array of the discontinuity angles
+	 */
 	public double[] angles_grab(ArrayList<Float> t) {
 		double[] angles=new double[9];
 		int number = 0;
@@ -678,37 +691,30 @@ public class NavAlgo {
 				r.display("d2 = " + j);
 
 				if((j-i>3&&j-i<40)) {
-					//on vérifie que la discontinuité est assez grande mais aussi pas trop grande et que ce n'est pas un bug capteur !
+					/*We check the length of the discontinuity to ensure that it
+					is likely a puck distance and not a sensor glitch
+					 */
 					if(number>=9) {
-						/*cas ou le capteur percoit plus de 9 discontinuité
-						 * alors qu'il ne doit y avoir que 9 palets->surement un bug du capteur
+						/*case where the sensor detects more than 9 discontinuities
+						 * while there should only be 9 pucks
 						 */
 
-						r.display("tous les palets detectés");
+						r.display("All the pucks are detected");
 						return angles;
 					}
-					r.display("d2 = " + j);
-
-					if((j-i>15)) {
-						//on vérifie que la discontinuité est assez grande et que ce n'est pas un bug capteur !
-						if(number>=9) {
-							/*cas ou le capteur percoit plus de 9 discontinuité
-							 * alors qu'il ne doit y avoir que 9 palets->surement un bug du capteur
-							 */
-
-							r.display("tous les palets detectés");
-							return angles;
-						}
-						angles[number]=((i+j)/2)*360/t.size();
-						r.display(" Add: " + angles[number]);
-						number++;
-					}
-
-					// Looking for a new grab
-					i = j+1;
-				} else {
-					i++;
+					/*we find the middle index of the discontinuity
+					 * and convert it into an angle
+					 */
+					angles[number]=((i+j)/2)*360/t.size();
+					r.display(" Add: " + angles[number]);
+					number++;
 				}
+
+				// Looking for a new grab
+				i = j+1;
+			} else {
+				i++;
+
 			}
 		}
 		r.display("Turning to " + angles[0]);
@@ -719,10 +725,11 @@ public class NavAlgo {
 
 
 
-
-
-
-
+	/*Method similar to the first version of angle_grab but simpler.
+	 * Here, the method only looks for the first discontinuity without 
+	 * going through the entire list and returns its angle
+	 *  and positions the robot facing this angle.
+	 */
 	public double angles_grab2(ArrayList<Float> t) {
 		double angle = 0;
 		int i = 0;
@@ -745,7 +752,9 @@ public class NavAlgo {
 		return 0;
 	}
 
-
+	/*Method that positions the robot facing the smallest
+	 * distance detected by the robot during its rotation.
+	 */
 	public void goToMin(ArrayList<Float> t) {
 		float min = t.get(0);
 
