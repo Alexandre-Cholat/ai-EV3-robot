@@ -43,7 +43,7 @@ Our strategy prioritizes robustness and adaptability in a chaotic environment wi
 
 The full project report, detailing the problem analysis, technical choices, challenges encountered, and collaborative process, is included in this repository.
 
-*   [**Full Project Report**](https://github.com/user-attachments/files/24200755/Rapport.de.projet.IA.s5.MIASHS.pdf)
+*   [**Full Project Report**](https://github.com/Alexandre-Cholat/ai-EV3-robot/blob/main/Rapport%20de%20projet%20IA%20s5%20MIASHS.pdf)
 
 ## 💡 Potential Future Improvements
 
