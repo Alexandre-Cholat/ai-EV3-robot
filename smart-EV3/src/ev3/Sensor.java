@@ -49,7 +49,7 @@ public class Sensor {
 		touch.fetchSample(sample, 0);
 		return sample[0] != 0;
 	}
-	
+
 	//Display the color on the robot's screen.
 	public void displayColor() {
 		GraphicsLCD g = BrickFinder.getDefault().getGraphicsLCD();
@@ -71,7 +71,7 @@ public class Sensor {
 		colorSensor.close();
 		System.out.println("Program terminated by user.");
 	}
-	
+
 	//Returns the detected color.
 	public String getColor() {
 		colorProvider = colorSensor.getRGBMode();
@@ -79,7 +79,7 @@ public class Sensor {
 		colorProvider.fetchSample(colorSample, 0);
 		return convertColor(colorSample);
 	}
-	
+
 	//Returns the name of the detected color.
 	public static String convertColor(float[] tabColor) {
 		double r = tabColor[0];
@@ -109,7 +109,7 @@ public class Sensor {
 			return "Unknown Color";
 	}
 
-		//to test the touch sensor
+	//to test the touch sensor
 	public void testTouch() {
 		Sensor s = new Sensor();
 		int i = 0;

@@ -11,7 +11,7 @@ package ev3;
  * The robot is assumed to start facing the opponent's camp with an unknown position.
  */
 public class Position {
-	
+
 	/**
 	 * The angle orientation of the robot in degrees.
 	 * 180 degrees = opponent's camp direction

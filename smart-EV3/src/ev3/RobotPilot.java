@@ -264,7 +264,7 @@ public class RobotPilot {
 		setTurnSpeed(speed);
 		pilot.rotate(degrees, b);
 	}
-	
+
 	//To stop the robot.
 	public void stop() {
 		pilot.stop();
@@ -283,7 +283,7 @@ public class RobotPilot {
 	public void setSpeed(int speed) {
 		pilot.setLinearSpeed(speed); // in mm/s
 	}
-	
+
 	//to changed the turn speed of the robot
 	public void setTurnSpeed(int speed) {
 		pilot.setAngularSpeed(speed); // degrees/s
